@@ -1,0 +1,26 @@
+/* Thème Noël */
+:root {
+    --ecein-primary: #d42b2b;
+    --ecein-secondary: #8b0000;
+    --ecein-accent: #f5f9f0;
+}
+.btn-ecein-primary { background: #d42b2b; }
+.btn-ecein-primary:hover { background: #8b0000; }
+.bg-ecein { background-color: #d42b2b !important; }
+body::before {
+    content: '❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 1.2rem;
+    animation: tomber 10s linear infinite;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: .3;
+}
+@keyframes tomber {
+    from { transform: translateY(-20px); opacity: 0; }
+    to   { transform: translateY(100vh); opacity: .3; }
+}
