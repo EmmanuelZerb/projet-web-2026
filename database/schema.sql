@@ -255,6 +255,25 @@ CREATE TABLE IF NOT EXISTS album_photos (
 ) ENGINE=InnoDB;
 
 -- =====================================================
+-- Table : appels (audio/vidéo)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS appels (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    appelant_id INT NOT NULL,
+    receveur_id INT NOT NULL,
+    conversation_id INT NOT NULL,
+    type ENUM('audio', 'video') NOT NULL DEFAULT 'audio',
+    statut ENUM('sonnerie', 'en_cours', 'termine', 'refuse', 'manque') NOT NULL DEFAULT 'sonnerie',
+    date_debut DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    date_fin DATETIME DEFAULT NULL,
+    FOREIGN KEY (appelant_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
+    FOREIGN KEY (receveur_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
+    FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
+    INDEX idx_receveur_statut (receveur_id, statut),
+    INDEX idx_appelant (appelant_id)
+) ENGINE=InnoDB;
+
+-- =====================================================
 -- Données de test (seed)
 -- =====================================================
 

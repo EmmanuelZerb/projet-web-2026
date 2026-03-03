@@ -174,7 +174,7 @@ include __DIR__ . '/includes/navbar.php';
                     <?php foreach ($conversations as $conv): ?>
                     <a href="messagerie.php?conv=<?= $conv['id'] ?>"
                        class="d-flex align-items-center gap-3 p-3 border-bottom text-decoration-none conversation-item
-                              <?= $convActiveId === $conv['id'] ? 'bg-light' : '' ?>">
+                              <?= $convActiveId == $conv['id'] ? 'bg-light' : '' ?>">
                         <div class="position-relative flex-shrink-0">
                             <?php if ($conv['est_groupe']): ?>
                             <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white"
@@ -224,13 +224,16 @@ include __DIR__ . '/includes/navbar.php';
                         <div class="text-muted small"><?= h($contactActif['titre'] ?? '') ?></div>
                     </div>
                     <div class="ms-auto d-flex gap-2">
+                        <button class="btn btn-sm btn-light rounded-circle" onclick="lancerAppel('audio')" title="Appel audio">
+                            <i class="bi bi-telephone-fill text-success"></i>
+                        </button>
+                        <button class="btn btn-sm btn-light rounded-circle" onclick="lancerAppel('video')" title="Appel vidéo">
+                            <i class="bi bi-camera-video-fill text-primary"></i>
+                        </button>
                         <a href="utilisateur.php?id=<?= $contactActif['id'] ?>"
                            class="btn btn-sm btn-light rounded-circle" title="Voir le profil">
                             <i class="bi bi-person"></i>
                         </a>
-                        <button class="btn btn-sm btn-light rounded-circle" title="Appel vidéo (à venir)">
-                            <i class="bi bi-camera-video"></i>
-                        </button>
                     </div>
                 </div>
 
@@ -238,12 +241,12 @@ include __DIR__ . '/includes/navbar.php';
                 <div class="chat-messages flex-grow-1 p-3" id="chat-messages" style="overflow-y:auto">
                     <?php foreach ($messages as $msg): ?>
                     <?php $estMoi = $msg['expediteur_id'] == $userId; ?>
-                    <div class="message-wrapper <?= $estMoi ? 'message-moi' : 'message-autre' ?> mb-3">
+                    <div class="message-wrapper <?= $estMoi ? 'message-moi' : 'message-autre' ?> mb-3" data-msg-id="<?= $msg['id'] ?>">
                         <?php if (!$estMoi): ?>
                         <img src="<?= h($msg['avatar']) ?>" alt="" class="rounded-circle me-2"
                              width="32" height="32" style="object-fit:cover">
                         <?php endif; ?>
-                        <div class="message-bubble <?= $estMoi ? 'message-bubble-moi' : 'message-bubble-autre' ?>">
+                        <div class="message-bulle <?= $estMoi ? 'message-bubble-moi' : 'message-bubble-autre' ?>">
                             <div><?= nl2br(h($msg['contenu'])) ?></div>
                             <div class="message-time"><?= tempsEcoule($msg['date_envoi']) ?></div>
                         </div>
@@ -333,19 +336,66 @@ include __DIR__ . '/includes/navbar.php';
     </div>
 </div>
 
+<!-- ===== OVERLAY APPEL AUDIO/VIDÉO ===== -->
+<div id="call-overlay" class="call-overlay" style="display:none">
+    <div class="call-overlay-bg"></div>
+    <div class="call-content">
+        <video id="remote-video" autoplay playsinline></video>
+        <video id="local-video" autoplay playsinline muted class="local-video"></video>
+        <div id="call-info" class="call-info">
+            <img id="call-avatar" src="assets/images/default_avatar.png" alt="" class="call-avatar">
+            <h4 id="call-name" class="call-name"></h4>
+            <p id="call-status" class="call-status"></p>
+            <p id="call-timer" class="call-timer" style="display:none">00:00</p>
+        </div>
+        <div class="call-controls">
+            <div id="call-controls-active" style="display:none">
+                <button class="call-btn call-btn-muted" onclick="toggleMute()" id="btn-mute" title="Couper le micro">
+                    <i class="bi bi-mic-fill"></i>
+                </button>
+                <button class="call-btn call-btn-muted" onclick="toggleCamera()" id="btn-camera" title="Couper la caméra" style="display:none">
+                    <i class="bi bi-camera-video-fill"></i>
+                </button>
+                <button class="call-btn call-btn-danger" onclick="terminerAppel()" title="Raccrocher">
+                    <i class="bi bi-telephone-x-fill"></i>
+                </button>
+            </div>
+            <div id="call-controls-incoming" style="display:none">
+                <button class="call-btn call-btn-success call-btn-ring" onclick="accepterAppel()" title="Décrocher">
+                    <i class="bi bi-telephone-fill"></i>
+                </button>
+                <button class="call-btn call-btn-danger" onclick="refuserAppel()" title="Refuser">
+                    <i class="bi bi-telephone-x-fill"></i>
+                </button>
+            </div>
+            <div id="call-controls-outgoing" style="display:none">
+                <button class="call-btn call-btn-danger" onclick="annulerAppel()" title="Annuler">
+                    <i class="bi bi-telephone-x-fill"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-// Auto-scroll vers le bas du chat
 const chatEl = document.getElementById('chat-messages');
 if (chatEl) chatEl.scrollTop = chatEl.scrollHeight;
 
-// ID de la conversation active pour le polling AJAX
 const CONV_ID = <?= $convActiveId ?>;
 const USER_ID = <?= $userId ?>;
+<?php if ($contactActif): ?>
+const CONTACT_ID = <?= (int) $contactActif['id'] ?>;
+const CONTACT_NAME = <?= json_encode($contactActif['prenom'] . ' ' . $contactActif['nom']) ?>;
+const CONTACT_PHOTO = <?= json_encode($contactActif['photo']) ?>;
+<?php else: ?>
+const CONTACT_ID = 0;
+const CONTACT_NAME = '';
+const CONTACT_PHOTO = 'assets/images/default_avatar.png';
+<?php endif; ?>
 
 function filtrerConversations(q) {
     document.querySelectorAll('.conversation-item').forEach(el => {
-        const text = el.textContent.toLowerCase();
-        el.style.display = text.includes(q.toLowerCase()) ? '' : 'none';
+        el.style.display = el.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
     });
 }
 

@@ -108,6 +108,9 @@
 <!-- JS personnalisé -->
 <script src="assets/js/main.js"></script>
 
+<?php if (isset($pageScript) && $pageScript === 'messagerie.js'): ?>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<?php endif; ?>
 <?php if (isset($pageScript)): ?>
 <script src="assets/js/<?= $pageScript ?>"></script>
 <?php endif; ?>
