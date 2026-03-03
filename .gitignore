@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.cursor/
+.claude/
+
+# Uploads (user-generated content)
+uploads/photos/*
+uploads/videos/*
+uploads/cvs/*
+!uploads/photos/.gitkeep
+!uploads/videos/.gitkeep
+!uploads/cvs/.gitkeep
+
+# Database dumps (keep schema, ignore dumps)
+database/dump.sql
+
+# Logs
+*.log
+
+# Environment
+.env

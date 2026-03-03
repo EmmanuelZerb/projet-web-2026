@@ -1,0 +1,14 @@
+{
+    "name": "ecein/reseau-social",
+    "description": "ECE In - Réseau social professionnel ECE Paris",
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-mbstring": "*"
+    },
+    "scripts": {
+        "start": "php -S 0.0.0.0:${PORT:-8000} -t ."
+    }
+}
