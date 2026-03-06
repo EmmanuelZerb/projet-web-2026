@@ -1,6 +1,6 @@
 <?php
 /**
- * ECE In - Carte de publication (réutilisable)
+ * ECE In - Carte de publication (Version Alternative - Dark Cyberpunk)
  * Variable attendue : $post (tableau de données de la publication)
  */
 if (!isset($post)) return;
@@ -12,17 +12,18 @@ if (!isset($post)) return;
             <div class="d-flex gap-3">
                 <a href="utilisateur.php?id=<?= $post['utilisateur_id'] ?>">
                     <img src="<?= h($post['avatar']) ?>" alt=""
-                         class="rounded-circle" width="48" height="48" style="object-fit:cover">
+                         class="rounded-circle" width="48" height="48"
+                         style="object-fit:cover;border:2px solid var(--ecein-primary)">
                 </a>
                 <div>
                     <a href="utilisateur.php?id=<?= $post['utilisateur_id'] ?>"
-                       class="fw-semibold text-dark text-decoration-none">
+                       class="fw-semibold text-decoration-none" style="color:var(--ecein-text)">
                         <?= h($post['prenom'] . ' ' . $post['nom']) ?>
                     </a>
                     <?php if ($post['humeur']): ?>
-                    <span class="text-muted small"> – se sent <em><?= h($post['humeur']) ?></em></span>
+                    <span class="small" style="color:var(--ecein-muted)"> – se sent <em><?= h($post['humeur']) ?></em></span>
                     <?php endif; ?>
-                    <div class="text-muted d-flex align-items-center gap-2" style="font-size:.78rem">
+                    <div class="d-flex align-items-center gap-2" style="font-size:.78rem;color:var(--ecein-muted)">
                         <span title="<?= h($post['date_publication']) ?>"><?= tempsEcoule($post['date_publication']) ?></span>
                         <?php if ($post['lieu']): ?>
                         <span><i class="bi bi-geo-alt me-1"></i><?= h($post['lieu']) ?></span>
@@ -40,20 +41,19 @@ if (!isset($post)) return;
                 </div>
             </div>
 
-            <!-- Menu options (si propriétaire) -->
             <?php if ($post['utilisateur_id'] == ($userId ?? 0)): ?>
             <div class="dropdown">
                 <button class="btn btn-sm btn-light rounded-circle" data-bs-toggle="dropdown">
                     <i class="bi bi-three-dots"></i>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                <ul class="dropdown-menu dropdown-menu-end">
                     <li>
                         <button class="dropdown-item" onclick="modifierPost(<?= $post['id'] ?>)">
                             <i class="bi bi-pencil me-2"></i>Modifier
                         </button>
                     </li>
                     <li>
-                        <button class="dropdown-item text-danger" onclick="supprimerPost(<?= $post['id'] ?>)">
+                        <button class="dropdown-item" style="color:var(--ecein-danger)" onclick="supprimerPost(<?= $post['id'] ?>)">
                             <i class="bi bi-trash me-2"></i>Supprimer
                         </button>
                     </li>
@@ -69,8 +69,8 @@ if (!isset($post)) return;
 
         <!-- Publication partagée -->
         <?php if ($post['type'] === 'partage' && $post['original_contenu']): ?>
-        <div class="post-partage border rounded p-3 mb-3 bg-light">
-            <small class="text-muted">Partagé depuis <?= h($post['original_prenom'] . ' ' . $post['original_nom']) ?></small>
+        <div class="post-partage rounded p-3 mb-3" style="border:1px solid var(--ecein-border);background:var(--ecein-surface-2)">
+            <small style="color:var(--ecein-muted)">Partagé depuis <?= h($post['original_prenom'] . ' ' . $post['original_nom']) ?></small>
             <p class="mb-1 mt-1 small"><?= nl2br(h(substr($post['original_contenu'], 0, 200))) ?>...</p>
         </div>
         <?php endif; ?>
@@ -94,8 +94,8 @@ if (!isset($post)) return;
                 Votre navigateur ne supporte pas la lecture vidéo.
             </video>
             <?php elseif ($ext === 'pdf'): ?>
-            <div class="d-flex align-items-center gap-3 p-3 bg-light rounded">
-                <i class="bi bi-file-earmark-pdf fs-2 text-danger"></i>
+            <div class="d-flex align-items-center gap-3 p-3 rounded" style="background:var(--ecein-surface-2);border:1px solid var(--ecein-border)">
+                <i class="bi bi-file-earmark-pdf fs-2" style="color:var(--ecein-danger)"></i>
                 <div>
                     <div class="fw-semibold">Curriculum Vitæ</div>
                     <a href="<?= h($post['fichier']) ?>" target="_blank" class="btn btn-sm btn-outline-danger mt-1">
@@ -109,7 +109,7 @@ if (!isset($post)) return;
 
         <!-- Compteurs de réactions -->
         <?php if ($post['nb_reactions'] > 0 || $post['nb_commentaires'] > 0): ?>
-        <div class="d-flex justify-content-between text-muted small mb-2 pb-2 border-bottom">
+        <div class="d-flex justify-content-between small mb-2 pb-2 border-bottom" style="color:var(--ecein-muted)">
             <?php if ($post['nb_reactions'] > 0): ?>
             <span>
                 <span class="reaction-emoji">👍</span>
@@ -117,7 +117,8 @@ if (!isset($post)) return;
             </span>
             <?php else: ?><span></span><?php endif; ?>
             <?php if ($post['nb_commentaires'] > 0): ?>
-            <button class="btn btn-link btn-sm p-0 text-muted text-decoration-none"
+            <button class="btn btn-link btn-sm p-0 text-decoration-none"
+                    style="color:var(--ecein-muted)"
                     onclick="afficherCommentaires(<?= $post['id'] ?>)">
                 <?= $post['nb_commentaires'] ?> commentaire<?= $post['nb_commentaires'] > 1 ? 's' : '' ?>
             </button>
@@ -127,7 +128,7 @@ if (!isset($post)) return;
 
         <!-- Boutons d'actions -->
         <div class="d-flex gap-1">
-            <button class="btn btn-sm btn-light flex-fill reaction-btn <?= $post['ma_reaction'] ? 'active text-primary' : '' ?>"
+            <button class="btn btn-sm btn-light flex-fill reaction-btn <?= $post['ma_reaction'] ? 'active' : '' ?>"
                     onclick="reagir(<?= $post['id'] ?>, 'jaime', this)"
                     title="J'aime">
                 <i class="bi bi-hand-thumbs-up<?= $post['ma_reaction'] === 'jaime' ? '-fill' : '' ?>"></i>
@@ -147,7 +148,7 @@ if (!isset($post)) return;
             </button>
         </div>
 
-        <!-- Section commentaires (masquée par défaut) -->
+        <!-- Section commentaires -->
         <div class="commentaires-section mt-3" id="commentaires-<?= $post['id'] ?>" style="display:none">
             <div class="commentaires-liste" id="liste-commentaires-<?= $post['id'] ?>"></div>
             <div class="d-flex gap-2 mt-2">
@@ -160,7 +161,7 @@ if (!isset($post)) return;
                            onkeypress="if(event.key==='Enter') envoyerCommentaire(<?= $post['id'] ?>)">
                     <button class="btn btn-sm position-absolute end-0 top-50 translate-middle-y pe-3"
                             onclick="envoyerCommentaire(<?= $post['id'] ?>)">
-                        <i class="bi bi-send text-primary"></i>
+                        <i class="bi bi-send" style="color:var(--ecein-primary)"></i>
                     </button>
                 </div>
             </div>

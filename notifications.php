@@ -50,7 +50,7 @@ include __DIR__ . '/includes/navbar.php';
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold"><i class="bi bi-bell me-2"></i>Notifications</h5>
                     <?php if (!empty($notifications)): ?>
-                    <button class="btn btn-sm btn-light" onclick="toutMarquerLu()">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="toutMarquerLu()">
                         <i class="bi bi-check2-all me-1"></i>Tout marquer comme lu
                     </button>
                     <?php endif; ?>
@@ -95,9 +95,9 @@ include __DIR__ . '/includes/navbar.php';
                             <div class="notif-type-icon">
                                 <?php
                                 $icons = [
-                                    'demande_ami'  => 'bi-person-plus text-primary',
+                                    'demande_ami'  => 'bi-person-plus',
                                     'ami_accepte'  => 'bi-people-fill text-success',
-                                    'reaction'     => 'bi-hand-thumbs-up-fill text-primary',
+                                    'reaction'     => 'bi-hand-thumbs-up-fill',
                                     'commentaire'  => 'bi-chat-dots-fill text-warning',
                                     'partage'      => 'bi-share-fill text-info',
                                     'evenement'    => 'bi-calendar-event-fill text-danger',
@@ -105,8 +105,9 @@ include __DIR__ . '/includes/navbar.php';
                                     'systeme'      => 'bi-info-circle-fill text-secondary',
                                 ];
                                 $icon = $icons[$notif['type']] ?? 'bi-bell-fill text-muted';
+                                $iconIsPrimary = in_array($notif['type'], ['demande_ami', 'reaction']);
                                 ?>
-                                <i class="bi <?= $icon ?> fs-5"></i>
+                                <i class="bi <?= $icon ?> fs-5" <?= $iconIsPrimary ? 'style="color:var(--ecein-cyan)"' : '' ?>></i>
                             </div>
 
                             <?php if ($notif['lien']): ?>

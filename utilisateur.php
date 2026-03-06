@@ -74,8 +74,8 @@ include __DIR__ . '/includes/navbar.php';
         <div class="card-body">
             <div class="d-flex flex-wrap align-items-end gap-4 position-relative" style="margin-top:-50px">
                 <img src="<?= h($profil['photo']) ?>" alt="Avatar"
-                     class="rounded-circle border-4 border-white shadow"
-                     width="110" height="110" style="object-fit:cover">
+                     class="rounded-circle border-4 shadow" style="border-color:var(--ecein-primary) !important;object-fit:cover"
+                     width="110" height="110">
                 <div class="flex-grow-1 pb-2">
                     <h3 class="fw-bold mb-0"><?= h($profil['prenom'] . ' ' . $profil['nom']) ?></h3>
                     <p class="text-muted mb-1"><?= h($profil['titre'] ?? '') ?></p>
@@ -96,7 +96,7 @@ include __DIR__ . '/includes/navbar.php';
                         <i class="bi bi-chat me-2"></i>Message
                     </a>
                     <?php elseif ($statut === 'en_attente'): ?>
-                    <span class="badge bg-warning text-dark p-2 fs-6">
+                    <span class="badge bg-warning p-2 fs-6" style="color:var(--ecein-text)">
                         <i class="bi bi-clock me-1"></i>Invitation envoyée
                     </span>
                     <?php else: ?>
@@ -121,14 +121,14 @@ include __DIR__ . '/includes/navbar.php';
                     <?php endif; ?>
                     <ul class="list-unstyled small mb-0">
                         <?php if ($profil['localisation']): ?>
-                        <li class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i><?= h($profil['localisation']) ?></li>
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2" style="color:var(--ecein-cyan)"></i><?= h($profil['localisation']) ?></li>
                         <?php endif; ?>
                         <?php if ($profil['site_web']): ?>
-                        <li class="mb-2"><i class="bi bi-link-45deg text-primary me-2"></i>
+                        <li class="mb-2"><i class="bi bi-link-45deg me-2" style="color:var(--ecein-cyan)"></i>
                             <a href="<?= h($profil['site_web']) ?>" target="_blank"><?= h($profil['site_web']) ?></a>
                         </li>
                         <?php endif; ?>
-                        <li><i class="bi bi-calendar text-primary me-2"></i>
+                        <li><i class="bi bi-calendar me-2" style="color:var(--ecein-cyan)"></i>
                             Membre depuis <?= formatDateFr($profil['date_inscription']) ?>
                         </li>
                     </ul>

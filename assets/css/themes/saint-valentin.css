@@ -1,10 +1,13 @@
-/* Thème Saint-Valentin */
+/* Thème Saint-Valentin - Dark Cyberpunk */
 :root {
-    --ecein-primary: #e84393;
-    --ecein-secondary: #c0185d;
-    --ecein-accent: #fff0f5;
+    --ecein-primary: #ec4899;
+    --ecein-secondary: #be185d;
+    --ecein-accent: rgba(236, 72, 153, .1);
+    --ecein-cyan: #f472b6;
+    --gradient-primary: linear-gradient(135deg, #ec4899, #f472b6);
 }
-.navbar-ecein { border-bottom-color: #ffc0d8 !important; }
-.btn-ecein-primary { background: #e84393; }
-.btn-ecein-primary:hover { background: #c0185d; }
-.bg-ecein { background-color: #e84393 !important; }
+.navbar-ecein { border-bottom-color: rgba(236, 72, 153, .3) !important; }
+.btn-ecein-primary { background: linear-gradient(135deg, #ec4899, #f472b6); }
+.btn-ecein-primary:hover { filter: brightness(1.15); }
+.bg-ecein { background: linear-gradient(135deg, #ec4899, #f472b6) !important; }
+.logo-ecein { background: linear-gradient(135deg, #ec4899, #f472b6); }

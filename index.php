@@ -174,22 +174,22 @@ include __DIR__ . '/includes/navbar.php';
                     <div class="d-flex justify-content-around">
                         <button class="btn btn-sm btn-light d-flex align-items-center gap-2"
                                 data-bs-toggle="modal" data-bs-target="#modalPublier" data-type="photo">
-                            <i class="bi bi-image text-success fs-5"></i>
+                            <i class="bi bi-image fs-5" style="color:var(--ecein-success)"></i>
                             <span class="d-none d-sm-inline">Photo</span>
                         </button>
                         <button class="btn btn-sm btn-light d-flex align-items-center gap-2"
                                 data-bs-toggle="modal" data-bs-target="#modalPublier" data-type="video">
-                            <i class="bi bi-camera-video text-danger fs-5"></i>
+                            <i class="bi bi-camera-video fs-5" style="color:var(--ecein-danger)"></i>
                             <span class="d-none d-sm-inline">Vidéo</span>
                         </button>
                         <button class="btn btn-sm btn-light d-flex align-items-center gap-2"
                                 data-bs-toggle="modal" data-bs-target="#modalPublier" data-type="evenement">
-                            <i class="bi bi-calendar-plus text-warning fs-5"></i>
+                            <i class="bi bi-calendar-plus fs-5" style="color:var(--ecein-warning)"></i>
                             <span class="d-none d-sm-inline">Événement</span>
                         </button>
                         <button class="btn btn-sm btn-light d-flex align-items-center gap-2"
                                 data-bs-toggle="modal" data-bs-target="#modalPublier" data-type="cv">
-                            <i class="bi bi-file-person text-info fs-5"></i>
+                            <i class="bi bi-file-person fs-5" style="color:var(--ecein-cyan)"></i>
                             <span class="d-none d-sm-inline">CV</span>
                         </button>
                     </div>
@@ -220,7 +220,7 @@ include __DIR__ . '/includes/navbar.php';
             <?php if (!empty($suggestions)): ?>
             <div class="card shadow-sm mb-3">
                 <div class="card-header bg-transparent fw-semibold border-0 pb-0">
-                    <i class="bi bi-person-plus me-2 text-primary"></i>Personnes à connaître
+                    <i class="bi bi-person-plus me-2" style="color:var(--ecein-cyan)"></i>Personnes à connaître
                 </div>
                 <div class="card-body pt-2">
                     <?php foreach ($suggestions as $sugg): ?>
@@ -230,7 +230,7 @@ include __DIR__ . '/includes/navbar.php';
                                  class="rounded-circle" width="44" height="44" style="object-fit:cover">
                         </a>
                         <div class="flex-grow-1 min-w-0">
-                            <a href="utilisateur.php?id=<?= $sugg['id'] ?>" class="text-decoration-none text-dark">
+                            <a href="utilisateur.php?id=<?= $sugg['id'] ?>" class="text-decoration-none" style="color:var(--ecein-text)">
                                 <div class="fw-semibold small text-truncate"><?= h($sugg['prenom'] . ' ' . $sugg['nom']) ?></div>
                                 <div class="text-muted" style="font-size:.75rem;line-height:1.2"><?= h(substr($sugg['titre'] ?? 'Membre ECE', 0, 40)) ?></div>
                             </a>
@@ -249,7 +249,7 @@ include __DIR__ . '/includes/navbar.php';
             <!-- Emplois récents -->
             <div class="card shadow-sm">
                 <div class="card-header bg-transparent fw-semibold border-0 pb-0">
-                    <i class="bi bi-briefcase me-2 text-warning"></i>Offres récentes
+                    <i class="bi bi-briefcase me-2" style="color:var(--ecein-warning)"></i>Offres récentes
                 </div>
                 <div class="card-body pt-2">
                     <?php
@@ -257,7 +257,7 @@ include __DIR__ . '/includes/navbar.php';
                     $stmtEmplois->execute();
                     foreach ($stmtEmplois->fetchAll() as $emploi): ?>
                     <div class="py-2 border-bottom">
-                        <a href="emplois.php#emploi-<?= $emploi['id'] ?>" class="text-decoration-none text-dark">
+                        <a href="emplois.php#emploi-<?= $emploi['id'] ?>" class="text-decoration-none" style="color:var(--ecein-text)">
                             <div class="fw-semibold small"><?= h($emploi['titre']) ?></div>
                             <div class="text-muted" style="font-size:.75rem"><?= h($emploi['entreprise']) ?></div>
                             <span class="badge badge-type-emploi-<?= $emploi['type'] ?> mt-1"><?= h(ucfirst($emploi['type'])) ?></span>

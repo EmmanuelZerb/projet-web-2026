@@ -173,8 +173,8 @@ include __DIR__ . '/includes/navbar.php';
                     <?php else: ?>
                     <?php foreach ($conversations as $conv): ?>
                     <a href="messagerie.php?conv=<?= $conv['id'] ?>"
-                       class="d-flex align-items-center gap-3 p-3 border-bottom text-decoration-none conversation-item
-                              <?= $convActiveId == $conv['id'] ? 'bg-light' : '' ?>">
+                       class="d-flex align-items-center gap-3 p-3 border-bottom text-decoration-none conversation-item"
+                       <?= $convActiveId == $conv['id'] ? 'style="background:var(--ecein-surface-2)"' : '' ?>>
                         <div class="position-relative flex-shrink-0">
                             <?php if ($conv['est_groupe']): ?>
                             <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white"
@@ -212,7 +212,7 @@ include __DIR__ . '/includes/navbar.php';
             </div>
 
             <!-- ===== FENÊTRE DE CHAT ===== -->
-            <div class="col-md-8 col-lg-9 d-flex flex-column">
+            <div class="col-md-8 col-lg-9 d-flex flex-column" style="background:var(--ecein-surface-2)">
 
                 <?php if ($convActiveId > 0 && $contactActif): ?>
                 <!-- En-tête du chat -->
@@ -228,7 +228,7 @@ include __DIR__ . '/includes/navbar.php';
                             <i class="bi bi-telephone-fill text-success"></i>
                         </button>
                         <button class="btn btn-sm btn-light rounded-circle" onclick="lancerAppel('video')" title="Appel vidéo">
-                            <i class="bi bi-camera-video-fill text-primary"></i>
+                            <i class="bi bi-camera-video-fill" style="color:var(--ecein-cyan)"></i>
                         </button>
                         <a href="utilisateur.php?id=<?= $contactActif['id'] ?>"
                            class="btn btn-sm btn-light rounded-circle" title="Voir le profil">
@@ -266,7 +266,7 @@ include __DIR__ . '/includes/navbar.php';
                 </div>
 
                 <!-- Zone de saisie -->
-                <div class="p-3 border-top bg-light">
+                <div class="p-3 border-top" style="background:var(--ecein-surface-2)">
                     <form id="formMessage" class="d-flex gap-2">
                         <input type="hidden" name="action" value="envoyer">
                         <input type="hidden" name="conversation_id" value="<?= $convActiveId ?>">
@@ -316,8 +316,8 @@ include __DIR__ . '/includes/navbar.php';
                 <div class="liste-amis-modal" style="max-height:350px;overflow-y:auto">
                     <?php foreach ($amis as $ami): ?>
                     <a href="messagerie.php?contact=<?= $ami['id'] ?>"
-                       class="d-flex align-items-center gap-3 p-2 rounded text-decoration-none text-dark
-                              ami-item hover-bg mb-1">
+                       class="d-flex align-items-center gap-3 p-2 rounded text-decoration-none ami-item hover-bg mb-1"
+                       style="color:var(--ecein-text)">
                         <img src="<?= h($ami['photo']) ?>" alt=""
                              class="rounded-circle" width="42" height="42" style="object-fit:cover">
                         <div>

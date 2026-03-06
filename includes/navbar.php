@@ -1,8 +1,7 @@
 <?php
 /**
- * ECE In - Barre de navigation principale
+ * ECE In - Barre de navigation principale (Version Alternative - Dark Cyberpunk)
  */
-// Détermine la page active
 $pageActive = basename($_SERVER['PHP_SELF'], '.php');
 ?>
 <!-- ===================== NAVBAR ===================== -->
@@ -20,8 +19,8 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
         <div class="search-bar d-none d-lg-flex mx-3 flex-grow-1">
             <form class="d-flex w-100" action="recherche.php" method="GET">
                 <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0">
-                        <i class="bi bi-search text-muted"></i>
+                    <span class="input-group-text border-end-0">
+                        <i class="bi bi-search" style="color:var(--ecein-cyan)"></i>
                     </span>
                     <input type="search" name="q" class="form-control border-start-0 ps-0"
                            placeholder="Rechercher des personnes, emplois, événements..."
@@ -33,14 +32,13 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
         <!-- Toggle mobile -->
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarMain" aria-label="Navigation">
-            <i class="bi bi-list fs-4"></i>
+            <i class="bi bi-list fs-4" style="color:var(--ecein-text)"></i>
         </button>
 
         <!-- Liens de navigation -->
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
 
-                <!-- Accueil -->
                 <li class="nav-item">
                     <a class="nav-link nav-icon-link <?= $pageActive === 'index' ? 'active' : '' ?>"
                        href="index.php" title="Accueil">
@@ -49,7 +47,6 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
                     </a>
                 </li>
 
-                <!-- Mon Réseau -->
                 <li class="nav-item">
                     <a class="nav-link nav-icon-link <?= $pageActive === 'reseau' ? 'active' : '' ?>"
                        href="reseau.php" title="Mon Réseau">
@@ -58,7 +55,6 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
                     </a>
                 </li>
 
-                <!-- Vous (Profil) -->
                 <li class="nav-item">
                     <a class="nav-link nav-icon-link <?= $pageActive === 'profil' ? 'active' : '' ?>"
                        href="profil.php" title="Votre profil">
@@ -67,7 +63,6 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
                     </a>
                 </li>
 
-                <!-- Notifications -->
                 <li class="nav-item">
                     <a class="nav-link nav-icon-link position-relative <?= $pageActive === 'notifications' ? 'active' : '' ?>"
                        href="notifications.php" title="Notifications">
@@ -79,7 +74,6 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
                     </a>
                 </li>
 
-                <!-- Messagerie -->
                 <li class="nav-item">
                     <a class="nav-link nav-icon-link position-relative <?= $pageActive === 'messagerie' ? 'active' : '' ?>"
                        href="messagerie.php" title="Messagerie">
@@ -91,7 +85,6 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
                     </a>
                 </li>
 
-                <!-- Emplois -->
                 <li class="nav-item">
                     <a class="nav-link nav-icon-link <?= $pageActive === 'emplois' ? 'active' : '' ?>"
                        href="emplois.php" title="Emplois">
@@ -100,25 +93,26 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
                     </a>
                 </li>
 
-                <!-- Divider -->
-                <li class="nav-item d-none d-lg-block"><div class="vr mx-1 opacity-25" style="height:32px"></div></li>
+                <li class="nav-item d-none d-lg-block">
+                    <div class="vr mx-1 opacity-25" style="height:32px;border-color:var(--ecein-border)"></div>
+                </li>
 
-                <!-- Menu utilisateur -->
                 <?php if (estConnecte() && isset($userCourant)): ?>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-1" href="#"
                        data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="<?= h($userCourant['photo']) ?>" alt="Avatar"
-                             class="rounded-circle" width="34" height="34" style="object-fit:cover">
+                             class="rounded-circle" width="34" height="34"
+                             style="object-fit:cover;border:2px solid var(--ecein-primary)">
                         <span class="d-none d-lg-inline fw-semibold small"><?= h($userCourant['prenom']) ?></span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <li>
                             <div class="dropdown-header d-flex align-items-center gap-2 py-2">
                                 <img src="<?= h($userCourant['photo']) ?>" alt="" class="rounded-circle" width="40" height="40" style="object-fit:cover">
                                 <div>
-                                    <div class="fw-semibold"><?= h($userCourant['prenom'] . ' ' . $userCourant['nom']) ?></div>
-                                    <div class="text-muted small"><?= h($userCourant['titre'] ?? '') ?></div>
+                                    <div class="fw-semibold" style="color:var(--ecein-text)"><?= h($userCourant['prenom'] . ' ' . $userCourant['nom']) ?></div>
+                                    <div class="small" style="color:var(--ecein-muted)"><?= h($userCourant['titre'] ?? '') ?></div>
                                 </div>
                             </div>
                         </li>
@@ -128,10 +122,10 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
                         <li><a class="dropdown-item" href="profil.php?onglet=parametres"><i class="bi bi-gear me-2"></i>Paramètres</a></li>
                         <?php if (estAdmin()): ?>
                         <li><hr class="dropdown-divider my-1"></li>
-                        <li><a class="dropdown-item text-danger" href="admin/index.php"><i class="bi bi-shield-fill me-2"></i>Administration</a></li>
+                        <li><a class="dropdown-item" style="color:var(--ecein-pink)" href="admin/index.php"><i class="bi bi-shield-fill me-2"></i>Administration</a></li>
                         <?php endif; ?>
                         <li><hr class="dropdown-divider my-1"></li>
-                        <li><a class="dropdown-item text-danger" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i>Se déconnecter</a></li>
+                        <li><a class="dropdown-item" style="color:var(--ecein-danger)" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i>Se déconnecter</a></li>
                     </ul>
                 </li>
                 <?php else: ?>

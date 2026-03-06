@@ -1,12 +1,15 @@
-/* Thème Noël */
+/* Thème Noël - Dark Cyberpunk */
 :root {
-    --ecein-primary: #d42b2b;
-    --ecein-secondary: #8b0000;
-    --ecein-accent: #f5f9f0;
+    --ecein-primary: #ef4444;
+    --ecein-secondary: #991b1b;
+    --ecein-accent: rgba(239, 68, 68, .1);
+    --ecein-cyan: #10b981;
+    --gradient-primary: linear-gradient(135deg, #ef4444, #10b981);
 }
-.btn-ecein-primary { background: #d42b2b; }
-.btn-ecein-primary:hover { background: #8b0000; }
-.bg-ecein { background-color: #d42b2b !important; }
+.btn-ecein-primary { background: linear-gradient(135deg, #ef4444, #10b981); }
+.btn-ecein-primary:hover { filter: brightness(1.15); }
+.bg-ecein { background: linear-gradient(135deg, #ef4444, #10b981) !important; }
+.logo-ecein { background: linear-gradient(135deg, #ef4444, #10b981); }
 body::before {
     content: '❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄';
     position: fixed;

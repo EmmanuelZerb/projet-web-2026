@@ -105,7 +105,7 @@ $utilisateurs = $stmtUsers->fetchAll();
             </h4>
             <p class="text-muted mb-0">Gestion des utilisateurs et du contenu ECE In</p>
         </div>
-        <a href="../index.php" class="btn btn-light">
+        <a href="../index.php" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-2"></i>Retour au site
         </a>
     </div>
@@ -153,7 +153,7 @@ $utilisateurs = $stmtUsers->fetchAll();
             </div>
         </div>
         <div class="col-sm-6 col-lg-3">
-            <div class="card shadow-sm border-0 bg-warning text-dark">
+            <div class="card shadow-sm border-0 bg-warning" style="color:var(--ecein-text)">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <div class="fs-2 fw-bold"><?= $stats['emplois'] ?></div>
@@ -187,7 +187,7 @@ $utilisateurs = $stmtUsers->fetchAll();
 
         <div class="table-responsive">
             <table class="table table-hover mb-0">
-                <thead class="table-light">
+                <thead style="background-color:var(--ecein-surface)">
                     <tr>
                         <th>Utilisateur</th>
                         <th>Email</th>
@@ -229,7 +229,7 @@ $utilisateurs = $stmtUsers->fetchAll();
                         <td class="text-center">
                             <div class="d-flex gap-1 justify-content-center">
                                 <a href="../utilisateur.php?id=<?= $u['id'] ?>"
-                                   class="btn btn-sm btn-light" title="Voir profil">
+                                   class="btn btn-sm btn-outline-secondary" title="Voir profil">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 <?php if ($u['id'] !== $_SESSION['utilisateur_id']): ?>
@@ -310,7 +310,7 @@ $utilisateurs = $stmtUsers->fetchAll();
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-ecein-primary">Créer l'utilisateur</button>
                 </div>
             </form>

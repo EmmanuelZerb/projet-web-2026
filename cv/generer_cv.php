@@ -1,7 +1,6 @@
 <?php
 /**
- * ECE In - Génération automatique du CV
- * Génère le CV depuis les données de la base (et optionnellement depuis XML)
+ * ECE In - Génération automatique du CV (Version Alternative - Dark Cyberpunk)
  * Formats supportés : html, pdf (via mPDF si disponible), xml (export)
  */
 require_once __DIR__ . '/../config/config.php';
@@ -12,7 +11,6 @@ $userId = $_SESSION['utilisateur_id'];
 $format  = $_GET['format'] ?? 'html';
 $preview = isset($_GET['preview']);
 
-// Récupérer les données de l'utilisateur
 $stmtUser = $pdo->prepare("SELECT * FROM utilisateurs WHERE id = ?");
 $stmtUser->execute([$userId]);
 $user = $stmtUser->fetch();
@@ -25,7 +23,6 @@ $stmtProj = $pdo->prepare("SELECT * FROM projets WHERE utilisateur_id = ? ORDER 
 $stmtProj->execute([$userId]);
 $projets = $stmtProj->fetchAll();
 
-// Compétences (à implémenter si souhaité dans l'avenir)
 $competences = ['PHP', 'JavaScript', 'MySQL', 'HTML/CSS', 'Bootstrap', 'jQuery', 'Git'];
 
 // ===================== EXPORT XML =====================
@@ -83,11 +80,9 @@ if ($format === 'xml') {
 
 // ===================== GÉNÉRATION HTML / PDF =====================
 
-// Si PDF demandé, utiliser mPDF (nécessite composer)
 $isPDF = ($format === 'pdf');
 
 if (!$preview && !$isPDF) {
-    // Mode téléchargement HTML
     header('Content-Type: text/html; charset=utf-8');
     header('Content-Disposition: attachment; filename="cv_' . $user['pseudo'] . '.html"');
 }
@@ -109,14 +104,13 @@ function formatCVDate($date) {
     <meta charset="UTF-8">
     <title>CV – <?= h($user['prenom'] . ' ' . $user['nom']) ?></title>
     <style>
-        /* ===== Styles CV ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Calibri, Arial, sans-serif;
             font-size: 12px;
             line-height: 1.5;
-            color: #222;
-            background: #fff;
+            color: #e2e8f0;
+            background: #0f0f1a;
         }
         .cv-wrapper {
             max-width: 800px;
@@ -124,13 +118,13 @@ function formatCVDate($date) {
             padding: 30px;
         }
 
-        /* En-tête */
         .cv-header {
             display: flex;
             align-items: flex-start;
             gap: 24px;
             padding-bottom: 20px;
-            border-bottom: 3px solid #0a66c2;
+            border-bottom: 3px solid;
+            border-image: linear-gradient(135deg, #8b5cf6, #06b6d4) 1;
             margin-bottom: 24px;
         }
         .cv-photo {
@@ -138,31 +132,33 @@ function formatCVDate($date) {
             height: 90px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #0a66c2;
+            border: 3px solid #8b5cf6;
+            box-shadow: 0 0 15px rgba(139, 92, 246, .3);
         }
         .cv-photo-placeholder {
             width: 90px;
             height: 90px;
             border-radius: 50%;
-            background: #e8f3fd;
+            background: linear-gradient(135deg, #1a1a2e, #232340);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2rem;
-            color: #0a66c2;
+            color: #06b6d4;
             font-weight: 900;
-            border: 3px solid #0a66c2;
+            border: 3px solid #8b5cf6;
             flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(139, 92, 246, .3);
         }
         .cv-nom {
             font-size: 22px;
             font-weight: 700;
-            color: #003b70;
+            color: #e2e8f0;
             margin-bottom: 2px;
         }
         .cv-titre {
             font-size: 14px;
-            color: #0a66c2;
+            color: #06b6d4;
             font-weight: 600;
             margin-bottom: 8px;
         }
@@ -171,7 +167,7 @@ function formatCVDate($date) {
             flex-wrap: wrap;
             gap: 12px;
             font-size: 11px;
-            color: #555;
+            color: #94a3b8;
         }
         .cv-contact-item {
             display: flex;
@@ -179,22 +175,18 @@ function formatCVDate($date) {
             gap: 4px;
         }
 
-        /* Sections */
-        .cv-section {
-            margin-bottom: 20px;
-        }
+        .cv-section { margin-bottom: 20px; }
         .cv-section-title {
             font-size: 13px;
             font-weight: 700;
-            color: #003b70;
+            color: #06b6d4;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 1.5px solid #e0e0e0;
+            border-bottom: 1.5px solid rgba(139, 92, 246, .3);
             padding-bottom: 4px;
             margin-bottom: 12px;
         }
 
-        /* Éléments de section */
         .cv-item {
             display: flex;
             gap: 16px;
@@ -204,7 +196,7 @@ function formatCVDate($date) {
             width: 110px;
             min-width: 110px;
             font-size: 10.5px;
-            color: #777;
+            color: #64748b;
             text-align: right;
             padding-top: 2px;
         }
@@ -212,63 +204,74 @@ function formatCVDate($date) {
         .cv-item-title {
             font-weight: 700;
             font-size: 12.5px;
-            color: #222;
+            color: #e2e8f0;
         }
         .cv-item-subtitle {
             font-weight: 600;
             font-size: 11.5px;
-            color: #0a66c2;
+            color: #8b5cf6;
         }
         .cv-item-desc {
             font-size: 11px;
-            color: #555;
+            color: #94a3b8;
             margin-top: 3px;
             line-height: 1.4;
         }
+        .cv-item-desc a { color: #06b6d4; }
 
-        /* Compétences */
         .competences-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
         }
         .competence-badge {
-            background: #e8f3fd;
-            color: #0a66c2;
-            border: 1px solid #c0d9f0;
+            background: rgba(139, 92, 246, .15);
+            color: #8b5cf6;
+            border: 1px solid rgba(139, 92, 246, .3);
             padding: 3px 10px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 500;
         }
 
-        /* Biographie */
         .cv-bio {
             font-size: 11.5px;
-            color: #444;
+            color: #94a3b8;
             line-height: 1.6;
             font-style: italic;
         }
 
-        /* Footer CV */
         .cv-footer {
             text-align: center;
             font-size: 10px;
-            color: #aaa;
-            border-top: 1px solid #eee;
+            color: #64748b;
+            border-top: 1px solid rgba(139, 92, 246, .2);
             padding-top: 12px;
             margin-top: 24px;
         }
 
-        /* Bouton impression (non affiché en PDF) */
         @media print {
             .no-print { display: none !important; }
+            body { background: white; color: #222; }
+            .cv-nom { color: #1a1a2e; }
+            .cv-titre { color: #6d28d9; }
+            .cv-section-title { color: #6d28d9; border-bottom-color: #ddd; }
+            .cv-item-title { color: #222; }
+            .cv-item-subtitle { color: #6d28d9; }
+            .cv-item-desc { color: #555; }
+            .cv-contacts { color: #555; }
+            .cv-bio { color: #444; }
+            .competence-badge { background: #f3e8ff; color: #6d28d9; border-color: #d8b4fe; }
+            .cv-footer { color: #aaa; border-top-color: #eee; }
+            .cv-photo { border-color: #6d28d9; box-shadow: none; }
+            .cv-photo-placeholder { background: #f3e8ff; color: #6d28d9; border-color: #6d28d9; box-shadow: none; }
         }
+
         .btn-print {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #0a66c2;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
             color: white;
             border: none;
             padding: 8px 16px;
@@ -278,23 +281,22 @@ function formatCVDate($date) {
             font-weight: 600;
             margin-bottom: 16px;
         }
+        .btn-print:hover { filter: brightness(1.1); }
     </style>
 </head>
 <body>
 <div class="cv-wrapper">
 
     <?php if ($preview): ?>
-    <!-- Bouton impression (visible en preview) -->
     <div class="no-print" style="margin-bottom:16px">
         <button class="btn-print" onclick="window.print()">
             🖨 Imprimer / Enregistrer en PDF
         </button>
         <a href="generer_cv.php?format=xml"
-           style="margin-left:8px;font-size:12px;color:#0a66c2">⬇ Exporter en XML</a>
+           style="margin-left:8px;font-size:12px;color:#06b6d4">⬇ Exporter en XML</a>
     </div>
     <?php endif; ?>
 
-    <!-- ===== EN-TÊTE ===== -->
     <div class="cv-header">
         <?php
         $photoSrc = BASE_PATH . '/' . ($user['photo'] ?? '');
@@ -329,7 +331,6 @@ function formatCVDate($date) {
         </div>
     </div>
 
-    <!-- ===== PRÉSENTATION ===== -->
     <?php if ($user['biographie']): ?>
     <div class="cv-section">
         <div class="cv-section-title">Profil</div>
@@ -337,7 +338,6 @@ function formatCVDate($date) {
     </div>
     <?php endif; ?>
 
-    <!-- ===== FORMATIONS ===== -->
     <?php if (!empty($formations)): ?>
     <div class="cv-section">
         <div class="cv-section-title">Formation</div>
@@ -362,7 +362,6 @@ function formatCVDate($date) {
     </div>
     <?php endif; ?>
 
-    <!-- ===== PROJETS ===== -->
     <?php if (!empty($projets)): ?>
     <div class="cv-section">
         <div class="cv-section-title">Projets</div>
@@ -391,7 +390,6 @@ function formatCVDate($date) {
     </div>
     <?php endif; ?>
 
-    <!-- ===== COMPÉTENCES ===== -->
     <div class="cv-section">
         <div class="cv-section-title">Compétences</div>
         <div class="competences-grid">
@@ -401,7 +399,6 @@ function formatCVDate($date) {
         </div>
     </div>
 
-    <!-- Footer -->
     <div class="cv-footer">
         CV généré via ECE In – <?= SITE_NOM ?> · <?= date('d/m/Y') ?>
     </div>

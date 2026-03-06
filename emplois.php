@@ -128,7 +128,7 @@ include __DIR__ . '/includes/navbar.php';
                             <i class="bi bi-search me-1"></i>Rechercher
                         </button>
                         <?php if ($filtreType || $filtreRecherche): ?>
-                        <a href="emplois.php" class="btn btn-light btn-sm w-100 mt-2">
+                        <a href="emplois.php" class="btn btn-outline-secondary btn-sm w-100 mt-2">
                             <i class="bi bi-x me-1"></i>Réinitialiser
                         </a>
                         <?php endif; ?>
@@ -185,8 +185,8 @@ include __DIR__ . '/includes/navbar.php';
                 <div class="card-body">
                     <div class="d-flex gap-3 align-items-start">
                         <!-- Logo entreprise -->
-                        <div class="entreprise-logo bg-light rounded d-flex align-items-center
-                                    justify-content-center flex-shrink-0" style="width:56px;height:56px">
+                        <div class="entreprise-logo rounded d-flex align-items-center
+                                    justify-content-center flex-shrink-0" style="width:56px;height:56px;background-color:var(--ecein-surface)">
                             <i class="bi bi-building fs-4 text-muted"></i>
                         </div>
 
@@ -200,15 +200,20 @@ include __DIR__ . '/includes/navbar.php';
                                     <?php
                                     $badgeColors = [
                                         'stage'      => 'bg-info text-white',
-                                        'alternance' => 'bg-warning text-dark',
+                                        'alternance' => 'bg-warning',
                                         'cdi'        => 'bg-success text-white',
                                         'cdd'        => 'bg-secondary text-white',
                                         'freelance'  => 'bg-purple text-white',
-                                        'benevole'   => 'bg-light text-dark border',
+                                        'benevole'   => 'border',
                                     ];
                                     $badgeClass = $badgeColors[$emploi['type']] ?? 'bg-secondary';
                                     ?>
-                                    <span class="badge <?= $badgeClass ?>"><?= h(ucfirst($emploi['type'])) ?></span>
+                                    <?php
+                                    $badgeStyle = '';
+                                    if ($emploi['type'] === 'alternance') $badgeStyle = 'style="color:var(--ecein-text)"';
+                                    elseif ($emploi['type'] === 'benevole') $badgeStyle = 'style="background-color:var(--ecein-surface);color:var(--ecein-text)"';
+                                    ?>
+                                    <span class="badge <?= $badgeClass ?>" <?= $badgeStyle ?>><?= h(ucfirst($emploi['type'])) ?></span>
                                 </div>
                             </div>
 
@@ -244,7 +249,7 @@ include __DIR__ . '/includes/navbar.php';
                                     <i class="bi bi-envelope me-1"></i>Contacter
                                 </a>
                                 <?php endif; ?>
-                                <button class="btn btn-sm btn-light" onclick="this.classList.toggle('active')"
+                                <button class="btn btn-sm btn-outline-secondary" onclick="this.classList.toggle('active')"
                                         title="Sauvegarder">
                                     <i class="bi bi-bookmark"></i>
                                 </button>
@@ -327,7 +332,7 @@ include __DIR__ . '/includes/navbar.php';
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-ecein-primary">
                         <i class="bi bi-send me-2"></i>Publier l'offre
                     </button>

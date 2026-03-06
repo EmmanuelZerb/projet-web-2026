@@ -135,8 +135,8 @@ $userCourant = getUtilisateurConnecte();
         <div class="profil-bg-large"
              style="background-image:url('<?= h($userCourant['image_fond']) ?>')"
              id="bg-image">
-            <label class="btn btn-sm btn-light opacity-75 position-absolute bottom-0 end-0 m-2"
-                   style="cursor:pointer" title="Changer la photo de fond">
+            <label class="btn btn-sm opacity-75 position-absolute bottom-0 end-0 m-2"
+                   style="cursor:pointer;background:var(--ecein-surface-2)" title="Changer la photo de fond">
                 <i class="bi bi-camera"></i>
                 <form id="form-bg" method="POST" action="api/upload.php" enctype="multipart/form-data" class="d-none">
                     <input type="hidden" name="action" value="upload_bg">
@@ -150,8 +150,8 @@ $userCourant = getUtilisateurConnecte();
                 <!-- Avatar -->
                 <div class="position-relative">
                     <img src="<?= h($userCourant['photo']) ?>" alt="Avatar"
-                         class="rounded-circle border-4 border-white shadow" id="avatar-img"
-                         width="110" height="110" style="object-fit:cover">
+                         class="rounded-circle border border-4 shadow" id="avatar-img"
+                         width="110" height="110" style="object-fit:cover;border-color:var(--ecein-primary) !important">
                     <label class="btn btn-sm btn-primary rounded-circle position-absolute bottom-0 end-0"
                            style="width:32px;height:32px;padding:0;cursor:pointer" title="Modifier la photo">
                         <i class="bi bi-camera-fill small"></i>
@@ -245,18 +245,18 @@ $userCourant = getUtilisateurConnecte();
                     <?php endif; ?>
                     <ul class="list-unstyled small mb-0">
                         <?php if ($userCourant['localisation']): ?>
-                        <li class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i><?= h($userCourant['localisation']) ?></li>
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2" style="color:var(--ecein-cyan)"></i><?= h($userCourant['localisation']) ?></li>
                         <?php endif; ?>
                         <?php if ($userCourant['site_web']): ?>
-                        <li class="mb-2"><i class="bi bi-link-45deg text-primary me-2"></i>
+                        <li class="mb-2"><i class="bi bi-link-45deg me-2" style="color:var(--ecein-cyan)"></i>
                             <a href="<?= h($userCourant['site_web']) ?>" target="_blank" rel="noopener"><?= h($userCourant['site_web']) ?></a>
                         </li>
                         <?php endif; ?>
                         <?php if ($userCourant['telephone']): ?>
-                        <li class="mb-2"><i class="bi bi-telephone text-primary me-2"></i><?= h($userCourant['telephone']) ?></li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2" style="color:var(--ecein-cyan)"></i><?= h($userCourant['telephone']) ?></li>
                         <?php endif; ?>
-                        <li class="mb-2"><i class="bi bi-envelope text-primary me-2"></i><?= h($userCourant['email']) ?></li>
-                        <li><i class="bi bi-calendar text-primary me-2"></i>
+                        <li class="mb-2"><i class="bi bi-envelope me-2" style="color:var(--ecein-cyan)"></i><?= h($userCourant['email']) ?></li>
+                        <li><i class="bi bi-calendar me-2" style="color:var(--ecein-cyan)"></i>
                             Membre depuis <?= formatDateFr($userCourant['date_inscription']) ?>
                         </li>
                     </ul>
@@ -268,7 +268,7 @@ $userCourant = getUtilisateurConnecte();
             <div class="card shadow-sm mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span class="fw-bold"><i class="bi bi-mortarboard me-2"></i>Formations</span>
-                    <a href="?onglet=formations" class="btn btn-sm btn-light">Tout voir</a>
+                    <a href="?onglet=formations" class="btn btn-sm" style="background:var(--ecein-surface-2)">Tout voir</a>
                 </div>
                 <div class="card-body">
                     <?php if (empty($formations)): ?>
@@ -276,7 +276,7 @@ $userCourant = getUtilisateurConnecte();
                     <?php else: ?>
                     <?php foreach (array_slice($formations, 0, 2) as $f): ?>
                     <div class="d-flex gap-3 mb-3">
-                        <div class="formation-icon"><i class="bi bi-building fs-4 text-primary"></i></div>
+                        <div class="formation-icon"><i class="bi bi-building fs-4" style="color:var(--ecein-cyan)"></i></div>
                         <div>
                             <div class="fw-semibold"><?= h($f['diplome']) ?></div>
                             <div class="text-muted small"><?= h($f['etablissement']) ?></div>
@@ -295,7 +295,7 @@ $userCourant = getUtilisateurConnecte();
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span class="fw-bold"><i class="bi bi-kanban me-2"></i>Projets</span>
-                    <a href="?onglet=projets" class="btn btn-sm btn-light">Tout voir</a>
+                    <a href="?onglet=projets" class="btn btn-sm" style="background:var(--ecein-surface-2)">Tout voir</a>
                 </div>
                 <div class="card-body">
                     <?php if (empty($projets)): ?>
@@ -347,7 +347,7 @@ $userCourant = getUtilisateurConnecte();
                         <div class="d-flex justify-content-between">
                             <div>
                                 <h6 class="fw-bold mb-0"><?= h($f['diplome']) ?></h6>
-                                <div class="text-primary fw-semibold small"><?= h($f['etablissement']) ?></div>
+                                <div class="fw-semibold small" style="color:var(--ecein-cyan)"><?= h($f['etablissement']) ?></div>
                                 <?php if ($f['domaine']): ?>
                                 <div class="text-muted small"><?= h($f['domaine']) ?></div>
                                 <?php endif; ?>
@@ -357,7 +357,8 @@ $userCourant = getUtilisateurConnecte();
                                     <?php if ($f['lieu']): ?> · <?= h($f['lieu']) ?><?php endif; ?>
                                 </div>
                             </div>
-                            <button class="btn btn-sm btn-light"
+                            <button class="btn btn-sm"
+                                    style="background:var(--ecein-surface-2)"
                                     onclick="supprimerFormation(<?= $f['id'] ?>, this)"
                                     title="Supprimer">
                                 <i class="bi bi-trash text-danger"></i>
@@ -421,7 +422,7 @@ $userCourant = getUtilisateurConnecte();
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn" style="background:var(--ecein-surface-2)" data-bs-dismiss="modal">Annuler</button>
                         <button type="submit" class="btn btn-ecein-primary">Enregistrer</button>
                     </div>
                 </form>
@@ -455,7 +456,7 @@ $userCourant = getUtilisateurConnecte();
                                 <?php if ($p['en_cours']): ?><span class="badge bg-success">En cours</span><?php endif; ?>
                             </div>
                             <?php if ($p['type']): ?>
-                            <span class="badge bg-light text-dark border mb-2"><?= h($p['type']) ?></span>
+                            <span class="badge border mb-2" style="background:var(--ecein-surface-2);color:var(--ecein-text)"><?= h($p['type']) ?></span>
                             <?php endif; ?>
                             <p class="text-muted small"><?= nl2br(h($p['description'] ?? '')) ?></p>
                             <?php if ($p['date_debut']): ?>
@@ -532,7 +533,7 @@ $userCourant = getUtilisateurConnecte();
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn" style="background:var(--ecein-surface-2)" data-bs-dismiss="modal">Annuler</button>
                         <button type="submit" class="btn btn-ecein-primary">Enregistrer</button>
                     </div>
                 </form>
@@ -610,7 +611,7 @@ $userCourant = getUtilisateurConnecte();
         <?php foreach ($albums as $album): ?>
         <div class="col-sm-6 col-md-4">
             <div class="card shadow-sm h-100">
-                <div class="album-cover bg-light" style="height:150px;background-image:url('<?= h($album['couverture'] ?? '') ?>')">
+                <div class="album-cover" style="height:150px;background:var(--ecein-surface-2);background-image:url('<?= h($album['couverture'] ?? '') ?>')">
                     <?php if (!$album['couverture']): ?>
                     <div class="d-flex align-items-center justify-content-center h-100">
                         <i class="bi bi-images fs-1 text-muted opacity-25"></i>
@@ -729,7 +730,7 @@ $userCourant = getUtilisateurConnecte();
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn" style="background:var(--ecein-surface-2)" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-ecein-primary">Enregistrer</button>
                 </div>
             </form>
@@ -757,7 +758,7 @@ $userCourant = getUtilisateurConnecte();
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn" style="background:var(--ecein-surface-2)" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-ecein-primary">Créer</button>
                 </div>
             </form>

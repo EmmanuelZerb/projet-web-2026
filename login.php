@@ -1,17 +1,16 @@
 <?php
 /**
- * ECE In - Page de connexion / inscription
+ * ECE In - Page de connexion / inscription (Version Alternative - Dark Cyberpunk)
  */
 require_once __DIR__ . '/config/config.php';
 
-// Si déjà connecté, rediriger vers l'accueil
 if (estConnecte()) {
     redirect('index.php');
 }
 
 $erreur    = '';
 $succes    = '';
-$mode      = $_GET['mode'] ?? 'connexion'; // 'connexion' ou 'inscription'
+$mode      = $_GET['mode'] ?? 'connexion';
 
 // ===================== TRAITEMENT CONNEXION =====================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'connexion') {
@@ -19,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $email  = trim($_POST['email']  ?? '');
     $pdo    = getDB();
 
-    // Vérification : pseudo OU email + vérification existence
     if (empty($pseudo) && empty($email)) {
         $erreur = 'Veuillez saisir votre pseudo ou votre adresse email.';
     } else {
@@ -36,15 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         } elseif (!password_verify($_POST['mot_de_passe'] ?? '', $utilisateur['mot_de_passe'])) {
             $erreur = 'Mot de passe incorrect.';
         } else {
-            // Connexion réussie
             $_SESSION['utilisateur_id'] = $utilisateur['id'];
             $_SESSION['pseudo']         = $utilisateur['pseudo'];
             $_SESSION['role']           = $utilisateur['role'];
-
-            // Mettre à jour la dernière connexion
             $pdo->prepare("UPDATE utilisateurs SET derniere_connexion = NOW() WHERE id = ?")
                 ->execute([$utilisateur['id']]);
-
             redirect('index.php');
         }
     }
@@ -60,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $mdp2   = $_POST['mot_de_passe2'] ?? '';
     $pdo    = getDB();
 
-    // Validations
     if (empty($nom) || empty($prenom) || empty($pseudo) || empty($email) || empty($mdp)) {
         $erreur = 'Tous les champs sont obligatoires.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -74,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     } elseif (!preg_match('/^[a-z0-9_\-]{3,50}$/i', $pseudo)) {
         $erreur = 'Le pseudo ne peut contenir que des lettres, chiffres, tirets et underscores (3-50 caractères).';
     } else {
-        // Vérifier unicité
         $stmt = $pdo->prepare("SELECT id FROM utilisateurs WHERE pseudo = ? OR email = ?");
         $stmt->execute([$pseudo, $email]);
         if ($stmt->fetch()) {
@@ -117,17 +109,15 @@ include __DIR__ . '/includes/header.php';
             </div>
 
             <!-- Panneau droit (formulaire) -->
-            <div class="col-lg-6 d-flex align-items-center justify-content-center bg-white">
+            <div class="col-lg-6 d-flex align-items-center justify-content-center" style="background:var(--ecein-surface)">
                 <div class="login-form-wrapper w-100 px-4 px-md-5">
 
-                    <!-- Logo mobile -->
                     <div class="text-center mb-4 d-lg-none">
                         <div class="logo-ecein logo-ecein-lg mx-auto mb-2">
                             <span class="logo-ece">ECE</span><span class="logo-in">In</span>
                         </div>
                     </div>
 
-                    <!-- Tabs connexion / inscription -->
                     <ul class="nav nav-pills nav-justified mb-4" id="loginTabs">
                         <li class="nav-item">
                             <button class="nav-link <?= $mode === 'connexion' ? 'active' : '' ?>"
@@ -145,7 +135,6 @@ include __DIR__ . '/includes/header.php';
                         </li>
                     </ul>
 
-                    <!-- Alertes -->
                     <?php if ($erreur): ?>
                     <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i><?= h($erreur) ?></div>
                     <?php endif; ?>
@@ -153,16 +142,16 @@ include __DIR__ . '/includes/header.php';
                     <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i><?= h($succes) ?></div>
                     <?php endif; ?>
 
-                    <!-- ============= FORMULAIRE CONNEXION ============= -->
+                    <!-- FORMULAIRE CONNEXION -->
                     <div id="form-connexion" <?= $mode !== 'connexion' ? 'style="display:none"' : '' ?>>
-                        <h4 class="fw-bold mb-4">Connexion à ECE In</h4>
+                        <h4 class="fw-bold mb-4" style="color:var(--ecein-text)">Connexion à ECE In</h4>
                         <form method="POST" action="login.php" novalidate>
                             <input type="hidden" name="action" value="connexion">
 
                             <div class="mb-3">
                                 <label for="pseudo" class="form-label fw-semibold">Pseudo ou Email ECE</label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <span class="input-group-text"><i class="bi bi-person" style="color:var(--ecein-cyan)"></i></span>
                                     <input type="text" class="form-control" id="pseudo" name="pseudo"
                                            placeholder="votre.pseudo ou email@edu.ece.fr"
                                            value="<?= h($_POST['pseudo'] ?? '') ?>" required autofocus>
@@ -172,7 +161,7 @@ include __DIR__ . '/includes/header.php';
                             <div class="mb-4">
                                 <label for="mot_de_passe" class="form-label fw-semibold">Mot de passe</label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <span class="input-group-text"><i class="bi bi-lock" style="color:var(--ecein-cyan)"></i></span>
                                     <input type="password" class="form-control" id="mot_de_passe"
                                            name="mot_de_passe" placeholder="••••••••" required>
                                     <button class="btn btn-outline-secondary" type="button"
@@ -187,16 +176,16 @@ include __DIR__ . '/includes/header.php';
                             </button>
 
                             <div class="text-center mt-3">
-                                <small class="text-muted">
-                                    Identifiants de test : pseudo <strong>jdupont</strong>, mdp <strong>password</strong>
+                                <small style="color:var(--ecein-muted)">
+                                    Identifiants de test : pseudo <strong style="color:var(--ecein-cyan)">jdupont</strong>, mdp <strong style="color:var(--ecein-cyan)">password</strong>
                                 </small>
                             </div>
                         </form>
                     </div>
 
-                    <!-- ============= FORMULAIRE INSCRIPTION ============= -->
+                    <!-- FORMULAIRE INSCRIPTION -->
                     <div id="form-inscription" <?= $mode !== 'inscription' ? 'style="display:none"' : '' ?>>
-                        <h4 class="fw-bold mb-4">Créer votre compte ECE In</h4>
+                        <h4 class="fw-bold mb-4" style="color:var(--ecein-text)">Créer votre compte ECE In</h4>
                         <form method="POST" action="login.php?mode=inscription" novalidate>
                             <input type="hidden" name="action" value="inscription">
 
@@ -216,7 +205,7 @@ include __DIR__ . '/includes/header.php';
                             <div class="mb-3">
                                 <label for="pseudo_ins" class="form-label fw-semibold">Pseudo</label>
                                 <div class="input-group">
-                                    <span class="input-group-text">@</span>
+                                    <span class="input-group-text" style="color:var(--ecein-cyan)">@</span>
                                     <input type="text" class="form-control" id="pseudo_ins" name="pseudo"
                                            placeholder="jean.dupont" value="<?= h($_POST['pseudo'] ?? '') ?>" required>
                                 </div>
@@ -226,7 +215,7 @@ include __DIR__ . '/includes/header.php';
                             <div class="mb-3">
                                 <label for="email_ins" class="form-label fw-semibold">Email ECE</label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <span class="input-group-text"><i class="bi bi-envelope" style="color:var(--ecein-cyan)"></i></span>
                                     <input type="email" class="form-control" id="email_ins" name="email"
                                            placeholder="prenom.nom@edu.ece.fr"
                                            value="<?= h($_POST['email'] ?? '') ?>" required>
@@ -237,7 +226,7 @@ include __DIR__ . '/includes/header.php';
                             <div class="mb-3">
                                 <label for="mdp_ins" class="form-label fw-semibold">Mot de passe</label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <span class="input-group-text"><i class="bi bi-lock" style="color:var(--ecein-cyan)"></i></span>
                                     <input type="password" class="form-control" id="mdp_ins"
                                            name="mot_de_passe" placeholder="Min. 8 caractères" required>
                                     <button class="btn btn-outline-secondary" type="button"
@@ -250,7 +239,7 @@ include __DIR__ . '/includes/header.php';
                             <div class="mb-4">
                                 <label for="mdp_ins2" class="form-label fw-semibold">Confirmer le mot de passe</label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <span class="input-group-text"><i class="bi bi-lock-fill" style="color:var(--ecein-cyan)"></i></span>
                                     <input type="password" class="form-control" id="mdp_ins2"
                                            name="mot_de_passe2" placeholder="Répétez le mot de passe" required>
                                 </div>

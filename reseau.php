@@ -117,7 +117,7 @@ include __DIR__ . '/includes/navbar.php';
             <?php if (!empty($demandes)): ?>
             <section id="section-demandes" class="mb-4">
                 <h5 class="fw-bold mb-3">
-                    <i class="bi bi-person-plus text-primary me-2"></i>
+                    <i class="bi bi-person-plus me-2" style="color:var(--ecein-cyan)"></i>
                     Invitations reçues
                     <span class="badge bg-danger ms-2"><?= count($demandes) ?></span>
                 </h5>
@@ -172,7 +172,7 @@ include __DIR__ . '/includes/navbar.php';
                     <div class="col-sm-6 col-md-4">
                         <div class="card shadow-sm h-100 card-ami">
                             <div class="card-body">
-                                <a href="utilisateur.php?id=<?= $ami['id'] ?>" class="d-flex align-items-center gap-3 text-decoration-none text-dark mb-2">
+                                <a href="utilisateur.php?id=<?= $ami['id'] ?>" class="d-flex align-items-center gap-3 text-decoration-none mb-2" style="color:var(--ecein-text)">
                                     <img src="<?= h($ami['photo']) ?>" alt=""
                                          class="rounded-circle" width="60" height="60" style="object-fit:cover">
                                     <div>
@@ -192,7 +192,7 @@ include __DIR__ . '/includes/navbar.php';
                                         <i class="bi bi-chat me-1"></i>Message
                                     </a>
                                     <a href="utilisateur.php?id=<?= $ami['id'] ?>"
-                                       class="btn btn-sm btn-light flex-fill">
+                                       class="btn btn-sm btn-outline-secondary flex-fill">
                                         <i class="bi bi-person me-1"></i>Profil
                                     </a>
                                 </div>
@@ -221,7 +221,7 @@ include __DIR__ . '/includes/navbar.php';
                                 <div class="flex-grow-1">
                                     <div class="fw-semibold small"><?= h($e['prenom'] . ' ' . $e['nom']) ?></div>
                                     <div class="text-muted" style="font-size:.75rem"><?= h($e['titre'] ?? '') ?></div>
-                                    <span class="badge bg-warning text-dark mt-1">En attente</span>
+                                    <span class="badge bg-warning mt-1" style="color:var(--ecein-text)">En attente</span>
                                 </div>
                                 <button class="btn btn-sm btn-outline-danger"
                                         onclick="annulerInvitation(<?= $e['connexion_id'] ?>, this)"
