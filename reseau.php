@@ -1,6 +1,6 @@
 <?php
 /**
- * ECE In - Page Mon Réseau
+ * ECE In - Page Mon Réseau (Version Alt)
  */
 require_once __DIR__ . '/config/config.php';
 requireConnexion();
@@ -9,7 +9,6 @@ $pdo    = getDB();
 $userId = $_SESSION['utilisateur_id'];
 $pageTitle = 'Mon Réseau';
 
-// ===== Mes connexions (amis acceptés) =====
 $stmtAmis = $pdo->prepare("
     SELECT u.id, u.nom, u.prenom, u.pseudo, u.photo, u.titre, u.localisation, c.date_reponse
     FROM connexions c
@@ -24,7 +23,6 @@ $stmtAmis = $pdo->prepare("
 $stmtAmis->execute([$userId, $userId, $userId]);
 $amis = $stmtAmis->fetchAll();
 
-// ===== Demandes reçues =====
 $stmtDemandes = $pdo->prepare("
     SELECT u.id, u.nom, u.prenom, u.pseudo, u.photo, u.titre, c.id AS connexion_id, c.date_demande
     FROM connexions c
@@ -35,7 +33,6 @@ $stmtDemandes = $pdo->prepare("
 $stmtDemandes->execute([$userId]);
 $demandes = $stmtDemandes->fetchAll();
 
-// ===== Demandes envoyées =====
 $stmtEnvoyees = $pdo->prepare("
     SELECT u.id, u.nom, u.prenom, u.photo, u.titre, c.id AS connexion_id
     FROM connexions c
@@ -45,7 +42,6 @@ $stmtEnvoyees = $pdo->prepare("
 $stmtEnvoyees->execute([$userId]);
 $envoyees = $stmtEnvoyees->fetchAll();
 
-// ===== Amis d'amis (suggestions) =====
 $stmtSuggestions = $pdo->prepare("
     SELECT DISTINCT u.id, u.nom, u.prenom, u.pseudo, u.photo, u.titre,
         COUNT(*) as amis_communs
@@ -82,196 +78,129 @@ include __DIR__ . '/includes/header.php';
 include __DIR__ . '/includes/navbar.php';
 ?>
 
-<div class="container-xl py-4">
-    <div class="row g-4">
-
-        <!-- ===== COLONNE GAUCHE : Menu latéral réseau ===== -->
-        <div class="col-lg-3 d-none d-lg-block">
-            <div class="card shadow-sm">
-                <div class="card-header fw-bold">Mon Réseau</div>
-                <div class="list-group list-group-flush">
-                    <a href="#section-amis" class="list-group-item list-group-item-action d-flex justify-content-between">
-                        <span><i class="bi bi-people me-2"></i>Connexions</span>
-                        <span class="badge bg-primary rounded-pill"><?= count($amis) ?></span>
-                    </a>
-                    <a href="#section-demandes" class="list-group-item list-group-item-action d-flex justify-content-between">
-                        <span><i class="bi bi-person-plus me-2"></i>Invitations reçues</span>
-                        <?php if (count($demandes) > 0): ?>
-                        <span class="badge bg-danger rounded-pill"><?= count($demandes) ?></span>
-                        <?php endif; ?>
-                    </a>
-                    <a href="#section-envoyees" class="list-group-item list-group-item-action">
-                        <i class="bi bi-send me-2"></i>Invitations envoyées
-                    </a>
-                    <a href="#section-suggestions" class="list-group-item list-group-item-action">
-                        <i class="bi bi-lightbulb me-2"></i>Suggestions
-                    </a>
+<!-- Invitations reçues -->
+<?php if (!empty($demandes)): ?>
+<section class="mb-4">
+    <h6 class="fw-bold mb-3">
+        <i class="bi bi-person-plus me-2" style="color:var(--accent)"></i>
+        Invitations reçues
+        <span class="badge bg-danger ms-1"><?= count($demandes) ?></span>
+    </h6>
+    <div class="row g-3">
+        <?php foreach ($demandes as $d): ?>
+        <div class="col-sm-6 col-md-4" id="demande-<?= $d['connexion_id'] ?>">
+            <div class="glass p-3 text-center h-100">
+                <a href="utilisateur.php?id=<?= $d['id'] ?>">
+                    <img src="<?= h($d['photo']) ?>" alt="" class="rounded-3 mb-2" width="72" height="72" style="object-fit:cover">
+                    <h6 class="fw-bold mb-0 small"><?= h($d['prenom'] . ' ' . $d['nom']) ?></h6>
+                </a>
+                <p class="small mb-1" style="color:var(--text-3)"><?= h($d['titre'] ?? '') ?></p>
+                <p style="font-size:.7rem;color:var(--text-3)">Reçue le <?= formatDateFr($d['date_demande']) ?></p>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-ecein-primary btn-sm flex-fill" onclick="repondreInvitation(<?= $d['connexion_id'] ?>, 'accepter', this)">Accepter</button>
+                    <button class="btn btn-outline-secondary btn-sm flex-fill" onclick="repondreInvitation(<?= $d['connexion_id'] ?>, 'refuser', this)">Refuser</button>
                 </div>
             </div>
         </div>
-
-        <!-- ===== COLONNE PRINCIPALE ===== -->
-        <div class="col-lg-9">
-
-            <!-- INVITATIONS REÇUES -->
-            <?php if (!empty($demandes)): ?>
-            <section id="section-demandes" class="mb-4">
-                <h5 class="fw-bold mb-3">
-                    <i class="bi bi-person-plus me-2" style="color:var(--ecein-cyan)"></i>
-                    Invitations reçues
-                    <span class="badge bg-danger ms-2"><?= count($demandes) ?></span>
-                </h5>
-                <div class="row g-3">
-                    <?php foreach ($demandes as $d): ?>
-                    <div class="col-sm-6 col-md-4" id="demande-<?= $d['connexion_id'] ?>">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <a href="utilisateur.php?id=<?= $d['id'] ?>">
-                                    <img src="<?= h($d['photo']) ?>" alt=""
-                                         class="rounded-circle mb-2" width="72" height="72" style="object-fit:cover">
-                                    <h6 class="fw-bold mb-0"><?= h($d['prenom'] . ' ' . $d['nom']) ?></h6>
-                                </a>
-                                <p class="text-muted small mb-1"><?= h($d['titre'] ?? '') ?></p>
-                                <p class="text-muted" style="font-size:.75rem">
-                                    Invitation reçue le <?= formatDateFr($d['date_demande']) ?>
-                                </p>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-ecein-primary btn-sm flex-fill"
-                                            onclick="repondreInvitation(<?= $d['connexion_id'] ?>, 'accepter', this)">
-                                        Accepter
-                                    </button>
-                                    <button class="btn btn-outline-secondary btn-sm flex-fill"
-                                            onclick="repondreInvitation(<?= $d['connexion_id'] ?>, 'refuser', this)">
-                                        Refuser
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </section>
-            <?php endif; ?>
-
-            <!-- MES CONNEXIONS -->
-            <section id="section-amis" class="mb-4">
-                <h5 class="fw-bold mb-3">
-                    <i class="bi bi-people text-success me-2"></i>
-                    Mes connexions (<?= count($amis) ?>)
-                </h5>
-                <?php if (empty($amis)): ?>
-                <div class="card shadow-sm">
-                    <div class="card-body text-center py-5 text-muted">
-                        <i class="bi bi-people fs-1 mb-3 d-block opacity-25"></i>
-                        <p>Vous n'avez pas encore de connexions. Explorez les suggestions ci-dessous !</p>
-                    </div>
-                </div>
-                <?php else: ?>
-                <div class="row g-3">
-                    <?php foreach ($amis as $ami): ?>
-                    <div class="col-sm-6 col-md-4">
-                        <div class="card shadow-sm h-100 card-ami">
-                            <div class="card-body">
-                                <a href="utilisateur.php?id=<?= $ami['id'] ?>" class="d-flex align-items-center gap-3 text-decoration-none mb-2" style="color:var(--ecein-text)">
-                                    <img src="<?= h($ami['photo']) ?>" alt=""
-                                         class="rounded-circle" width="60" height="60" style="object-fit:cover">
-                                    <div>
-                                        <div class="fw-bold"><?= h($ami['prenom'] . ' ' . $ami['nom']) ?></div>
-                                        <div class="text-muted small">@<?= h($ami['pseudo']) ?></div>
-                                        <div class="text-muted" style="font-size:.75rem"><?= h(substr($ami['titre'] ?? '', 0, 50)) ?></div>
-                                    </div>
-                                </a>
-                                <?php if ($ami['localisation']): ?>
-                                <p class="text-muted mb-2" style="font-size:.78rem">
-                                    <i class="bi bi-geo-alt me-1"></i><?= h($ami['localisation']) ?>
-                                </p>
-                                <?php endif; ?>
-                                <div class="d-flex gap-2">
-                                    <a href="messagerie.php?contact=<?= $ami['id'] ?>"
-                                       class="btn btn-sm btn-outline-primary flex-fill">
-                                        <i class="bi bi-chat me-1"></i>Message
-                                    </a>
-                                    <a href="utilisateur.php?id=<?= $ami['id'] ?>"
-                                       class="btn btn-sm btn-outline-secondary flex-fill">
-                                        <i class="bi bi-person me-1"></i>Profil
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-                <?php endif; ?>
-            </section>
-
-            <!-- INVITATIONS ENVOYÉES -->
-            <?php if (!empty($envoyees)): ?>
-            <section id="section-envoyees" class="mb-4">
-                <h5 class="fw-bold mb-3">
-                    <i class="bi bi-send text-secondary me-2"></i>
-                    Invitations envoyées (<?= count($envoyees) ?>)
-                </h5>
-                <div class="row g-3">
-                    <?php foreach ($envoyees as $e): ?>
-                    <div class="col-sm-6 col-md-4">
-                        <div class="card shadow-sm">
-                            <div class="card-body d-flex align-items-center gap-3">
-                                <img src="<?= h($e['photo']) ?>" alt=""
-                                     class="rounded-circle" width="50" height="50" style="object-fit:cover">
-                                <div class="flex-grow-1">
-                                    <div class="fw-semibold small"><?= h($e['prenom'] . ' ' . $e['nom']) ?></div>
-                                    <div class="text-muted" style="font-size:.75rem"><?= h($e['titre'] ?? '') ?></div>
-                                    <span class="badge bg-warning mt-1" style="color:var(--ecein-text)">En attente</span>
-                                </div>
-                                <button class="btn btn-sm btn-outline-danger"
-                                        onclick="annulerInvitation(<?= $e['connexion_id'] ?>, this)"
-                                        title="Annuler l'invitation">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </section>
-            <?php endif; ?>
-
-            <!-- SUGGESTIONS -->
-            <?php if (!empty($suggestions)): ?>
-            <section id="section-suggestions" class="mb-4">
-                <h5 class="fw-bold mb-3">
-                    <i class="bi bi-lightbulb text-warning me-2"></i>
-                    Personnes que vous pourriez connaître
-                </h5>
-                <div class="row g-3">
-                    <?php foreach ($suggestions as $sugg): ?>
-                    <div class="col-sm-6 col-md-4" id="sugg-<?= $sugg['id'] ?>">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <a href="utilisateur.php?id=<?= $sugg['id'] ?>">
-                                    <img src="<?= h($sugg['photo']) ?>" alt=""
-                                         class="rounded-circle mb-2" width="72" height="72" style="object-fit:cover">
-                                    <h6 class="fw-bold mb-0"><?= h($sugg['prenom'] . ' ' . $sugg['nom']) ?></h6>
-                                </a>
-                                <p class="text-muted small mb-0"><?= h(substr($sugg['titre'] ?? '', 0, 60)) ?></p>
-                                <p class="text-muted mb-2" style="font-size:.75rem">
-                                    <i class="bi bi-people me-1"></i>
-                                    <?= $sugg['amis_communs'] ?> ami<?= $sugg['amis_communs'] > 1 ? 's' : '' ?> en commun
-                                </p>
-                                <button class="btn btn-outline-primary btn-sm w-100"
-                                        onclick="envoyerDemande(<?= $sugg['id'] ?>, this)">
-                                    <i class="bi bi-person-plus me-1"></i>Se connecter
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </section>
-            <?php endif; ?>
-
-        </div>
+        <?php endforeach; ?>
     </div>
-</div>
+</section>
+<?php endif; ?>
+
+<!-- Mes connexions -->
+<section class="mb-4">
+    <h6 class="fw-bold mb-3">
+        <i class="bi bi-people me-2" style="color:var(--emerald)"></i>
+        Mes connexions (<?= count($amis) ?>)
+    </h6>
+    <?php if (empty($amis)): ?>
+    <div class="glass empty-state">
+        <i class="bi bi-people"></i>
+        <p>Vous n'avez pas encore de connexions. Explorez les suggestions ci-dessous !</p>
+    </div>
+    <?php else: ?>
+    <div class="row g-3">
+        <?php foreach ($amis as $ami): ?>
+        <div class="col-sm-6 col-md-4">
+            <div class="glass p-3 h-100 card-ami">
+                <a href="utilisateur.php?id=<?= $ami['id'] ?>" class="d-flex align-items-center gap-3 text-decoration-none mb-2" style="color:var(--text)">
+                    <img src="<?= h($ami['photo']) ?>" alt="" class="rounded-3" width="56" height="56" style="object-fit:cover">
+                    <div>
+                        <div class="fw-bold small"><?= h($ami['prenom'] . ' ' . $ami['nom']) ?></div>
+                        <div style="font-size:.72rem;color:var(--text-3)">@<?= h($ami['pseudo']) ?></div>
+                        <div style="font-size:.72rem;color:var(--text-3)"><?= h(substr($ami['titre'] ?? '', 0, 45)) ?></div>
+                    </div>
+                </a>
+                <?php if ($ami['localisation']): ?>
+                <p class="mb-2" style="font-size:.72rem;color:var(--text-3)"><i class="bi bi-geo-alt me-1"></i><?= h($ami['localisation']) ?></p>
+                <?php endif; ?>
+                <div class="d-flex gap-2">
+                    <a href="messagerie.php?contact=<?= $ami['id'] ?>" class="btn btn-sm btn-outline-primary flex-fill"><i class="bi bi-chat me-1"></i>Message</a>
+                    <a href="utilisateur.php?id=<?= $ami['id'] ?>" class="btn btn-sm btn-light flex-fill"><i class="bi bi-person me-1"></i>Profil</a>
+                </div>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+</section>
+
+<!-- Invitations envoyées -->
+<?php if (!empty($envoyees)): ?>
+<section class="mb-4">
+    <h6 class="fw-bold mb-3">
+        <i class="bi bi-send me-2" style="color:var(--text-3)"></i>
+        Invitations envoyées (<?= count($envoyees) ?>)
+    </h6>
+    <div class="row g-3">
+        <?php foreach ($envoyees as $e): ?>
+        <div class="col-sm-6 col-md-4">
+            <div class="glass p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="<?= h($e['photo']) ?>" alt="" class="rounded-3" width="46" height="46" style="object-fit:cover">
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold small"><?= h($e['prenom'] . ' ' . $e['nom']) ?></div>
+                        <div style="font-size:.72rem;color:var(--text-3)"><?= h($e['titre'] ?? '') ?></div>
+                        <span class="badge bg-warning mt-1" style="font-size:.6rem;color:#000">En attente</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger" onclick="annulerInvitation(<?= $e['connexion_id'] ?>, this)" title="Annuler">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    </div>
+</section>
+<?php endif; ?>
+
+<!-- Suggestions -->
+<?php if (!empty($suggestions)): ?>
+<section class="mb-4">
+    <h6 class="fw-bold mb-3">
+        <i class="bi bi-lightbulb me-2" style="color:var(--accent)"></i>
+        Personnes que vous pourriez connaître
+    </h6>
+    <div class="row g-3">
+        <?php foreach ($suggestions as $sugg): ?>
+        <div class="col-sm-6 col-md-4" id="sugg-<?= $sugg['id'] ?>">
+            <div class="glass p-3 text-center h-100">
+                <a href="utilisateur.php?id=<?= $sugg['id'] ?>">
+                    <img src="<?= h($sugg['photo']) ?>" alt="" class="rounded-3 mb-2" width="68" height="68" style="object-fit:cover">
+                    <h6 class="fw-bold mb-0 small"><?= h($sugg['prenom'] . ' ' . $sugg['nom']) ?></h6>
+                </a>
+                <p class="small mb-0" style="color:var(--text-3)"><?= h(substr($sugg['titre'] ?? '', 0, 55)) ?></p>
+                <p class="mb-2" style="font-size:.72rem;color:var(--text-3)">
+                    <i class="bi bi-people me-1"></i><?= $sugg['amis_communs'] ?> ami<?= $sugg['amis_communs'] > 1 ? 's' : '' ?> en commun
+                </p>
+                <button class="btn btn-outline-primary btn-sm w-100" onclick="envoyerDemande(<?= $sugg['id'] ?>, this)">
+                    <i class="bi bi-person-plus me-1"></i>Se connecter
+                </button>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    </div>
+</section>
+<?php endif; ?>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>

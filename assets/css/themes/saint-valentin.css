@@ -1,13 +1,18 @@
-/* Thème Saint-Valentin - Dark Cyberpunk */
+/* Thème Saint-Valentin - Version Alt */
 :root {
-    --ecein-primary: #ec4899;
-    --ecein-secondary: #be185d;
-    --ecein-accent: rgba(236, 72, 153, .1);
-    --ecein-cyan: #f472b6;
-    --gradient-primary: linear-gradient(135deg, #ec4899, #f472b6);
+    --accent:       #ec4899;
+    --accent-2:     #be185d;
+    --accent-light: rgba(236, 72, 153, .1);
+    --accent-glow:  rgba(236, 72, 153, .25);
+    --teal:         #f472b6;
 }
-.navbar-ecein { border-bottom-color: rgba(236, 72, 153, .3) !important; }
 .btn-ecein-primary { background: linear-gradient(135deg, #ec4899, #f472b6); }
 .btn-ecein-primary:hover { filter: brightness(1.15); }
 .bg-ecein { background: linear-gradient(135deg, #ec4899, #f472b6) !important; }
-.logo-ecein { background: linear-gradient(135deg, #ec4899, #f472b6); }
+.logo-mark { background: linear-gradient(135deg, #ec4899, #f472b6); }
+.side-link.active { color: #ec4899; }
+.side-link.active::before { background: #ec4899; }
+.side-link:hover { color: #ec4899; background: rgba(236, 72, 153, .1); }
+.evenement-date-badge { background: linear-gradient(135deg, #ec4899, #f472b6); }
+.nav-pills .nav-link.active { background: linear-gradient(135deg, #ec4899, #f472b6); }
+.sidebar-nav { border-right-color: rgba(236, 72, 153, .2); }

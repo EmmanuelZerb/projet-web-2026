@@ -1,21 +1,25 @@
-/* Thème Noël - Dark Cyberpunk */
+/* Thème Noël - Version Alt */
 :root {
-    --ecein-primary: #ef4444;
-    --ecein-secondary: #991b1b;
-    --ecein-accent: rgba(239, 68, 68, .1);
-    --ecein-cyan: #10b981;
-    --gradient-primary: linear-gradient(135deg, #ef4444, #10b981);
+    --accent:       #ef4444;
+    --accent-2:     #dc2626;
+    --accent-light: rgba(239, 68, 68, .1);
+    --accent-glow:  rgba(239, 68, 68, .25);
+    --teal:         #10b981;
 }
 .btn-ecein-primary { background: linear-gradient(135deg, #ef4444, #10b981); }
 .btn-ecein-primary:hover { filter: brightness(1.15); }
 .bg-ecein { background: linear-gradient(135deg, #ef4444, #10b981) !important; }
-.logo-ecein { background: linear-gradient(135deg, #ef4444, #10b981); }
+.logo-mark { background: linear-gradient(135deg, #ef4444, #10b981); }
+.side-link.active { color: #ef4444; }
+.side-link.active::before { background: #ef4444; }
+.side-link:hover { color: #ef4444; background: rgba(239, 68, 68, .1); }
+.evenement-date-badge { background: linear-gradient(135deg, #ef4444, #10b981); }
+.nav-pills .nav-link.active { background: linear-gradient(135deg, #ef4444, #10b981); }
+
 body::before {
     content: '❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄';
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     text-align: center;
     font-size: 1.2rem;
     animation: tomber 10s linear infinite;

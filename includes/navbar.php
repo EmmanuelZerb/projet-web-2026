@@ -1,141 +1,122 @@
 <?php
 /**
- * ECE In - Barre de navigation principale (Version Alternative - Dark Cyberpunk)
+ * ECE In - Sidebar Navigation (Version Alt)
  */
 $pageActive = basename($_SERVER['PHP_SELF'], '.php');
 ?>
-<!-- ===================== NAVBAR ===================== -->
-<nav class="navbar navbar-expand-lg navbar-ecein sticky-top">
-    <div class="container-xl">
-        <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center gap-2" href="index.php">
-            <div class="logo-ecein">
-                <span class="logo-ece">ECE</span><span class="logo-in">In</span>
-            </div>
-            <span class="d-none d-md-inline logo-subtitle">Réseau ECE Paris</span>
-        </a>
 
-        <!-- Barre de recherche (desktop) -->
-        <div class="search-bar d-none d-lg-flex mx-3 flex-grow-1">
-            <form class="d-flex w-100" action="recherche.php" method="GET">
-                <div class="input-group">
-                    <span class="input-group-text border-end-0">
-                        <i class="bi bi-search" style="color:var(--ecein-cyan)"></i>
-                    </span>
-                    <input type="search" name="q" class="form-control border-start-0 ps-0"
-                           placeholder="Rechercher des personnes, emplois, événements..."
-                           value="<?= isset($_GET['q']) ? h($_GET['q']) : '' ?>">
-                </div>
+<!-- Backdrop mobile -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar-nav" id="sidebarNav">
+    <!-- Logo -->
+    <div class="sidebar-logo">
+        <a href="index.php" class="d-flex align-items-center gap-2 text-decoration-none">
+            <div class="logo-mark">EC</div>
+            <div>
+                <div class="logo-text">ECE<span>In</span></div>
+                <span class="logo-sub">Réseau ECE Paris</span>
+            </div>
+        </a>
+    </div>
+
+    <!-- Nav principale -->
+    <div class="sidebar-section">
+        <div class="sidebar-section-title">Menu</div>
+        <a href="index.php" class="side-link <?= $pageActive === 'index' ? 'active' : '' ?>">
+            <i class="bi bi-house-door"></i> Accueil
+        </a>
+        <a href="reseau.php" class="side-link <?= $pageActive === 'reseau' ? 'active' : '' ?>">
+            <i class="bi bi-people"></i> Mon Réseau
+        </a>
+        <a href="profil.php" class="side-link <?= $pageActive === 'profil' ? 'active' : '' ?>">
+            <i class="bi bi-person-circle"></i> Mon Profil
+        </a>
+    </div>
+
+    <div class="sidebar-section">
+        <div class="sidebar-section-title">Communication</div>
+        <a href="notifications.php" class="side-link <?= $pageActive === 'notifications' ? 'active' : '' ?>">
+            <i class="bi bi-bell"></i> Notifications
+            <?php if (isset($nbNotifs) && $nbNotifs > 0): ?>
+            <span class="badge-count"><?= $nbNotifs ?></span>
+            <?php endif; ?>
+        </a>
+        <a href="messagerie.php" class="side-link <?= $pageActive === 'messagerie' ? 'active' : '' ?>">
+            <i class="bi bi-chat-square-text"></i> Messagerie
+            <?php if (isset($nbMessages) && $nbMessages > 0): ?>
+            <span class="badge-count"><?= $nbMessages ?></span>
+            <?php endif; ?>
+        </a>
+    </div>
+
+    <div class="sidebar-section">
+        <div class="sidebar-section-title">Découvrir</div>
+        <a href="emplois.php" class="side-link <?= $pageActive === 'emplois' ? 'active' : '' ?>">
+            <i class="bi bi-briefcase"></i> Emplois & Stages
+        </a>
+        <a href="recherche.php" class="side-link <?= $pageActive === 'recherche' ? 'active' : '' ?>">
+            <i class="bi bi-search"></i> Recherche
+        </a>
+        <?php if (isset($userCourant)): ?>
+        <a href="profil.php?onglet=cv" class="side-link">
+            <i class="bi bi-file-earmark-text"></i> Mon CV
+        </a>
+        <a href="profil.php?onglet=albums" class="side-link">
+            <i class="bi bi-images"></i> Albums Photos
+        </a>
+        <?php endif; ?>
+    </div>
+
+    <?php if (estAdmin()): ?>
+    <div class="sidebar-section">
+        <div class="sidebar-section-title">Admin</div>
+        <a href="admin/index.php" class="side-link" style="color:var(--rose)">
+            <i class="bi bi-shield-lock"></i> Administration
+        </a>
+    </div>
+    <?php endif; ?>
+
+    <!-- Profil en bas -->
+    <?php if (estConnecte() && isset($userCourant)): ?>
+    <div class="sidebar-profile">
+        <div class="sidebar-profile-inner" data-bs-toggle="dropdown">
+            <img src="<?= h($userCourant['photo']) ?>" alt="">
+            <div>
+                <div class="sidebar-profile-name"><?= h($userCourant['prenom'] . ' ' . $userCourant['nom']) ?></div>
+                <div class="sidebar-profile-role">@<?= h($userCourant['pseudo']) ?></div>
+            </div>
+            <i class="bi bi-chevron-expand ms-auto" style="color:var(--text-3);font-size:.75rem"></i>
+        </div>
+        <ul class="dropdown-menu dropdown-menu-end mb-2" style="min-width:200px">
+            <li><a class="dropdown-item" href="profil.php"><i class="bi bi-person me-2"></i>Mon profil</a></li>
+            <li><a class="dropdown-item" href="profil.php?onglet=parametres"><i class="bi bi-gear me-2"></i>Paramètres</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" style="color:var(--rose)" href="logout.php"><i class="bi bi-box-arrow-left me-2"></i>Déconnexion</a></li>
+        </ul>
+    </div>
+    <?php endif; ?>
+</aside>
+
+<!-- ===== MAIN WRAPPER ===== -->
+<div class="main-content">
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="d-flex align-items-center gap-3">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <span class="page-title"><?= h($pageTitle ?? 'ECE In') ?></span>
+        </div>
+        <div class="search-bar-top position-relative d-none d-md-block">
+            <form action="recherche.php" method="GET">
+                <i class="bi bi-search"></i>
+                <input type="search" name="q" class="form-control"
+                       placeholder="Rechercher..."
+                       value="<?= isset($_GET['q']) ? h($_GET['q']) : '' ?>">
             </form>
         </div>
+    </header>
 
-        <!-- Toggle mobile -->
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarMain" aria-label="Navigation">
-            <i class="bi bi-list fs-4" style="color:var(--ecein-text)"></i>
-        </button>
-
-        <!-- Liens de navigation -->
-        <div class="collapse navbar-collapse" id="navbarMain">
-            <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
-
-                <li class="nav-item">
-                    <a class="nav-link nav-icon-link <?= $pageActive === 'index' ? 'active' : '' ?>"
-                       href="index.php" title="Accueil">
-                        <i class="bi bi-house-fill"></i>
-                        <span class="nav-label">Accueil</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link nav-icon-link <?= $pageActive === 'reseau' ? 'active' : '' ?>"
-                       href="reseau.php" title="Mon Réseau">
-                        <i class="bi bi-people-fill"></i>
-                        <span class="nav-label">Mon Réseau</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link nav-icon-link <?= $pageActive === 'profil' ? 'active' : '' ?>"
-                       href="profil.php" title="Votre profil">
-                        <i class="bi bi-person-fill"></i>
-                        <span class="nav-label">Vous</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link nav-icon-link position-relative <?= $pageActive === 'notifications' ? 'active' : '' ?>"
-                       href="notifications.php" title="Notifications">
-                        <i class="bi bi-bell-fill"></i>
-                        <?php if (isset($nbNotifs) && $nbNotifs > 0): ?>
-                        <span class="badge-notif"><?= $nbNotifs ?></span>
-                        <?php endif; ?>
-                        <span class="nav-label">Notifications</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link nav-icon-link position-relative <?= $pageActive === 'messagerie' ? 'active' : '' ?>"
-                       href="messagerie.php" title="Messagerie">
-                        <i class="bi bi-chat-dots-fill"></i>
-                        <?php if (isset($nbMessages) && $nbMessages > 0): ?>
-                        <span class="badge-notif"><?= $nbMessages ?></span>
-                        <?php endif; ?>
-                        <span class="nav-label">Messagerie</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link nav-icon-link <?= $pageActive === 'emplois' ? 'active' : '' ?>"
-                       href="emplois.php" title="Emplois">
-                        <i class="bi bi-briefcase-fill"></i>
-                        <span class="nav-label">Emplois</span>
-                    </a>
-                </li>
-
-                <li class="nav-item d-none d-lg-block">
-                    <div class="vr mx-1 opacity-25" style="height:32px;border-color:var(--ecein-border)"></div>
-                </li>
-
-                <?php if (estConnecte() && isset($userCourant)): ?>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-1" href="#"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?= h($userCourant['photo']) ?>" alt="Avatar"
-                             class="rounded-circle" width="34" height="34"
-                             style="object-fit:cover;border:2px solid var(--ecein-primary)">
-                        <span class="d-none d-lg-inline fw-semibold small"><?= h($userCourant['prenom']) ?></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <div class="dropdown-header d-flex align-items-center gap-2 py-2">
-                                <img src="<?= h($userCourant['photo']) ?>" alt="" class="rounded-circle" width="40" height="40" style="object-fit:cover">
-                                <div>
-                                    <div class="fw-semibold" style="color:var(--ecein-text)"><?= h($userCourant['prenom'] . ' ' . $userCourant['nom']) ?></div>
-                                    <div class="small" style="color:var(--ecein-muted)"><?= h($userCourant['titre'] ?? '') ?></div>
-                                </div>
-                            </div>
-                        </li>
-                        <li><hr class="dropdown-divider my-1"></li>
-                        <li><a class="dropdown-item" href="profil.php"><i class="bi bi-person me-2"></i>Mon profil</a></li>
-                        <li><a class="dropdown-item" href="profil.php?onglet=cv"><i class="bi bi-file-earmark-person me-2"></i>Mon CV</a></li>
-                        <li><a class="dropdown-item" href="profil.php?onglet=parametres"><i class="bi bi-gear me-2"></i>Paramètres</a></li>
-                        <?php if (estAdmin()): ?>
-                        <li><hr class="dropdown-divider my-1"></li>
-                        <li><a class="dropdown-item" style="color:var(--ecein-pink)" href="admin/index.php"><i class="bi bi-shield-fill me-2"></i>Administration</a></li>
-                        <?php endif; ?>
-                        <li><hr class="dropdown-divider my-1"></li>
-                        <li><a class="dropdown-item" style="color:var(--ecein-danger)" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i>Se déconnecter</a></li>
-                    </ul>
-                </li>
-                <?php else: ?>
-                <li class="nav-item">
-                    <a class="btn btn-ecein-primary btn-sm" href="login.php">Connexion</a>
-                </li>
-                <?php endif; ?>
-
-            </ul>
-        </div>
-    </div>
-</nav>
-<!-- ===================== FIN NAVBAR ===================== -->
+    <div class="page-body">

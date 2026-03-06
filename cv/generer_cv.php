@@ -1,6 +1,6 @@
 <?php
 /**
- * ECE In - Génération automatique du CV (Version Alternative - Dark Cyberpunk)
+ * ECE In - Génération automatique du CV (Version Alt - Warm Dark)
  * Formats supportés : html, pdf (via mPDF si disponible), xml (export)
  */
 require_once __DIR__ . '/../config/config.php';
@@ -106,17 +106,13 @@ function formatCVDate($date) {
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            font-family: 'Inter', 'Segoe UI', Calibri, Arial, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', Calibri, Arial, sans-serif;
             font-size: 12px;
             line-height: 1.5;
-            color: #e2e8f0;
-            background: #0f0f1a;
+            color: #eae8e4;
+            background: #111118;
         }
-        .cv-wrapper {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 30px;
-        }
+        .cv-wrapper { max-width: 800px; margin: 0 auto; padding: 30px; }
 
         .cv-header {
             display: flex;
@@ -124,162 +120,81 @@ function formatCVDate($date) {
             gap: 24px;
             padding-bottom: 20px;
             border-bottom: 3px solid;
-            border-image: linear-gradient(135deg, #8b5cf6, #06b6d4) 1;
+            border-image: linear-gradient(135deg, #f59e0b, #ef4444) 1;
             margin-bottom: 24px;
         }
         .cv-photo {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #8b5cf6;
-            box-shadow: 0 0 15px rgba(139, 92, 246, .3);
+            width: 90px; height: 90px; border-radius: 14px;
+            object-fit: cover; border: 3px solid #f59e0b;
+            box-shadow: 0 0 15px rgba(245, 158, 11, .25);
         }
         .cv-photo-placeholder {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #1a1a2e, #232340);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: #06b6d4;
-            font-weight: 900;
-            border: 3px solid #8b5cf6;
-            flex-shrink: 0;
-            box-shadow: 0 0 15px rgba(139, 92, 246, .3);
+            width: 90px; height: 90px; border-radius: 14px;
+            background: linear-gradient(135deg, #1b1b26, #24243a);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: #f59e0b; font-weight: 900;
+            border: 3px solid #f59e0b; flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(245, 158, 11, .25);
         }
-        .cv-nom {
-            font-size: 22px;
-            font-weight: 700;
-            color: #e2e8f0;
-            margin-bottom: 2px;
-        }
-        .cv-titre {
-            font-size: 14px;
-            color: #06b6d4;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        .cv-contacts {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            font-size: 11px;
-            color: #94a3b8;
-        }
-        .cv-contact-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+        .cv-nom { font-size: 22px; font-weight: 700; color: #eae8e4; margin-bottom: 2px; }
+        .cv-titre { font-size: 14px; color: #f59e0b; font-weight: 600; margin-bottom: 8px; }
+        .cv-contacts { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: #b0adb5; }
+        .cv-contact-item { display: flex; align-items: center; gap: 4px; }
 
         .cv-section { margin-bottom: 20px; }
         .cv-section-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #06b6d4;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1.5px solid rgba(139, 92, 246, .3);
-            padding-bottom: 4px;
-            margin-bottom: 12px;
+            font-size: 13px; font-weight: 700; color: #f59e0b;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            border-bottom: 1.5px solid rgba(245, 158, 11, .3);
+            padding-bottom: 4px; margin-bottom: 12px;
         }
 
-        .cv-item {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 14px;
-        }
-        .cv-item-dates {
-            width: 110px;
-            min-width: 110px;
-            font-size: 10.5px;
-            color: #64748b;
-            text-align: right;
-            padding-top: 2px;
-        }
+        .cv-item { display: flex; gap: 16px; margin-bottom: 14px; }
+        .cv-item-dates { width: 110px; min-width: 110px; font-size: 10.5px; color: #6e6b78; text-align: right; padding-top: 2px; }
         .cv-item-content { flex: 1; }
-        .cv-item-title {
-            font-weight: 700;
-            font-size: 12.5px;
-            color: #e2e8f0;
-        }
-        .cv-item-subtitle {
-            font-weight: 600;
-            font-size: 11.5px;
-            color: #8b5cf6;
-        }
-        .cv-item-desc {
-            font-size: 11px;
-            color: #94a3b8;
-            margin-top: 3px;
-            line-height: 1.4;
-        }
-        .cv-item-desc a { color: #06b6d4; }
+        .cv-item-title { font-weight: 700; font-size: 12.5px; color: #eae8e4; }
+        .cv-item-subtitle { font-weight: 600; font-size: 11.5px; color: #d97706; }
+        .cv-item-desc { font-size: 11px; color: #b0adb5; margin-top: 3px; line-height: 1.4; }
+        .cv-item-desc a { color: #f59e0b; }
 
-        .competences-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+        .competences-grid { display: flex; flex-wrap: wrap; gap: 8px; }
         .competence-badge {
-            background: rgba(139, 92, 246, .15);
-            color: #8b5cf6;
-            border: 1px solid rgba(139, 92, 246, .3);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 500;
+            background: rgba(245, 158, 11, .1); color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, .3);
+            padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
         }
 
-        .cv-bio {
-            font-size: 11.5px;
-            color: #94a3b8;
-            line-height: 1.6;
-            font-style: italic;
-        }
+        .cv-bio { font-size: 11.5px; color: #b0adb5; line-height: 1.6; font-style: italic; }
 
         .cv-footer {
-            text-align: center;
-            font-size: 10px;
-            color: #64748b;
-            border-top: 1px solid rgba(139, 92, 246, .2);
-            padding-top: 12px;
-            margin-top: 24px;
+            text-align: center; font-size: 10px; color: #6e6b78;
+            border-top: 1px solid rgba(245, 158, 11, .2);
+            padding-top: 12px; margin-top: 24px;
         }
 
         @media print {
             .no-print { display: none !important; }
             body { background: white; color: #222; }
-            .cv-nom { color: #1a1a2e; }
-            .cv-titre { color: #6d28d9; }
-            .cv-section-title { color: #6d28d9; border-bottom-color: #ddd; }
+            .cv-nom { color: #1b1b26; }
+            .cv-titre { color: #d97706; }
+            .cv-section-title { color: #d97706; border-bottom-color: #ddd; }
             .cv-item-title { color: #222; }
-            .cv-item-subtitle { color: #6d28d9; }
+            .cv-item-subtitle { color: #d97706; }
             .cv-item-desc { color: #555; }
             .cv-contacts { color: #555; }
             .cv-bio { color: #444; }
-            .competence-badge { background: #f3e8ff; color: #6d28d9; border-color: #d8b4fe; }
+            .competence-badge { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
             .cv-footer { color: #aaa; border-top-color: #eee; }
-            .cv-photo { border-color: #6d28d9; box-shadow: none; }
-            .cv-photo-placeholder { background: #f3e8ff; color: #6d28d9; border-color: #6d28d9; box-shadow: none; }
+            .cv-photo { border-color: #d97706; box-shadow: none; }
+            .cv-photo-placeholder { background: #fef3c7; color: #92400e; border-color: #d97706; box-shadow: none; }
         }
 
         .btn-print {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 16px;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: #000; border: none; padding: 8px 16px;
+            border-radius: 20px; cursor: pointer; font-size: 13px;
+            font-weight: 600; margin-bottom: 16px;
         }
         .btn-print:hover { filter: brightness(1.1); }
     </style>
@@ -293,7 +208,7 @@ function formatCVDate($date) {
             🖨 Imprimer / Enregistrer en PDF
         </button>
         <a href="generer_cv.php?format=xml"
-           style="margin-left:8px;font-size:12px;color:#06b6d4">⬇ Exporter en XML</a>
+           style="margin-left:8px;font-size:12px;color:#f59e0b">⬇ Exporter en XML</a>
     </div>
     <?php endif; ?>
 
