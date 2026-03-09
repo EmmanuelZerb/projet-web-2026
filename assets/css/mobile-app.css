@@ -530,7 +530,6 @@
     .local-video {
         bottom: calc(90px + var(--safe-bottom));
     }
-}
 
     /* --- Emplois filter sidebar on mobile --- */
     .emplois-filtres {
@@ -567,11 +566,6 @@
     .fab-publish:active {
         transform: scale(.9);
         box-shadow: 0 3px 10px rgba(10, 102, 194, .3);
-    }
-
-    /* --- Disable body scrollbar width jump --- */
-    html {
-        overflow-y: scroll;
     }
 
     /* --- Image in posts --- */
