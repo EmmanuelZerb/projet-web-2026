@@ -2,18 +2,31 @@
 /**
  * ECE In - Configuration de la base de données
  * Connexion MySQL via PDO
- * Supporte les variables d'environnement (Railway/cloud) avec fallback local
+ * Supporte Railway (MYSQL_URL) avec fallback local
  */
 
-function env(string $key, string $default = ''): string {
-    return $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key) ?: $default;
+$dbHost = 'localhost';
+$dbPort = '3306';
+$dbName = 'ecein';
+$dbUser = 'root';
+$dbPass = 'root';
+
+$mysqlUrl = $_ENV['MYSQL_URL'] ?? $_SERVER['MYSQL_URL'] ?? getenv('MYSQL_URL') ?: '';
+
+if (!empty($mysqlUrl)) {
+    $parsed = parse_url($mysqlUrl);
+    $dbHost = $parsed['host'] ?? $dbHost;
+    $dbPort = (string) ($parsed['port'] ?? $dbPort);
+    $dbUser = $parsed['user'] ?? $dbUser;
+    $dbPass = $parsed['pass'] ?? $dbPass;
+    $dbName = ltrim($parsed['path'] ?? '/' . $dbName, '/');
 }
 
-define('DB_HOST',    env('MYSQLHOST',     env('DB_HOST',    'localhost')));
-define('DB_PORT',    env('MYSQLPORT',     env('DB_PORT',    '3306')));
-define('DB_NAME',    env('MYSQLDATABASE', env('DB_NAME',    'ecein')));
-define('DB_USER',    env('MYSQLUSER',     env('DB_USER',    'root')));
-define('DB_PASS',    env('MYSQLPASSWORD', env('DB_PASS',    'root')));
+define('DB_HOST',    $dbHost);
+define('DB_PORT',    $dbPort);
+define('DB_NAME',    $dbName);
+define('DB_USER',    $dbUser);
+define('DB_PASS',    $dbPass);
 define('DB_CHARSET', 'utf8mb4');
 
 /**
