@@ -973,13 +973,6 @@ a:focus-visible {
 img {
     transition: opacity .3s ease;
 }
-img[loading="lazy"] {
-    opacity: 0;
-}
-img[loading="lazy"].loaded,
-img:not([loading="lazy"]) {
-    opacity: 1;
-}
 
 /* ===== Sidebar animation ===== */
 .sidebar-link i {

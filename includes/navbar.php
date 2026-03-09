@@ -196,7 +196,7 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
     </a>
     <a href="profil.php" class="tab-item <?= $pageActive === 'profil' ? 'active' : '' ?>">
         <?php if (isset($userCourant) && !empty($userCourant['photo'])): ?>
-        <img src="<?= h($userCourant['photo']) ?>" alt="" width="26" height="26"
+        <img src="<?= h(photo($userCourant['photo'] ?? null)) ?>" alt="" width="26" height="26"
              style="border-radius:50%;object-fit:cover;border:2px solid <?= $pageActive === 'profil' ? 'var(--ecein-primary)' : 'transparent' ?>">
         <?php else: ?>
         <i class="bi <?= $pageActive === 'profil' ? 'bi-person-fill' : 'bi-person' ?>"></i>

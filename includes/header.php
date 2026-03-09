@@ -30,9 +30,9 @@ if (estConnecte()) {
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <!-- CSS personnalisé -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=2">
     <!-- CSS mobile app -->
-    <link rel="stylesheet" href="assets/css/mobile-app.css">
+    <link rel="stylesheet" href="assets/css/mobile-app.css?v=2">
 
     <?php if ($themeClass): ?>
     <link rel="stylesheet" href="assets/css/themes/<?= $jourSpecial['theme'] ?>.css">

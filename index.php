@@ -83,7 +83,7 @@ include __DIR__ . '/includes/navbar.php';
         <div class="col-lg-3 d-none d-lg-block">
             <div class="card card-profil-rapide mb-3">
                 <!-- Image de fond -->
-                <div class="profil-bg" style="background-image:url('<?= h($userCourant['image_fond']) ?>')"></div>
+                <div class="profil-bg" style="background-image:url('<?= h(imageFond($userCourant['image_fond'] ?? null)) ?>')"></div>
                 <div class="card-body text-center pt-0">
                     <img src="<?= h(photo($userCourant['photo'] ?? null)) ?>" alt="Avatar"
                          class="rounded-circle profil-avatar border border-3 border-white">

@@ -343,7 +343,7 @@ include __DIR__ . '/includes/navbar.php';
         <video id="remote-video" autoplay playsinline></video>
         <video id="local-video" autoplay playsinline muted class="local-video"></video>
         <div id="call-info" class="call-info">
-            <img id="call-avatar" src="assets/images/default_avatar.png" alt="" class="call-avatar">
+            <img id="call-avatar" src="<?= DEFAULT_AVATAR ?>" alt="" class="call-avatar">
             <h4 id="call-name" class="call-name"></h4>
             <p id="call-status" class="call-status"></p>
             <p id="call-timer" class="call-timer" style="display:none">00:00</p>
