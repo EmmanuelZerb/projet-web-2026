@@ -274,7 +274,7 @@ include __DIR__ . '/includes/navbar.php';
 
 <!-- ===== MODAL : Publier ===== -->
 <div class="modal fade" id="modalPublier" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down">
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h5 class="modal-title fw-bold">Créer une publication</h5>

@@ -5,7 +5,33 @@
 // Détermine la page active
 $pageActive = basename($_SERVER['PHP_SELF'], '.php');
 ?>
-<!-- ===================== NAVBAR ===================== -->
+
+<!-- ===================== MOBILE HEADER ===================== -->
+<header class="mobile-header d-none">
+    <a href="index.php" class="text-decoration-none">
+        <div class="logo-ecein">
+            <span class="logo-ece">ECE</span><span class="logo-in">In</span>
+        </div>
+    </a>
+    <div class="mobile-search-bar position-relative">
+        <form action="recherche.php" method="GET">
+            <i class="bi bi-search search-icon"></i>
+            <input type="search" name="q" class="form-control"
+                   placeholder="Rechercher..."
+                   value="<?= isset($_GET['q']) ? h($_GET['q']) : '' ?>">
+        </form>
+    </div>
+    <div class="mobile-header-actions">
+        <a href="messagerie.php" class="btn position-relative">
+            <i class="bi bi-chat-dots-fill"></i>
+            <?php if (isset($nbMessages) && $nbMessages > 0): ?>
+            <span class="badge-notif"><?= $nbMessages ?></span>
+            <?php endif; ?>
+        </a>
+    </div>
+</header>
+
+<!-- ===================== NAVBAR DESKTOP ===================== -->
 <nav class="navbar navbar-expand-lg navbar-ecein sticky-top">
     <div class="container-xl">
         <!-- Logo -->
@@ -145,3 +171,36 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
     </div>
 </nav>
 <!-- ===================== FIN NAVBAR ===================== -->
+
+<!-- ===================== BOTTOM TAB BAR (MOBILE) ===================== -->
+<nav class="bottom-tab-bar d-none" aria-label="Navigation mobile">
+    <a href="index.php" class="tab-item <?= $pageActive === 'index' ? 'active' : '' ?>">
+        <i class="bi <?= $pageActive === 'index' ? 'bi-house-fill' : 'bi-house' ?>"></i>
+        <span>Accueil</span>
+    </a>
+    <a href="reseau.php" class="tab-item <?= $pageActive === 'reseau' ? 'active' : '' ?>">
+        <i class="bi <?= $pageActive === 'reseau' ? 'bi-people-fill' : 'bi-people' ?>"></i>
+        <span>Réseau</span>
+    </a>
+    <div class="tab-item tab-item-publish">
+        <button class="publish-btn" data-bs-toggle="modal" data-bs-target="#modalPublier" aria-label="Publier">
+            <i class="bi bi-plus-lg"></i>
+        </button>
+    </div>
+    <a href="notifications.php" class="tab-item <?= $pageActive === 'notifications' ? 'active' : '' ?>">
+        <i class="bi <?= $pageActive === 'notifications' ? 'bi-bell-fill' : 'bi-bell' ?>"></i>
+        <?php if (isset($nbNotifs) && $nbNotifs > 0): ?>
+        <span class="tab-badge"><?= $nbNotifs ?></span>
+        <?php endif; ?>
+        <span>Notifs</span>
+    </a>
+    <a href="profil.php" class="tab-item <?= $pageActive === 'profil' ? 'active' : '' ?>">
+        <?php if (isset($userCourant) && !empty($userCourant['photo'])): ?>
+        <img src="<?= h($userCourant['photo']) ?>" alt="" width="26" height="26"
+             style="border-radius:50%;object-fit:cover;border:2px solid <?= $pageActive === 'profil' ? 'var(--ecein-primary)' : 'transparent' ?>">
+        <?php else: ?>
+        <i class="bi <?= $pageActive === 'profil' ? 'bi-person-fill' : 'bi-person' ?>"></i>
+        <?php endif; ?>
+        <span>Profil</span>
+    </a>
+</nav>

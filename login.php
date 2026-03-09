@@ -122,9 +122,10 @@ include __DIR__ . '/includes/header.php';
 
                     <!-- Logo mobile -->
                     <div class="text-center mb-4 d-lg-none">
-                        <div class="logo-ecein logo-ecein-lg mx-auto mb-2">
+                        <div class="logo-ecein logo-ecein-lg mx-auto mb-3">
                             <span class="logo-ece">ECE</span><span class="logo-in">In</span>
                         </div>
+                        <p class="text-muted small mb-0">Le réseau professionnel ECE Paris</p>
                     </div>
 
                     <!-- Tabs connexion / inscription -->
