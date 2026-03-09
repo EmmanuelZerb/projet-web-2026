@@ -1,49 +1,53 @@
 <?php
 header('Content-Type: text/plain; charset=utf-8');
+echo "DIAG OK - PAGE ATTEINTE\n\n";
 
-echo "=== DIAGNOSTIC RAILWAY ===\n\n";
+echo "PHP version: " . phpversion() . "\n";
+echo "Extensions PDO: " . (extension_loaded('pdo_mysql') ? 'OUI' : 'NON') . "\n\n";
 
-echo "--- Variables d'environnement MySQL ---\n";
-$vars = ['MYSQL_URL', 'MYSQL_PUBLIC_URL', 'MYSQLHOST', 'MYSQLPORT', 'MYSQLUSER', 'MYSQLPASSWORD', 'MYSQLDATABASE', 'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASS'];
-
+$vars = ['MYSQL_URL','MYSQL_PUBLIC_URL','MYSQLHOST','MYSQLPORT','MYSQLUSER','MYSQLPASSWORD','MYSQLDATABASE','DATABASE_URL','PORT'];
 foreach ($vars as $v) {
-    $val_env    = $_ENV[$v] ?? '(vide)';
-    $val_server = $_SERVER[$v] ?? '(vide)';
-    $val_getenv = getenv($v) ?: '(vide)';
-
-    if ($v === 'MYSQLPASSWORD' || $v === 'DB_PASS' || $v === 'MYSQL_URL' || $v === 'MYSQL_PUBLIC_URL') {
-        $val_env    = ($val_env !== '(vide)') ? substr($val_env, 0, 15) . '...' : '(vide)';
-        $val_server = ($val_server !== '(vide)') ? substr($val_server, 0, 15) . '...' : '(vide)';
-        $val_getenv = ($val_getenv !== '(vide)') ? substr($val_getenv, 0, 15) . '...' : '(vide)';
-    }
-
-    echo "$v:\n";
-    echo "  \$_ENV    = $val_env\n";
-    echo "  \$_SERVER = $val_server\n";
-    echo "  getenv() = $val_getenv\n";
+    $val = getenv($v);
+    if ($val === false) $val = '(NON DEFINIE)';
+    elseif (strpos($v, 'PASS') !== false || strpos($v, 'URL') !== false)
+        $val = substr($val, 0, 20) . '...';
+    echo "$v = $val\n";
 }
 
-echo "\n--- Test connexion PDO ---\n";
-require_once __DIR__ . '/config/database.php';
+echo "\n--- Toutes les env avec MYSQL ---\n";
+foreach (getenv() as $k => $v) {
+    if (stripos($k, 'mysql') !== false || stripos($k, 'database') !== false || stripos($k, 'db_') !== false) {
+        if (stripos($k, 'pass') !== false || stripos($k, 'url') !== false)
+            $v = substr($v, 0, 20) . '...';
+        echo "$k = $v\n";
+    }
+}
 
-echo "DB_HOST = " . DB_HOST . "\n";
-echo "DB_PORT = " . DB_PORT . "\n";
-echo "DB_NAME = " . DB_NAME . "\n";
-echo "DB_USER = " . DB_USER . "\n";
-echo "DB_PASS = " . (strlen(DB_PASS) > 0 ? substr(DB_PASS, 0, 4) . '***' : '(vide)') . "\n";
-
-$dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4";
-echo "DSN = $dsn\n\n";
-
-try {
-    $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_TIMEOUT => 5,
-    ]);
-    echo "CONNEXION OK!\n";
-
-    $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
-    echo "Tables (" . count($tables) . "): " . implode(', ', $tables) . "\n";
-} catch (PDOException $e) {
-    echo "ERREUR CONNEXION: " . $e->getMessage() . "\n";
+echo "\n--- Test connexion ---\n";
+$url = getenv('MYSQL_URL') ?: getenv('MYSQL_PUBLIC_URL') ?: getenv('DATABASE_URL') ?: '';
+if (empty($url)) {
+    echo "Aucune URL de connexion trouvee.\n";
+    $h = getenv('MYSQLHOST') ?: 'introuvable';
+    $p = getenv('MYSQLPORT') ?: 'introuvable';
+    echo "MYSQLHOST=$h MYSQLPORT=$p\n";
+} else {
+    echo "URL trouvee (debut): " . substr($url, 0, 30) . "...\n";
+    $parsed = parse_url($url);
+    $host = $parsed['host'] ?? '?';
+    $port = $parsed['port'] ?? 3306;
+    $user = $parsed['user'] ?? '?';
+    $pass = $parsed['pass'] ?? '';
+    $db   = ltrim($parsed['path'] ?? '/test', '/');
+    echo "Host=$host Port=$port User=$user DB=$db\n";
+    try {
+        $pdo = new PDO("mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4", $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_TIMEOUT => 5,
+        ]);
+        echo "CONNEXION REUSSIE!\n";
+        $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
+        echo "Tables (" . count($tables) . "): " . implode(', ', $tables) . "\n";
+    } catch (PDOException $e) {
+        echo "ERREUR: " . $e->getMessage() . "\n";
+    }
 }
