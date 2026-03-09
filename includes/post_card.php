@@ -82,15 +82,18 @@ if (!isset($post)) return;
             $ext = strtolower(pathinfo($post['fichier'], PATHINFO_EXTENSION));
             $videoExts = ['mp4', 'webm', 'ogg'];
             $imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            $mediaSrc = !empty($post['fichier_mime'])
+                ? 'api/media.php?type=post&id=' . $post['id']
+                : $post['fichier'];
             ?>
             <?php if (in_array($ext, $imageExts)): ?>
-            <img src="<?= h($post['fichier']) ?>" alt="Photo"
+            <img src="<?= h($mediaSrc) ?>" alt="Photo"
                  class="img-fluid rounded w-100 post-image"
                  style="max-height:400px;object-fit:cover;cursor:pointer"
                  onclick="ouvrirMedia(this.src)">
             <?php elseif (in_array($ext, $videoExts)): ?>
             <video controls class="w-100 rounded" style="max-height:400px">
-                <source src="<?= h($post['fichier']) ?>">
+                <source src="<?= h($mediaSrc) ?>">
                 Votre navigateur ne supporte pas la lecture vidéo.
             </video>
             <?php elseif ($ext === 'pdf'): ?>
@@ -98,7 +101,7 @@ if (!isset($post)) return;
                 <i class="bi bi-file-earmark-pdf fs-2 text-danger"></i>
                 <div>
                     <div class="fw-semibold">Curriculum Vitæ</div>
-                    <a href="<?= h($post['fichier']) ?>" target="_blank" class="btn btn-sm btn-outline-danger mt-1">
+                    <a href="<?= h($mediaSrc) ?>" target="_blank" class="btn btn-sm btn-outline-danger mt-1">
                         <i class="bi bi-download me-1"></i>Télécharger le CV
                     </a>
                 </div>

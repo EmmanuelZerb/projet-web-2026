@@ -61,7 +61,42 @@ function getDB(): PDO {
         } catch (PDOException $e) {
             die('Erreur de connexion à la base de données. Veuillez contacter l\'administrateur. [' . $e->getMessage() . ']');
         }
+
+        _runMigrations($pdo);
     }
 
     return $pdo;
+}
+
+function _runMigrations(PDO $pdo): void {
+    static $done = false;
+    if ($done) return;
+    $done = true;
+
+    $cols = function (string $table) use ($pdo): array {
+        $rows = $pdo->query("SHOW COLUMNS FROM `$table`")->fetchAll();
+        return array_column($rows, 'Field');
+    };
+
+    $pubCols = $cols('publications');
+    if (!in_array('fichier_data', $pubCols)) {
+        $pdo->exec("ALTER TABLE publications ADD COLUMN fichier_data LONGBLOB DEFAULT NULL");
+    }
+    if (!in_array('fichier_mime', $pubCols)) {
+        $pdo->exec("ALTER TABLE publications ADD COLUMN fichier_mime VARCHAR(100) DEFAULT NULL");
+    }
+
+    $userCols = $cols('utilisateurs');
+    if (!in_array('photo_data', $userCols)) {
+        $pdo->exec("ALTER TABLE utilisateurs ADD COLUMN photo_data LONGBLOB DEFAULT NULL");
+    }
+    if (!in_array('photo_mime', $userCols)) {
+        $pdo->exec("ALTER TABLE utilisateurs ADD COLUMN photo_mime VARCHAR(100) DEFAULT NULL");
+    }
+    if (!in_array('bg_data', $userCols)) {
+        $pdo->exec("ALTER TABLE utilisateurs ADD COLUMN bg_data LONGBLOB DEFAULT NULL");
+    }
+    if (!in_array('bg_mime', $userCols)) {
+        $pdo->exec("ALTER TABLE utilisateurs ADD COLUMN bg_mime VARCHAR(100) DEFAULT NULL");
+    }
 }

@@ -14,7 +14,9 @@ $pageScript  = 'posts.js';
 // ===================== RÉCUPÉRER LES PUBLICATIONS =====================
 // Publications publiques + publications des amis
 $stmtPosts = $pdo->prepare("
-    SELECT p.*, u.nom, u.prenom, u.photo AS avatar, u.pseudo, u.titre AS user_titre,
+    SELECT p.id, p.utilisateur_id, p.type, p.contenu, p.fichier, p.fichier_mime,
+           p.lieu, p.humeur, p.visibilite, p.publication_originale_id, p.date_publication,
+           u.nom, u.prenom, u.photo AS avatar, u.pseudo, u.titre AS user_titre,
            (SELECT COUNT(*) FROM reactions r WHERE r.publication_id = p.id) AS nb_reactions,
            (SELECT COUNT(*) FROM commentaires c WHERE c.publication_id = p.id) AS nb_commentaires,
            (SELECT type FROM reactions r2 WHERE r2.publication_id = p.id AND r2.utilisateur_id = :uid) AS ma_reaction,

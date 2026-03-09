@@ -33,12 +33,13 @@ if ($action === 'publier') {
         exit();
     }
 
-    // Gérer l'upload de fichier
+    $fichierData = null;
+    $fichierMime = null;
+
     if (isset($_FILES['fichier']) && $_FILES['fichier']['error'] === 0) {
         $file = $_FILES['fichier'];
         $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-        // Déterminer le dossier selon le type
         if (in_array($file['type'], PHOTO_TYPES) && $file['size'] <= MAX_PHOTO_SIZE) {
             $dossier = 'photos';
         } elseif (in_array($file['type'], VIDEO_TYPES) && $file['size'] <= MAX_VIDEO_SIZE) {
@@ -50,25 +51,26 @@ if ($action === 'publier') {
             exit();
         }
 
-        $nomFichier = uniqid('file_', true) . '.' . $ext;
-        $destination = UPLOAD_PATH . $dossier . '/' . $nomFichier;
+        $fichierData = file_get_contents($file['tmp_name']);
+        $fichierMime = $file['type'];
+        $fichier = 'db_stored_' . $dossier . '/' . uniqid() . '.' . $ext;
 
-        if (move_uploaded_file($file['tmp_name'], $destination)) {
-            $fichier = 'uploads/' . $dossier . '/' . $nomFichier;
-        }
+        @mkdir(UPLOAD_PATH . $dossier, 0755, true);
+        @move_uploaded_file($file['tmp_name'], UPLOAD_PATH . $dossier . '/' . basename($fichier));
     }
 
-    // Insérer la publication
     $stmt = $pdo->prepare("
-        INSERT INTO publications (utilisateur_id, type, contenu, fichier, lieu, humeur, visibilite)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO publications (utilisateur_id, type, contenu, fichier, fichier_data, fichier_mime, lieu, humeur, visibilite)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
-    $stmt->execute([$userId, $type, $contenu, $fichier, $lieu, $humeur, $visibilite]);
+    $stmt->execute([$userId, $type, $contenu, $fichier, $fichierData, $fichierMime, $lieu, $humeur, $visibilite]);
     $postId = $pdo->lastInsertId();
 
     // Récupérer le post créé avec les infos utilisateur
     $stmtGet = $pdo->prepare("
-        SELECT p.*, u.nom, u.prenom, u.photo AS avatar, u.pseudo, u.titre AS user_titre
+        SELECT p.id, p.utilisateur_id, p.type, p.contenu, p.fichier, p.fichier_mime,
+               p.lieu, p.humeur, p.visibilite, p.publication_originale_id, p.date_publication,
+               u.nom, u.prenom, u.photo AS avatar, u.pseudo, u.titre AS user_titre
         FROM publications p
         JOIN utilisateurs u ON u.id = p.utilisateur_id
         WHERE p.id = ?

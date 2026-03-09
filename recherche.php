@@ -30,7 +30,12 @@ if (!empty($q) && strlen($q) >= 2) {
 
     // Recherche publications
     $stmt = $pdo->prepare("
-        SELECT p.*, u.nom, u.prenom, u.photo AS avatar
+        SELECT p.id, p.utilisateur_id, p.type, p.contenu, p.fichier, p.fichier_mime,
+               p.lieu, p.humeur, p.visibilite, p.publication_originale_id, p.date_publication,
+               u.nom, u.prenom, u.photo AS avatar,
+               (SELECT COUNT(*) FROM reactions r WHERE r.publication_id = p.id) AS nb_reactions,
+               (SELECT COUNT(*) FROM commentaires c WHERE c.publication_id = p.id) AS nb_commentaires,
+               NULL AS ma_reaction
         FROM publications p
         JOIN utilisateurs u ON u.id = p.utilisateur_id
         WHERE p.visibilite = 'public' AND p.contenu LIKE ?

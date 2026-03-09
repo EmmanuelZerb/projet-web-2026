@@ -24,14 +24,18 @@ $projets = $stmtProj->fetchAll();
 
 // ===== Publications de l'utilisateur =====
 $stmtPosts = $pdo->prepare("
-    SELECT p.*,
+    SELECT p.id, p.utilisateur_id, p.type, p.contenu, p.fichier, p.fichier_mime,
+           p.lieu, p.humeur, p.visibilite, p.publication_originale_id, p.date_publication,
+           u.nom, u.prenom, u.photo AS avatar, u.pseudo, u.titre AS user_titre,
         (SELECT COUNT(*) FROM reactions r WHERE r.publication_id = p.id) AS nb_reactions,
-        (SELECT COUNT(*) FROM commentaires c WHERE c.publication_id = p.id) AS nb_commentaires
+        (SELECT COUNT(*) FROM commentaires c WHERE c.publication_id = p.id) AS nb_commentaires,
+        (SELECT type FROM reactions r2 WHERE r2.publication_id = p.id AND r2.utilisateur_id = ?) AS ma_reaction
     FROM publications p
+    JOIN utilisateurs u ON u.id = p.utilisateur_id
     WHERE p.utilisateur_id = ?
     ORDER BY p.date_publication DESC
 ");
-$stmtPosts->execute([$userId]);
+$stmtPosts->execute([$userId, $userId]);
 $publications = $stmtPosts->fetchAll();
 
 // ===== Albums =====
