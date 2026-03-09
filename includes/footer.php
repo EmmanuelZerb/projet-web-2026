@@ -101,12 +101,49 @@
 </footer>
 <!-- ===================== FIN FOOTER ===================== -->
 
+<!-- Modal Partager (global) -->
+<?php if (isset($userCourant)): ?>
+<div class="modal fade" id="modalPartager" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold"><i class="bi bi-share me-2"></i>Partager la publication</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="partage-post-id" value="">
+
+                <div class="d-flex gap-3 mb-3">
+                    <img src="<?= h(photo($userCourant['photo'] ?? null)) ?>" alt="" class="rounded-circle flex-shrink-0" width="40" height="40" style="object-fit:cover">
+                    <textarea id="partage-commentaire" class="form-control border-0 bg-light" rows="3"
+                              placeholder="Ajouter un commentaire..." style="resize:none"></textarea>
+                </div>
+
+                <div class="partage-preview">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <img id="partage-preview-avatar" src="" alt="" class="rounded-circle" width="28" height="28" style="object-fit:cover">
+                        <span id="partage-preview-auteur" class="fw-semibold small"></span>
+                    </div>
+                    <p id="partage-preview-contenu" class="small text-muted mb-0"></p>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" id="btn-partager" class="btn btn-ecein-primary px-4" onclick="envoyerPartage()">
+                    <i class="bi bi-share me-2"></i>Partager
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- JS personnalisé -->
-<script src="assets/js/main.js"></script>
+<script src="assets/js/main.js?v=3"></script>
 
 <?php if (isset($pageScript) && $pageScript === 'messagerie.js'): ?>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>

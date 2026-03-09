@@ -219,18 +219,45 @@ function envoyerCommentaire(postId) {
 // ===================== PARTAGER UN POST =====================
 
 function partager(postId) {
-    const contenu = prompt('Ajouter un commentaire à ce partage (optionnel) :') ?? '';
+    const $post = $(`#post-${postId}`);
+    const auteur = $post.find('.fw-semibold.text-dark').first().text().trim() || 'un membre';
+    const extrait = $post.find('.post-contenu').first().text().trim();
+    const avatar = $post.find('.rounded-circle').first().attr('src') || '';
+    const preview = extrait ? (extrait.length > 120 ? extrait.substring(0, 120) + '...' : extrait) : '';
+
+    $('#partage-post-id').val(postId);
+    $('#partage-commentaire').val('');
+    $('#partage-preview-avatar').attr('src', avatar);
+    $('#partage-preview-auteur').text(auteur);
+    $('#partage-preview-contenu').text(preview || 'Publication sans texte');
+
+    const modal = new bootstrap.Modal(document.getElementById('modalPartager'));
+    modal.show();
+
+    $('#partage-commentaire').focus();
+}
+
+function envoyerPartage() {
+    const postId = $('#partage-post-id').val();
+    const contenu = $('#partage-commentaire').val().trim();
+    const $btn = $('#btn-partager');
+
+    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Partage...');
+
     $.post('api/posts.php', {
         action:  'partager',
         post_id: postId,
         contenu: contenu,
     }, function (res) {
         if (res.succes) {
+            bootstrap.Modal.getInstance(document.getElementById('modalPartager')).hide();
             afficherToast('Publication partagée !', 'success');
-            setTimeout(() => location.reload(), 1500);
+            setTimeout(() => location.reload(), 1200);
         } else {
             afficherToast(res.message, 'danger');
         }
+    }).always(function () {
+        $btn.prop('disabled', false).html('<i class="bi bi-share me-2"></i>Partager');
     });
 }
 
