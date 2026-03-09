@@ -85,7 +85,7 @@ include __DIR__ . '/includes/navbar.php';
                 <!-- Image de fond -->
                 <div class="profil-bg" style="background-image:url('<?= h($userCourant['image_fond']) ?>')"></div>
                 <div class="card-body text-center pt-0">
-                    <img src="<?= h($userCourant['photo']) ?>" alt="Avatar"
+                    <img src="<?= h(photo($userCourant['photo'] ?? null)) ?>" alt="Avatar"
                          class="rounded-circle profil-avatar border border-3 border-white">
                     <h6 class="fw-bold mt-2 mb-0"><?= h($userCourant['prenom'] . ' ' . $userCourant['nom']) ?></h6>
                     <p class="text-muted small mb-2"><?= h($userCourant['titre'] ?? 'Membre ECE In') ?></p>
@@ -164,7 +164,7 @@ include __DIR__ . '/includes/navbar.php';
             <div class="card mb-4 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex gap-3">
-                        <img src="<?= h($userCourant['photo']) ?>" alt="" class="rounded-circle" width="44" height="44" style="object-fit:cover">
+                        <img src="<?= h(photo($userCourant['photo'] ?? null)) ?>" alt="" class="rounded-circle" width="44" height="44" style="object-fit:cover">
                         <button class="btn btn-light border w-100 text-start text-muted rounded-pill px-4"
                                 data-bs-toggle="modal" data-bs-target="#modalPublier">
                             Quoi de neuf, <?= h($userCourant['prenom']) ?> ?
@@ -226,7 +226,7 @@ include __DIR__ . '/includes/navbar.php';
                     <?php foreach ($suggestions as $sugg): ?>
                     <div class="suggestion-card d-flex align-items-center gap-2 py-2">
                         <a href="utilisateur.php?id=<?= $sugg['id'] ?>">
-                            <img src="<?= h($sugg['photo']) ?>" alt=""
+                            <img src="<?= h(photo($sugg['photo'] ?? null)) ?>" alt=""
                                  class="rounded-circle" width="44" height="44" style="object-fit:cover">
                         </a>
                         <div class="flex-grow-1 min-w-0">
@@ -302,7 +302,7 @@ include __DIR__ . '/includes/navbar.php';
 
                     <!-- Contenu texte -->
                     <div class="d-flex gap-3 mb-3">
-                        <img src="<?= h($userCourant['photo']) ?>" alt="" class="rounded-circle" width="44" height="44" style="object-fit:cover">
+                        <img src="<?= h(photo($userCourant['photo'] ?? null)) ?>" alt="" class="rounded-circle" width="44" height="44" style="object-fit:cover">
                         <div class="flex-grow-1">
                             <div class="fw-semibold small mb-1"><?= h($userCourant['prenom'] . ' ' . $userCourant['nom']) ?></div>
                             <select name="visibilite" class="form-select form-select-sm d-inline-block w-auto mb-2">

@@ -127,7 +127,7 @@ include __DIR__ . '/includes/navbar.php';
                         <div class="card shadow-sm h-100">
                             <div class="card-body text-center">
                                 <a href="utilisateur.php?id=<?= $d['id'] ?>">
-                                    <img src="<?= h($d['photo']) ?>" alt=""
+                                    <img src="<?= h(photo($d['photo'] ?? null)) ?>" alt=""
                                          class="rounded-circle mb-2" width="72" height="72" style="object-fit:cover">
                                     <h6 class="fw-bold mb-0"><?= h($d['prenom'] . ' ' . $d['nom']) ?></h6>
                                 </a>
@@ -173,7 +173,7 @@ include __DIR__ . '/includes/navbar.php';
                         <div class="card shadow-sm h-100 card-ami">
                             <div class="card-body">
                                 <a href="utilisateur.php?id=<?= $ami['id'] ?>" class="d-flex align-items-center gap-3 text-decoration-none text-dark mb-2">
-                                    <img src="<?= h($ami['photo']) ?>" alt=""
+                                    <img src="<?= h(photo($ami['photo'] ?? null)) ?>" alt=""
                                          class="rounded-circle" width="60" height="60" style="object-fit:cover">
                                     <div>
                                         <div class="fw-bold"><?= h($ami['prenom'] . ' ' . $ami['nom']) ?></div>
@@ -216,7 +216,7 @@ include __DIR__ . '/includes/navbar.php';
                     <div class="col-sm-6 col-md-4">
                         <div class="card shadow-sm">
                             <div class="card-body d-flex align-items-center gap-3">
-                                <img src="<?= h($e['photo']) ?>" alt=""
+                                <img src="<?= h(photo($e['photo'] ?? null)) ?>" alt=""
                                      class="rounded-circle" width="50" height="50" style="object-fit:cover">
                                 <div class="flex-grow-1">
                                     <div class="fw-semibold small"><?= h($e['prenom'] . ' ' . $e['nom']) ?></div>
@@ -249,7 +249,7 @@ include __DIR__ . '/includes/navbar.php';
                         <div class="card shadow-sm h-100">
                             <div class="card-body text-center">
                                 <a href="utilisateur.php?id=<?= $sugg['id'] ?>">
-                                    <img src="<?= h($sugg['photo']) ?>" alt=""
+                                    <img src="<?= h(photo($sugg['photo'] ?? null)) ?>" alt=""
                                          class="rounded-circle mb-2" width="72" height="72" style="object-fit:cover">
                                     <h6 class="fw-bold mb-0"><?= h($sugg['prenom'] . ' ' . $sugg['nom']) ?></h6>
                                 </a>

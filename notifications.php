@@ -69,7 +69,7 @@ include __DIR__ . '/includes/navbar.php';
                             <!-- Icône de l'expéditeur ou système -->
                             <?php if ($notif['avatar_exp']): ?>
                             <a href="utilisateur.php?id=<?= $notif['expediteur_id'] ?>">
-                                <img src="<?= h($notif['avatar_exp']) ?>" alt=""
+                                <img src="<?= h(photo($notif['avatar_exp'] ?? null)) ?>" alt=""
                                      class="rounded-circle" width="46" height="46" style="object-fit:cover">
                             </a>
                             <?php else: ?>

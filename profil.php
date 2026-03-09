@@ -133,7 +133,7 @@ $userCourant = getUtilisateurConnecte();
     <div class="card shadow-sm mb-4 overflow-hidden">
         <!-- Image de fond -->
         <div class="profil-bg-large"
-             style="background-image:url('<?= h($userCourant['image_fond']) ?>')"
+             style="background-image:url('<?= h(imageFond($userCourant['image_fond'] ?? null)) ?>')"
              id="bg-image">
             <label class="btn btn-sm btn-light opacity-75 position-absolute bottom-0 end-0 m-2"
                    style="cursor:pointer" title="Changer la photo de fond">
@@ -149,7 +149,7 @@ $userCourant = getUtilisateurConnecte();
             <div class="d-flex flex-wrap align-items-end gap-4 position-relative" style="margin-top:-50px">
                 <!-- Avatar -->
                 <div class="position-relative">
-                    <img src="<?= h($userCourant['photo']) ?>" alt="Avatar"
+                    <img src="<?= h(photo($userCourant['photo'] ?? null)) ?>" alt="Avatar"
                          class="rounded-circle border-4 border-white shadow" id="avatar-img"
                          width="110" height="110" style="object-fit:cover">
                     <label class="btn btn-sm btn-primary rounded-circle position-absolute bottom-0 end-0"

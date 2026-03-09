@@ -74,7 +74,7 @@ include __DIR__ . '/includes/navbar.php';
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <a href="utilisateur.php?id=<?= $u['id'] ?>">
-                        <img src="<?= h($u['photo']) ?>" alt=""
+                        <img src="<?= h(photo($u['photo'] ?? null)) ?>" alt=""
                              class="rounded-circle mb-2" width="60" height="60" style="object-fit:cover">
                         <div class="fw-semibold"><?= h($u['prenom'] . ' ' . $u['nom']) ?></div>
                     </a>
@@ -98,7 +98,7 @@ include __DIR__ . '/includes/navbar.php';
         <div class="card shadow-sm mb-2">
             <div class="card-body">
                 <div class="d-flex gap-2 mb-2">
-                    <img src="<?= h($post['avatar']) ?>" alt="" class="rounded-circle"
+                    <img src="<?= h(photo($post['avatar'] ?? null)) ?>" alt="" class="rounded-circle"
                          width="36" height="36" style="object-fit:cover">
                     <div>
                         <a href="utilisateur.php?id=<?= $post['utilisateur_id'] ?>"

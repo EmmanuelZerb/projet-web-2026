@@ -82,10 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         } else {
             $hash = password_hash($mdp, PASSWORD_BCRYPT);
             $stmt = $pdo->prepare("
-                INSERT INTO utilisateurs (pseudo, email, mot_de_passe, nom, prenom, date_inscription)
-                VALUES (?, ?, ?, ?, ?, NOW())
+                INSERT INTO utilisateurs (pseudo, email, mot_de_passe, nom, prenom, photo, image_fond, date_inscription)
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
             ");
-            $stmt->execute([$pseudo, $email, $hash, $nom, $prenom]);
+            $stmt->execute([$pseudo, $email, $hash, $nom, $prenom, DEFAULT_AVATAR, DEFAULT_BG]);
             $succes = 'Compte créé avec succès ! Vous pouvez maintenant vous connecter.';
             $mode = 'connexion';
         }

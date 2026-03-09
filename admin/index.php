@@ -202,7 +202,7 @@ $utilisateurs = $stmtUsers->fetchAll();
                     <tr class="<?= !$u['actif'] ? 'table-secondary opacity-50' : '' ?>">
                         <td>
                             <div class="d-flex align-items-center gap-2">
-                                <img src="<?= h($u['photo']) ?>" alt=""
+                                <img src="<?= h(photo($u['photo'] ?? null)) ?>" alt=""
                                      class="rounded-circle" width="36" height="36" style="object-fit:cover">
                                 <div>
                                     <div class="fw-semibold small"><?= h($u['prenom'] . ' ' . $u['nom']) ?></div>

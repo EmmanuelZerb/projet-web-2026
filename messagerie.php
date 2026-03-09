@@ -182,7 +182,7 @@ include __DIR__ . '/includes/navbar.php';
                                 <i class="bi bi-people-fill"></i>
                             </div>
                             <?php else: ?>
-                            <img src="<?= h($conv['contact_photo'] ?? 'assets/images/default_avatar.png') ?>"
+                            <img src="<?= h(photo($conv['contact_photo'] ?? null)) ?>"
                                  alt="" class="rounded-circle" width="46" height="46" style="object-fit:cover">
                             <?php endif; ?>
                             <?php if ($conv['nb_non_lus'] > 0): ?>
@@ -217,7 +217,7 @@ include __DIR__ . '/includes/navbar.php';
                 <?php if ($convActiveId > 0 && $contactActif): ?>
                 <!-- En-tête du chat -->
                 <div class="p-3 border-bottom d-flex align-items-center gap-3">
-                    <img src="<?= h($contactActif['photo']) ?>" alt=""
+                    <img src="<?= h(photo($contactActif['photo'] ?? null)) ?>" alt=""
                          class="rounded-circle" width="42" height="42" style="object-fit:cover">
                     <div>
                         <div class="fw-bold"><?= h($contactActif['prenom'] . ' ' . $contactActif['nom']) ?></div>
@@ -243,7 +243,7 @@ include __DIR__ . '/includes/navbar.php';
                     <?php $estMoi = $msg['expediteur_id'] == $userId; ?>
                     <div class="message-wrapper <?= $estMoi ? 'message-moi' : 'message-autre' ?> mb-3" data-msg-id="<?= $msg['id'] ?>">
                         <?php if (!$estMoi): ?>
-                        <img src="<?= h($msg['avatar']) ?>" alt="" class="rounded-circle me-2"
+                        <img src="<?= h(photo($msg['avatar'] ?? null)) ?>" alt="" class="rounded-circle me-2"
                              width="32" height="32" style="object-fit:cover">
                         <?php endif; ?>
                         <div class="message-bulle <?= $estMoi ? 'message-bubble-moi' : 'message-bubble-autre' ?>">
@@ -251,7 +251,7 @@ include __DIR__ . '/includes/navbar.php';
                             <div class="message-time"><?= tempsEcoule($msg['date_envoi']) ?></div>
                         </div>
                         <?php if ($estMoi): ?>
-                        <img src="<?= h($userCourant['photo']) ?>" alt="" class="rounded-circle ms-2"
+                        <img src="<?= h(photo($userCourant['photo'] ?? null)) ?>" alt="" class="rounded-circle ms-2"
                              width="32" height="32" style="object-fit:cover">
                         <?php endif; ?>
                     </div>
@@ -318,7 +318,7 @@ include __DIR__ . '/includes/navbar.php';
                     <a href="messagerie.php?contact=<?= $ami['id'] ?>"
                        class="d-flex align-items-center gap-3 p-2 rounded text-decoration-none text-dark
                               ami-item hover-bg mb-1">
-                        <img src="<?= h($ami['photo']) ?>" alt=""
+                        <img src="<?= h(photo($ami['photo'] ?? null)) ?>" alt=""
                              class="rounded-circle" width="42" height="42" style="object-fit:cover">
                         <div>
                             <div class="fw-semibold"><?= h($ami['prenom'] . ' ' . $ami['nom']) ?></div>

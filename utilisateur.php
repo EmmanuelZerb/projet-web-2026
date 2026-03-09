@@ -70,10 +70,10 @@ include __DIR__ . '/includes/navbar.php';
 
     <!-- ===== BANNIÈRE PROFIL ===== -->
     <div class="card shadow-sm mb-4 overflow-hidden">
-        <div class="profil-bg-large" style="background-image:url('<?= h($profil['image_fond']) ?>')"></div>
+        <div class="profil-bg-large" style="background-image:url('<?= h(imageFond($profil['image_fond'] ?? null)) ?>')"></div>
         <div class="card-body">
             <div class="d-flex flex-wrap align-items-end gap-4 position-relative" style="margin-top:-50px">
-                <img src="<?= h($profil['photo']) ?>" alt="Avatar"
+                <img src="<?= h(photo($profil['photo'] ?? null)) ?>" alt="Avatar"
                      class="rounded-circle border-4 border-white shadow"
                      width="110" height="110" style="object-fit:cover">
                 <div class="flex-grow-1 pb-2">

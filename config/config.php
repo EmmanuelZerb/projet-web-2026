@@ -18,6 +18,10 @@ if (session_status() === PHP_SESSION_NONE) {
 // Inclusion de la configuration de base de données
 require_once __DIR__ . '/database.php';
 
+// Avatars et images par défaut
+define('DEFAULT_AVATAR', 'assets/images/default_avatar.png');
+define('DEFAULT_BG', 'assets/images/default_bg.jpg');
+
 // Informations du site
 define('SITE_NOM', 'ECE In');
 define('SITE_SLOGAN', 'Le réseau social professionnel de la communauté ECE Paris');
@@ -94,6 +98,20 @@ function h(string $data): string {
 }
 
 /**
+ * Retourne un chemin photo valide, avec fallback sur l'avatar par défaut
+ */
+function photo(string|null $path): string {
+    return (!empty($path) && $path !== 'NULL') ? $path : DEFAULT_AVATAR;
+}
+
+/**
+ * Retourne un chemin image de fond valide
+ */
+function imageFond(string|null $path): string {
+    return (!empty($path) && $path !== 'NULL') ? $path : DEFAULT_BG;
+}
+
+/**
  * Récupère les infos de l'utilisateur connecté
  * @return array|null
  */
@@ -106,6 +124,20 @@ function getUtilisateurConnecte(): ?array {
         $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE id = ?");
         $stmt->execute([$_SESSION['utilisateur_id']]);
         $utilisateur = $stmt->fetch();
+        if ($utilisateur) {
+            if (empty($utilisateur['photo'])) {
+                $pdo->prepare("UPDATE utilisateurs SET photo = ? WHERE id = ?")
+                    ->execute([DEFAULT_AVATAR, $utilisateur['id']]);
+                $utilisateur['photo'] = DEFAULT_AVATAR;
+            }
+            if (empty($utilisateur['image_fond'])) {
+                $pdo->prepare("UPDATE utilisateurs SET image_fond = ? WHERE id = ?")
+                    ->execute([DEFAULT_BG, $utilisateur['id']]);
+                $utilisateur['image_fond'] = DEFAULT_BG;
+            }
+            $utilisateur['photo'] = photo($utilisateur['photo']);
+            $utilisateur['image_fond'] = imageFond($utilisateur['image_fond']);
+        }
     }
     return $utilisateur;
 }

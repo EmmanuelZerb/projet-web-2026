@@ -134,14 +134,14 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-1" href="#"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?= h($userCourant['photo']) ?>" alt="Avatar"
+                        <img src="<?= h(photo($userCourant['photo'] ?? null)) ?>" alt="Avatar"
                              class="rounded-circle" width="34" height="34" style="object-fit:cover">
                         <span class="d-none d-lg-inline fw-semibold small"><?= h($userCourant['prenom']) ?></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                         <li>
                             <div class="dropdown-header d-flex align-items-center gap-2 py-2">
-                                <img src="<?= h($userCourant['photo']) ?>" alt="" class="rounded-circle" width="40" height="40" style="object-fit:cover">
+                                <img src="<?= h(photo($userCourant['photo'] ?? null)) ?>" alt="" class="rounded-circle" width="40" height="40" style="object-fit:cover">
                                 <div>
                                     <div class="fw-semibold"><?= h($userCourant['prenom'] . ' ' . $userCourant['nom']) ?></div>
                                     <div class="text-muted small"><?= h($userCourant['titre'] ?? '') ?></div>

@@ -11,7 +11,7 @@ if (!isset($post)) return;
         <div class="d-flex justify-content-between align-items-start mb-3">
             <div class="d-flex gap-3">
                 <a href="utilisateur.php?id=<?= $post['utilisateur_id'] ?>">
-                    <img src="<?= h($post['avatar']) ?>" alt=""
+                    <img src="<?= h(photo($post['avatar'] ?? null)) ?>" alt=""
                          class="rounded-circle" width="48" height="48" style="object-fit:cover">
                 </a>
                 <div>
@@ -151,7 +151,7 @@ if (!isset($post)) return;
         <div class="commentaires-section mt-3" id="commentaires-<?= $post['id'] ?>" style="display:none">
             <div class="commentaires-liste" id="liste-commentaires-<?= $post['id'] ?>"></div>
             <div class="d-flex gap-2 mt-2">
-                <img src="<?= h($userCourant['photo'] ?? 'assets/images/default_avatar.png') ?>" alt=""
+                <img src="<?= h(photo($userCourant['photo'] ?? null)) ?>" alt=""
                      class="rounded-circle" width="32" height="32" style="object-fit:cover">
                 <div class="flex-grow-1 position-relative">
                     <input type="text" class="form-control form-control-sm rounded-pill"
