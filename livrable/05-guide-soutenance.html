@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECE In — Guide de Soutenance</title>
+    <style>
+        :root { --primary: #0a66c2; --dark: #1a1a2e; --gray: #6c757d; --light: #f4f6f8; --border: #dee2e6; --success: #198754; --danger: #dc3545; --warning: #ffc107; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #333; line-height: 1.7; background: #fff; }
+        .page-break { page-break-before: always; }
+
+        .doc-header { background: var(--dark); color: #fff; padding: 60px 40px; text-align: center; }
+        .doc-header h1 { font-size: 2.4rem; margin-bottom: 8px; }
+        .doc-header .subtitle { font-size: 1.1rem; opacity: .8; }
+        .doc-header .meta { margin-top: 16px; font-size: .9rem; opacity: .6; }
+        .logo { font-size: 2rem; font-weight: 900; margin-bottom: 12px; }
+        .logo .ece { color: #fff; } .logo .in { color: #3b82f6; }
+
+        .section { max-width: 900px; margin: 0 auto; padding: 40px 32px; }
+        .section h2 { font-size: 1.5rem; color: var(--dark); border-bottom: 3px solid var(--primary); padding-bottom: 8px; margin-bottom: 20px; }
+        .section h3 { font-size: 1.15rem; color: var(--primary); margin: 24px 0 10px; }
+        .section h4 { font-size: 1rem; color: var(--dark); margin: 16px 0 8px; }
+        .section p, .section li { font-size: .92rem; color: var(--gray); }
+        .section ul, .section ol { padding-left: 22px; margin-bottom: 12px; }
+        .section li { margin-bottom: 4px; }
+
+        .tip { background: #e8f0fe; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; font-size: .88rem; color: var(--dark); }
+        .warning { background: #fff3cd; border-left: 4px solid var(--warning); padding: 12px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; font-size: .88rem; color: #856404; }
+        .danger { background: #f8d7da; border-left: 4px solid var(--danger); padding: 12px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; font-size: .88rem; color: #721c24; }
+
+        .qa { border: 1px solid var(--border); border-radius: 8px; margin: 12px 0; overflow: hidden; }
+        .qa-q { background: var(--light); padding: 10px 16px; font-weight: 700; color: var(--dark); font-size: .92rem; }
+        .qa-a { padding: 10px 16px; font-size: .88rem; color: var(--gray); }
+
+        .demo-step { display: flex; gap: 12px; margin: 8px 0; align-items: flex-start; }
+        .demo-num { background: var(--primary); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .8rem; font-weight: 700; flex-shrink: 0; }
+        .demo-content { flex: 1; }
+        .demo-content strong { color: var(--dark); }
+
+        .checklist { list-style: none; padding: 0; }
+        .checklist li { padding: 6px 0; border-bottom: 1px solid #eee; font-size: .92rem; }
+        .checklist li::before { content: "☐ "; color: var(--primary); font-weight: 700; }
+
+        table.summary { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 12px 0; }
+        table.summary th { background: var(--dark); color: #fff; padding: 8px 12px; text-align: left; }
+        table.summary td { padding: 6px 12px; border-bottom: 1px solid #eee; }
+        table.summary tr:nth-child(even) { background: #f9fafb; }
+
+        @media print {
+            .section { padding: 20px 16px; }
+            .doc-header { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PAGE DE GARDE -->
+<div class="doc-header">
+    <div class="logo"><span class="ece">ECE</span><span class="in">In</span></div>
+    <h1>Guide de Soutenance</h1>
+    <div class="subtitle">Tout savoir pour presenter le projet ECE In</div>
+    <div class="meta">Emmanuel ZERBIB & Nikola VUCIC — Mars 2026</div>
+</div>
+
+<!-- TABLE DES MATIERES -->
+<div class="section">
+    <h2>Table des matieres</h2>
+    <ol style="font-size:.95rem; line-height:2.2">
+        <li><a href="#description" style="color:var(--primary)">Description complete du projet</a></li>
+        <li><a href="#techno" style="color:var(--primary)">Technologies et architecture</a></li>
+        <li><a href="#fonctionnalites" style="color:var(--primary)">Toutes les fonctionnalites</a></li>
+        <li><a href="#demo" style="color:var(--primary)">Script de la demo (quoi montrer)</a></li>
+        <li><a href="#discours" style="color:var(--primary)">Script du discours (quoi dire)</a></li>
+        <li><a href="#questions" style="color:var(--primary)">Questions du prof et reponses</a></li>
+        <li><a href="#checklist" style="color:var(--primary)">Checklist avant la soutenance</a></li>
+    </ol>
+</div>
+
+<!-- 1. DESCRIPTION -->
+<div class="section page-break" id="description">
+    <h2>1. Description complete du projet</h2>
+
+    <h3>1.1 Qu'est-ce qu'ECE In ?</h3>
+    <p>
+        <strong>ECE In</strong> est un reseau social professionnel concu pour la communaute de l'ECE Paris.
+        Inspire de LinkedIn, il permet aux etudiants, enseignants, alumni et personnel de l'ECE de :
+    </p>
+    <ul>
+        <li>Creer un <strong>profil professionnel</strong> avec formations, projets et competences</li>
+        <li><strong>Publier du contenu</strong> : statuts, photos, videos, evenements, CV</li>
+        <li>Gerer un <strong>reseau d'amis</strong> professionnels avec demandes de connexion</li>
+        <li><strong>Communiquer</strong> par messagerie privee en temps reel (+ appels audio/video)</li>
+        <li>Consulter et filtrer des <strong>offres d'emploi</strong> (stages, alternances, CDI...)</li>
+        <li><strong>Generer un CV</strong> automatiquement a partir des donnees du profil (HTML, PDF, XML)</li>
+        <li>Recevoir des <strong>notifications</strong> en temps reel</li>
+    </ul>
+
+    <h3>1.2 Public cible</h3>
+    <table class="summary">
+        <tr><th>Profil</th><th>Description</th><th>Besoins</th></tr>
+        <tr><td>Etudiants ECE</td><td>ING1 a ING5</td><td>Profil pro, CV, stages/emplois</td></tr>
+        <tr><td>Enseignants</td><td>Professeurs et vacataires</td><td>Communication, evenements</td></tr>
+        <tr><td>Alumni</td><td>Anciens eleves</td><td>Reseau pro, mentorat</td></tr>
+        <tr><td>Administrateurs</td><td>Gestionnaires du site</td><td>Moderation, gestion comptes</td></tr>
+    </table>
+
+    <h3>1.3 Roles utilisateurs</h3>
+    <ul>
+        <li><strong>Visiteur</strong> : peut uniquement voir la page de connexion/inscription</li>
+        <li><strong>Auteur</strong> (role par defaut) : acces complet au site (profil, publications, messagerie, reseau, emplois, CV, notifications)</li>
+        <li><strong>Administrateur</strong> : toutes les fonctionnalites de l'auteur + panel d'administration (gestion des utilisateurs, statistiques, publication d'offres d'emploi)</li>
+    </ul>
+
+    <h3>1.4 Pages principales</h3>
+    <table class="summary">
+        <tr><th>Page</th><th>Fichier</th><th>Description</th></tr>
+        <tr><td>Connexion / Inscription</td><td>login.php</td><td>Split screen : visuel marque + formulaire</td></tr>
+        <tr><td>Fil d'actualite (Accueil)</td><td>index.php</td><td>Layout 3 colonnes, publications chronologiques</td></tr>
+        <tr><td>Mon Profil</td><td>profil.php</td><td>7 onglets : Profil, Publications, Formations, Projets, Albums, CV, Parametres</td></tr>
+        <tr><td>Profil d'un autre</td><td>utilisateur.php</td><td>Version publique du profil avec boutons Connecter/Message</td></tr>
+        <tr><td>Mon Reseau</td><td>reseau.php</td><td>Invitations, connexions, suggestions amis d'amis</td></tr>
+        <tr><td>Messagerie</td><td>messagerie.php</td><td>Chat en temps reel (polling 3s) + appels audio/video</td></tr>
+        <tr><td>Notifications</td><td>notifications.php</td><td>8 types de notifications avec badge compteur</td></tr>
+        <tr><td>Emplois</td><td>emplois.php</td><td>Offres filtrables (6 types de contrats)</td></tr>
+        <tr><td>Recherche</td><td>recherche.php</td><td>Personnes, publications, emplois</td></tr>
+        <tr><td>Administration</td><td>admin/index.php</td><td>Stats + CRUD utilisateurs (admin uniquement)</td></tr>
+    </table>
+</div>
+
+<!-- 2. TECHNOLOGIES -->
+<div class="section page-break" id="techno">
+    <h2>2. Technologies et architecture</h2>
+
+    <h3>2.1 Stack technique</h3>
+    <table class="summary">
+        <tr><th>Couche</th><th>Technologie</th><th>Role</th></tr>
+        <tr><td>Front-end</td><td>HTML5, CSS3, Bootstrap 5.3, jQuery</td><td>Structure, style, responsive, interactions</td></tr>
+        <tr><td>Back-end</td><td>PHP 8.3, Sessions, bcrypt, PDO</td><td>Logique metier, auth, securite, requetes BDD</td></tr>
+        <tr><td>Base de donnees</td><td>MySQL 8.x (InnoDB, utf8mb4)</td><td>16 tables, FK, ON DELETE CASCADE</td></tr>
+        <tr><td>Deploiement</td><td>Railway, Nixpacks, Git</td><td>Hebergement cloud, build auto, versioning</td></tr>
+    </table>
+
+    <h3>2.2 Architecture 3 tiers</h3>
+    <p>L'application suit une architecture classique en 3 couches :</p>
+    <ol>
+        <li><strong>Client (Navigateur)</strong> : HTML/CSS/JS → envoie des requetes HTTP et AJAX</li>
+        <li><strong>Serveur (PHP)</strong> : traite les requetes, genere le HTML ou retourne du JSON</li>
+        <li><strong>Donnees (MySQL)</strong> : stocke toutes les donnees utilisateurs, posts, messages, etc.</li>
+    </ol>
+
+    <h3>2.3 Securite</h3>
+    <ul>
+        <li><strong>Mots de passe</strong> : haches avec bcrypt via <code>password_hash()</code></li>
+        <li><strong>Injection SQL</strong> : requetes preparees PDO avec placeholders <code>?</code></li>
+        <li><strong>XSS</strong> : fonction <code>h()</code> (<code>htmlspecialchars</code>) sur toutes les sorties</li>
+        <li><strong>Sessions</strong> : <code>httponly</code>, <code>samesite=Strict</code></li>
+        <li><strong>Inscription</strong> : limitee aux emails @edu.ece.fr et @ece.fr</li>
+        <li><strong>Uploads</strong> : validation MIME + taille max</li>
+    </ul>
+
+    <h3>2.4 Base de donnees (16 tables)</h3>
+    <p>utilisateurs, formations, projets, publications, reactions, commentaires, connexions, conversations, conversation_participants, messages, notifications, emplois, evenements, albums, album_photos, appels</p>
+
+    <div class="tip">
+        <strong>Point cle a retenir :</strong> Toutes les FK utilisent ON DELETE CASCADE. La suppression d'un utilisateur supprime automatiquement toutes ses donnees associees.
+    </div>
+</div>
+
+<!-- 3. FONCTIONNALITES -->
+<div class="section page-break" id="fonctionnalites">
+    <h2>3. Toutes les fonctionnalites (24)</h2>
+
+    <h3>Authentification (F01-F03)</h3>
+    <ul>
+        <li><strong>Inscription</strong> : pseudo, email ECE, mot de passe (min 8 car.), validation serveur</li>
+        <li><strong>Connexion</strong> : par pseudo ou email + mot de passe (bcrypt), session PHP</li>
+        <li><strong>Deconnexion</strong> : destruction de session, redirection login</li>
+    </ul>
+
+    <h3>Profil (F04-F07)</h3>
+    <ul>
+        <li><strong>Gestion profil</strong> : titre, bio, localisation, site web, telephone, avatar, image de fond</li>
+        <li><strong>Formations</strong> : CRUD complet (etablissement, diplome, dates, "en cours")</li>
+        <li><strong>Projets</strong> : CRUD complet (titre, type, description, lien GitHub)</li>
+        <li><strong>Albums photo</strong> : creation d'albums, ajout de photos depuis les publications</li>
+    </ul>
+
+    <h3>Publications & interactions (F08-F11)</h3>
+    <ul>
+        <li><strong>Publications</strong> : 5 types (statut, photo, video, CV, evenement), 3 niveaux de visibilite (public, amis, prive), upload de fichiers</li>
+        <li><strong>Reactions</strong> : 4 types (J'aime, Bravo, Soutien, Interessant), 1 reaction par user par post</li>
+        <li><strong>Commentaires</strong> : ajout de commentaires texte</li>
+        <li><strong>Partage</strong> : auto-reference via publication_originale_id</li>
+    </ul>
+
+    <h3>Reseau social (F12-F13)</h3>
+    <ul>
+        <li><strong>Connexions</strong> : demande → accepter/refuser, notifications automatiques</li>
+        <li><strong>Suggestions</strong> : algorithme "amis d'amis" avec compteur d'amis en commun</li>
+    </ul>
+
+    <h3>Messagerie & appels (F14-F15)</h3>
+    <ul>
+        <li><strong>Chat prive</strong> : conversations 1-a-1, polling AJAX toutes les 3 secondes, indicateur messages non lus</li>
+        <li><strong>Appels</strong> : interface audio/video avec statuts (sonnerie, en cours, termine, refuse, manque)</li>
+    </ul>
+
+    <h3>Recherche (F16)</h3>
+    <ul>
+        <li>Recherche globale (min 2 car.) sur 3 categories : personnes, publications, emplois</li>
+    </ul>
+
+    <h3>Emplois (F17-F18)</h3>
+    <ul>
+        <li><strong>Consultation</strong> : filtres par type (CDI, CDD, stage, alternance, freelance, benevolat) et mots-cles</li>
+        <li><strong>Publication</strong> : formulaire complet reserve aux administrateurs</li>
+    </ul>
+
+    <h3>CV (F19-F20)</h3>
+    <ul>
+        <li><strong>Generation</strong> : automatique depuis les donnees du profil, 3 formats (HTML, PDF, XML)</li>
+        <li><strong>Import</strong> : fichier XML pour remplir auto les formations et projets</li>
+    </ul>
+
+    <h3>Notifications (F21)</h3>
+    <ul>
+        <li>8 types : demande_ami, ami_accepte, reaction, commentaire, partage, evenement, emploi, systeme</li>
+        <li>Badge compteur dans la navbar + page listant toutes les notifications</li>
+    </ul>
+
+    <h3>Administration (F22)</h3>
+    <ul>
+        <li>Dashboard avec stats (utilisateurs, publications, connexions, emplois)</li>
+        <li>CRUD utilisateurs : creer, changer role, activer/desactiver</li>
+    </ul>
+
+    <h3>Theming & responsive (F23-F24)</h3>
+    <ul>
+        <li>Themes saisonniers automatiques (Noel, Saint-Valentin, Nouvel An)</li>
+        <li>Design responsive Bootstrap 5 + barre de navigation mobile</li>
+    </ul>
+</div>
+
+<!-- 4. DEMO -->
+<div class="section page-break" id="demo">
+    <h2>4. Script de la demo — Quoi montrer</h2>
+
+    <div class="warning">
+        <strong>Important :</strong> Prepare ta demo AVANT la soutenance. Verifie que le site fonctionne (en local ou sur Railway).
+        Garde un navigateur ouvert avec le site pret. Prevois un compte de test deja connecte.
+    </div>
+
+    <h3>Compte de demo</h3>
+    <p>Utilise le compte <strong>jdupont</strong> (mot de passe : password) pour la demo auteur, et <strong>admin</strong> (mot de passe : password) pour la partie admin.</p>
+
+    <h3>Parcours de demo (10 min max)</h3>
+
+    <div class="demo-step">
+        <div class="demo-num">1</div>
+        <div class="demo-content">
+            <strong>Page de connexion (login.php)</strong><br>
+            Montrer le formulaire de connexion avec les 2 onglets (Connexion / Inscription).
+            Montrer que l'inscription exige un email ECE. Se connecter avec jdupont.
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="demo-num">2</div>
+        <div class="demo-content">
+            <strong>Fil d'actualite (index.php)</strong><br>
+            Montrer le layout 3 colonnes. Montrer le carrousel d'evenements en haut.
+            Publier un nouveau statut avec la zone "Quoi de neuf ?". Montrer les reactions et commentaires sur un post existant.
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="demo-num">3</div>
+        <div class="demo-content">
+            <strong>Profil (profil.php)</strong><br>
+            Montrer la banniere avec avatar + image de fond. Naviguer dans les 7 onglets.
+            Montrer les formations et projets. Aller sur l'onglet CV et montrer la generation automatique.
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="demo-num">4</div>
+        <div class="demo-content">
+            <strong>Mon Reseau (reseau.php)</strong><br>
+            Montrer les invitations recues, les connexions existantes et les suggestions d'amis.
+            Montrer le bouton "Se connecter" sur une suggestion.
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="demo-num">5</div>
+        <div class="demo-content">
+            <strong>Messagerie (messagerie.php)</strong><br>
+            Montrer l'interface de chat (liste conversations + fenetre de chat).
+            Envoyer un message et montrer qu'il apparait en temps reel.
+            Montrer les boutons d'appel audio/video.
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="demo-num">6</div>
+        <div class="demo-content">
+            <strong>Notifications (notifications.php)</strong><br>
+            Montrer le badge compteur dans la navbar. Montrer la page avec les differents types de notifications.
+            Montrer le bouton "Tout marquer comme lu".
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="demo-num">7</div>
+        <div class="demo-content">
+            <strong>Emplois (emplois.php)</strong><br>
+            Montrer les offres avec les filtres (type de contrat, mots-cles).
+            Montrer les badges couleur (Stage, Alternance, CDI).
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="demo-num">8</div>
+        <div class="demo-content">
+            <strong>Recherche (recherche.php)</strong><br>
+            Faire une recherche (ex: "machine learning") et montrer les 3 categories de resultats.
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="demo-num">9</div>
+        <div class="demo-content">
+            <strong>Panel Admin (admin/index.php)</strong><br>
+            Se deconnecter et se reconnecter en admin. Montrer les statistiques.
+            Montrer la liste des utilisateurs avec les actions (role, activer/desactiver, ajouter).
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="demo-num">10</div>
+        <div class="demo-content">
+            <strong>Bonus : themes saisonniers</strong><br>
+            Si possible, montrer le theme Noel ou Saint-Valentin (en modifiant temporairement la date).
+        </div>
+    </div>
+</div>
+
+<!-- 5. DISCOURS -->
+<div class="section page-break" id="discours">
+    <h2>5. Script du discours — Quoi dire</h2>
+
+    <div class="tip">
+        <strong>Conseil :</strong> Repartissez le discours entre Emmanuel et Nikola. Chacun presente les parties qu'il a "faites".
+    </div>
+
+    <h3>Repartition suggeree du discours</h3>
+
+    <h4>Emmanuel presente :</h4>
+    <ul>
+        <li>Introduction et contexte du projet (1 min)</li>
+        <li>Demo du front-end : login, fil d'actualite, profil, messagerie (5 min)</li>
+        <li>Architecture technique et deploiement Railway (2 min)</li>
+        <li>Difficultes rencontrees et solutions (1 min)</li>
+    </ul>
+
+    <h4>Nikola presente :</h4>
+    <ul>
+        <li>Conception de la base de donnees (MCD + modele relationnel) (2 min)</li>
+        <li>Demo : reseau, notifications, emplois, admin (3 min)</li>
+        <li>Securite et authentification (1 min)</li>
+        <li>Generation de CV et import XML (1 min)</li>
+        <li>Bilan collectif et perspectives (1 min)</li>
+    </ul>
+
+    <h3>Phrases cles a placer</h3>
+    <ul>
+        <li>"Notre application suit une architecture 3 tiers classique : client Bootstrap, serveur PHP 8.3 et base MySQL."</li>
+        <li>"Nous avons 16 tables en base avec des cles etrangeres et ON DELETE CASCADE pour maintenir l'integrite referentielle."</li>
+        <li>"Toutes les interactions dynamiques passent par nos 9 endpoints API en AJAX, qui retournent du JSON."</li>
+        <li>"La securite est geree a plusieurs niveaux : bcrypt pour les mots de passe, PDO prepare pour les injections SQL, htmlspecialchars pour le XSS, et sessions httponly."</li>
+        <li>"La messagerie utilise du polling AJAX toutes les 3 secondes pour simuler le temps reel."</li>
+        <li>"Le CV est genere automatiquement a partir des donnees du profil en 3 formats : HTML, PDF et XML."</li>
+        <li>"Nous avons ajoute des themes saisonniers qui s'activent automatiquement selon la date : Noel et Saint-Valentin."</li>
+        <li>"L'application est deployee sur Railway avec auto-deploy depuis Git."</li>
+    </ul>
+</div>
+
+<!-- 6. QUESTIONS -->
+<div class="section page-break" id="questions">
+    <h2>6. Questions du prof et reponses preparees</h2>
+
+    <h3>6.1 Questions techniques</h3>
+
+    <div class="qa">
+        <div class="qa-q">Q: Pourquoi avoir choisi PHP plutot qu'un framework comme Laravel ou Node.js ?</div>
+        <div class="qa-a">Le sujet impose PHP et jQuery comme technologies. Nous avons choisi du PHP natif pour mieux comprendre les mecanismes sous-jacents (sessions, PDO, requetes preparees) plutot que de nous appuyer sur un framework qui masque cette complexite. Bootstrap 5 nous a fourni le framework CSS necessaire pour le responsive.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Comment fonctionne votre systeme d'authentification ?</div>
+        <div class="qa-a">L'utilisateur entre son pseudo ou email + mot de passe. On recherche l'utilisateur en base, on verifie le mot de passe avec <code>password_verify()</code> (bcrypt). Si valide, on cree une session PHP avec les infos utilisateur (<code>$_SESSION['utilisateur_id']</code>, <code>pseudo</code>, <code>role</code>). Chaque page appelle <code>requireConnexion()</code> qui verifie la session. Les sessions sont configurees en <code>httponly</code> et <code>samesite=Strict</code> pour la securite.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Comment gerez-vous les injections SQL ?</div>
+        <div class="qa-a">Toutes nos requetes utilisent PDO avec des requetes preparees et des placeholders <code>?</code>. On ne concatene jamais de variables directement dans les requetes SQL. Par exemple : <code>$stmt = $db->prepare("SELECT * FROM utilisateurs WHERE pseudo = ?"); $stmt->execute([$pseudo]);</code></div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Comment fonctionne la messagerie en temps reel ?</div>
+        <div class="qa-a">Nous utilisons du polling AJAX : le navigateur interroge le serveur toutes les 3 secondes via <code>api/messages.php</code> en envoyant l'ID du dernier message recu. Le serveur retourne les nouveaux messages en JSON, et le JavaScript met a jour le DOM. Ce n'est pas du vrai temps reel comme les WebSockets, mais c'est fonctionnel et simple a implementer avec PHP.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Pourquoi avoir choisi le polling plutot que les WebSockets ?</div>
+        <div class="qa-a">Les WebSockets necessitent un serveur persistant (Node.js, Ratchet en PHP), ce qui complique le deploiement et sort du cadre du projet. Le polling toutes les 3 secondes est un bon compromis entre reactivite et simplicite, et il fonctionne bien avec le serveur PHP built-in.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Comment gerez-vous la visibilite des publications ?</div>
+        <div class="qa-a">Chaque publication a un champ <code>visibilite</code> (ENUM : public, amis, prive). Cote serveur, dans la requete SQL du fil d'actualite, on filtre : les posts publics sont visibles par tous, les posts "amis" sont visibles uniquement si l'auteur est dans le reseau de l'utilisateur connecte (jointure avec la table connexions, statut "accepte"), et les posts "prive" ne sont visibles que par l'auteur.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Comment fonctionne la generation de CV ?</div>
+        <div class="qa-a">Le fichier <code>cv/generer_cv.php</code> recupere les donnees du profil (informations, formations, projets) depuis MySQL et genere le CV en 3 formats : HTML (affichage web dans un iframe), PDF (via l'impression du navigateur <code>window.print()</code>), et XML (export structure). On peut aussi importer un fichier XML via <code>api/import_cv.php</code> pour remplir automatiquement les formations et projets du profil.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Expliquez votre modele entite-association.</div>
+        <div class="qa-a">Notre MCD contient 16 entites centrees autour de la table UTILISATEURS. Les relations principales : un utilisateur possede des formations et projets (1,N), publie des publications (1,N), a des connexions bidirectionnelles avec d'autres utilisateurs, participe a des conversations (N,M via table de jonction), et peut creer des albums qui regroupent des publications photo (N,M). Les reactions ont une contrainte UNIQUE (publication_id, utilisateur_id) pour empecher les doublons.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Qu'est-ce que ON DELETE CASCADE et pourquoi l'utiliser ?</div>
+        <div class="qa-a">ON DELETE CASCADE signifie que quand on supprime un enregistrement parent, tous les enregistrements enfants lies par la cle etrangere sont automatiquement supprimes. Par exemple, si on supprime un utilisateur, toutes ses publications, reactions, commentaires, messages et formations sont supprimes automatiquement. Cela garantit l'integrite referentielle sans avoir a gerer manuellement les suppressions en cascade dans le code PHP.</div>
+    </div>
+
+    <h3>6.2 Questions sur le projet</h3>
+
+    <div class="qa">
+        <div class="qa-q">Q: Comment avez-vous reparti le travail ?</div>
+        <div class="qa-a">Emmanuel s'est charge du front-end (integration Bootstrap, pages PHP, messagerie, deploiement Railway) et Nikola de la conception back-end (MCD, schema SQL, authentification, panel admin, CV, specs fonctionnelles). Nous avons utilise Git pour la collaboration et nous nous sommes coordonnes regulierement.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Quelle a ete la difficulte principale ?</div>
+        <div class="qa-a">Le deploiement sur Railway a ete le plus complexe. Le systeme de fichiers est ephemere (les uploads disparaissent au redemarrage), ce qui nous a obliges a stocker les photos en LONGBLOB directement dans la base de donnees. De plus, la gestion des variables d'environnement MySQL (MYSQL_URL vs variables separees) a necessite plusieurs iterations de debug.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Qu'est-ce que vous feriez differemment si vous recommenciez ?</div>
+        <div class="qa-a">On utiliserait WebSockets (avec Node.js ou Ratchet) pour la messagerie temps reel, un systeme de stockage cloud (S3) pour les fichiers, et on ajouterait des tests automatises. On pourrait aussi utiliser un ORM pour simplifier les requetes SQL et un systeme de cache (Redis) pour les performances.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Comment avez-vous utilise l'IA dans ce projet ?</div>
+        <div class="qa-a">Nous avons utilise Cursor IDE avec le modele Claude pour le brainstorming, le debogage, et des suggestions de fragments de code (structures CSS, logique de formulaires, requetes SQL). Environ 35% du code a ete influence par l'IA, mais tout a ete relu, compris et adapte par l'equipe. Les choix d'architecture et la logique metier sont entierement les notres.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Quelles sont les limites de votre application ?</div>
+        <div class="qa-a">Le polling n'est pas du vrai temps reel. Les appels audio/video sont enregistres en base mais ne font pas de veritable communication WebRTC. Il n'y a pas de pagination sur le fil d'actualite (tous les posts sont charges). La recherche est basique (LIKE SQL, pas de full-text). Et le stockage en LONGBLOB n'est pas optimal pour de gros volumes de fichiers.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Comment fonctionne le systeme de notifications ?</div>
+        <div class="qa-a">Les notifications sont creees automatiquement par le code PHP lors de certaines actions : demande d'ami, acceptation, reaction, commentaire, partage, nouvel evenement, nouvelle offre. Elles sont stockees dans la table notifications avec un type, un message, un lien et un boolean "lue". Le badge dans la navbar affiche le nombre de notifications non lues, et la page notifications permet de les consulter et de les marquer comme lues.</div>
+    </div>
+
+    <h3>6.3 Questions pieges</h3>
+
+    <div class="qa">
+        <div class="qa-q">Q: Montrez-moi dans le code ou vous faites X (ex: la verification bcrypt).</div>
+        <div class="qa-a"><strong>Sois pret a ouvrir le code !</strong> La verification bcrypt est dans <code>login.php</code> avec <code>password_verify($mdp, $user['mot_de_passe'])</code>. Les requetes preparees sont dans tous les fichiers PHP (<code>$db->prepare("...")->execute([...])</code>). Le filtre de visibilite est dans <code>index.php</code> dans la requete SQL du fil d'actualite.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Pourquoi tous les commits sont d'un seul auteur ?</div>
+        <div class="qa-a">Nikola a travaille principalement sur la conception (MCD, specs, documentation) et sur des taches qui ne generent pas de commits (tests fonctionnels, corrections). Emmanuel a fait la majorite des commits car il gerait l'integration du code et le deploiement. Nous aurions du mieux repartir les commits.</div>
+    </div>
+
+    <div class="qa">
+        <div class="qa-q">Q: Ce code a-t-il ete genere par l'IA ?</div>
+        <div class="qa-a">L'IA a ete utilisee comme outil d'assistance (brainstorming, debugging, suggestions de fragments) mais pas comme generateur complet. Nous pouvons expliquer chaque partie du code car nous l'avons relu, compris et adapte. Le journal d'assistance IA dans le PPT detaille exactement ou et comment l'IA a ete utilisee.</div>
+    </div>
+</div>
+
+<!-- 7. CHECKLIST -->
+<div class="section page-break" id="checklist">
+    <h2>7. Checklist avant la soutenance</h2>
+
+    <h3>La veille</h3>
+    <ul class="checklist">
+        <li>Verifier que le site fonctionne (Railway ou localhost)</li>
+        <li>Ouvrir le PowerPoint et le parcourir</li>
+        <li>Relire ce guide de soutenance</li>
+        <li>Preparer les comptes de demo (jdupont / admin)</li>
+        <li>Tester la demo une fois en entier</li>
+        <li>Deposer le livrable sur Boostcamp</li>
+    </ul>
+
+    <h3>Le jour J</h3>
+    <ul class="checklist">
+        <li>Avoir le PC charge et avec connexion Internet</li>
+        <li>Ouvrir le navigateur avec le site pret</li>
+        <li>Ouvrir le PowerPoint</li>
+        <li>Avoir Cursor/VSCode ouvert avec le code (au cas ou le prof demande de montrer du code)</li>
+        <li>Avoir le GitHub ouvert dans un onglet</li>
+    </ul>
+
+    <h3>Fichiers a deposer dans le livrable</h3>
+    <ul class="checklist">
+        <li>Code source complet (dossier du projet)</li>
+        <li>database/schema.sql + database/dump.sql</li>
+        <li>ECE_In_Soutenance.pptx (PowerPoint)</li>
+        <li>livrable/01-design-front.html</li>
+        <li>livrable/02-modele-entite-association.html</li>
+        <li>livrable/03-architecture-systeme.html</li>
+        <li>livrable/04-specifications-fonctionnelles.html</li>
+    </ul>
+
+    <div class="danger">
+        <strong>Rappel deadline :</strong> Le livrable 2 est a deposer le mercredi 11 mars 2026 a 23h55 sur Boostcamp. Archive ZIP de 100 Mo max.
+    </div>
+</div>
+
+</body>
+</html>

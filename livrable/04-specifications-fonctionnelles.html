@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECE In — Specifications Fonctionnelles</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root { --primary: #0a66c2; --dark: #1a1a2e; --gray: #6c757d; --light: #f4f6f8; --border: #dee2e6; --success: #198754; --warning: #ffc107; --danger: #dc3545; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #333; line-height: 1.6; background: #fff; }
+        .page-break { page-break-before: always; }
+        .doc-header { background: var(--dark); color: #fff; padding: 60px 40px; text-align: center; }
+        .doc-header h1 { font-size: 2.4rem; margin-bottom: 8px; }
+        .doc-header .subtitle { font-size: 1.1rem; opacity: .8; }
+        .doc-header .meta { margin-top: 16px; font-size: .9rem; opacity: .6; }
+        .logo { font-size: 2rem; font-weight: 900; margin-bottom: 12px; }
+        .logo .ece { color: #fff; } .logo .in { color: #3b82f6; }
+        .section { max-width: 1100px; margin: 0 auto; padding: 48px 32px; }
+        .section h2 { font-size: 1.6rem; color: var(--dark); border-bottom: 3px solid var(--primary); padding-bottom: 8px; margin-bottom: 24px; }
+        .section h3 { font-size: 1.15rem; color: var(--primary); margin: 28px 0 12px; }
+        .section h4 { font-size: 1rem; color: var(--dark); margin: 20px 0 8px; }
+        .section p, .section li { font-size: .95rem; color: var(--gray); line-height: 1.7; }
+        .section ul, .section ol { padding-left: 22px; margin-bottom: 14px; }
+        .mermaid-wrapper { background: var(--light); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin: 24px 0; overflow-x: auto; }
+        table.spec-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .88rem; }
+        table.spec-table th { background: var(--dark); color: #fff; padding: 10px 14px; text-align: left; }
+        table.spec-table td { padding: 8px 14px; border-bottom: 1px solid #eee; vertical-align: top; }
+        table.spec-table tr:nth-child(even) { background: #f9fafb; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: .78rem; font-weight: 600; }
+        .badge-blue { background: #e8f0fe; color: var(--primary); }
+        .badge-green { background: #d4edda; color: #155724; }
+        .badge-orange { background: #fff3cd; color: #856404; }
+        .badge-red { background: #f8d7da; color: #721c24; }
+        .badge-purple { background: #e8d5f5; color: #6f42c1; }
+        .feature-card { border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 12px 0; background: #fff; }
+        .feature-card h4 { color: var(--primary); margin: 0 0 8px; font-size: .95rem; }
+        .feature-card p { margin: 0; font-size: .88rem; }
+        .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .priority-high { border-left: 4px solid var(--danger); }
+        .priority-medium { border-left: 4px solid var(--warning); }
+        .priority-low { border-left: 4px solid var(--success); }
+        .uc-card { border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 16px 0; background: var(--light); }
+        .uc-card h4 { color: var(--dark); margin: 0 0 12px; }
+        .uc-field { margin-bottom: 8px; }
+        .uc-label { font-weight: 700; font-size: .85rem; color: var(--dark); display: inline; }
+        .uc-value { font-size: .88rem; color: var(--gray); }
+        @media print {
+            .mermaid-wrapper { page-break-inside: avoid; }
+            .section { padding: 24px 16px; }
+            .feature-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PAGE DE GARDE -->
+<div class="doc-header">
+    <div class="logo"><span class="ece">ECE</span><span class="in">In</span></div>
+    <h1>Specifications Fonctionnelles</h1>
+    <div class="subtitle">Fonctionnalites, roles utilisateurs et cas d'utilisation</div>
+    <div class="meta">Livrable de conception — Mars 2026</div>
+</div>
+
+<!-- TABLE DES MATIERES -->
+<div class="section">
+    <h2>Table des matieres</h2>
+    <ol style="font-size:.95rem; line-height:2.2">
+        <li><a href="#presentation" style="color:var(--primary)">Presentation du projet</a></li>
+        <li><a href="#roles" style="color:var(--primary)">Roles des utilisateurs</a></li>
+        <li><a href="#fonctionnalites" style="color:var(--primary)">Liste des fonctionnalites principales</a></li>
+        <li><a href="#cas-utilisation" style="color:var(--primary)">Cas d'utilisation</a></li>
+        <li><a href="#regles-metier" style="color:var(--primary)">Regles metier</a></li>
+    </ol>
+</div>
+
+<!-- 1. PRESENTATION -->
+<div class="section page-break" id="presentation">
+    <h2>1. Presentation du projet</h2>
+
+    <h3>1.1 Contexte</h3>
+    <p>
+        <strong>ECE In</strong> est un reseau social professionnel destine a la communaute de l'ECE Paris
+        (etudiants, enseignants, alumni et personnel). Inspire de LinkedIn, il permet aux membres de
+        creer un profil professionnel, de partager des publications, de gerer leur reseau de contacts,
+        d'echanger par messagerie, de consulter des offres d'emploi et de generer leur CV.
+    </p>
+
+    <h3>1.2 Objectifs</h3>
+    <ul>
+        <li>Offrir une plateforme de mise en reseau professionnel pour la communaute ECE Paris</li>
+        <li>Permettre aux etudiants de valoriser leurs competences, formations et projets</li>
+        <li>Faciliter la recherche de stages, alternances et emplois via une section dediee</li>
+        <li>Permettre la communication en temps reel entre membres (messagerie, appels)</li>
+        <li>Fournir aux administrateurs des outils de gestion de la communaute</li>
+    </ul>
+
+    <h3>1.3 Public cible</h3>
+    <table class="spec-table">
+        <tr><th>Profil</th><th>Description</th><th>Besoins principaux</th></tr>
+        <tr><td>Etudiants ECE</td><td>Etudiants en formation d'ingenieur (ING1 a ING5)</td><td>Profil pro, CV, reseau, stages/emplois</td></tr>
+        <tr><td>Enseignants ECE</td><td>Professeurs et vacataires</td><td>Communication, partage d'evenements, recrutement</td></tr>
+        <tr><td>Alumni ECE</td><td>Anciens eleves</td><td>Reseau professionnel, offres d'emploi, mentorat</td></tr>
+        <tr><td>Administrateurs</td><td>Equipe gestionnaire de la plateforme</td><td>Moderation, gestion des comptes, publication d'offres</td></tr>
+    </table>
+</div>
+
+<!-- 2. ROLES UTILISATEURS -->
+<div class="section page-break" id="roles">
+    <h2>2. Roles des utilisateurs</h2>
+
+    <p>Le systeme distingue trois niveaux d'acces :</p>
+
+    <table class="spec-table">
+        <tr><th>Role</th><th>Description</th><th>Acces</th></tr>
+        <tr>
+            <td><span class="badge badge-red">Visiteur</span></td>
+            <td>Utilisateur non authentifie</td>
+            <td>
+                <ul style="padding-left:16px;margin:0">
+                    <li>Page de connexion (login.php)</li>
+                    <li>Formulaire d'inscription</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">Auteur</span></td>
+            <td>Utilisateur authentifie avec le role "auteur" (par defaut)</td>
+            <td>
+                <ul style="padding-left:16px;margin:0">
+                    <li>Fil d'actualite (publications, reactions, commentaires)</li>
+                    <li>Profil complet (7 onglets : infos, publications, formations, projets, albums, CV, parametres)</li>
+                    <li>Reseau d'amis (demandes, acceptation, suggestions)</li>
+                    <li>Messagerie privee et appels audio/video</li>
+                    <li>Recherche (personnes, publications, emplois)</li>
+                    <li>Notifications en temps reel</li>
+                    <li>Consultation des offres d'emploi</li>
+                    <li>Generation et export de CV (HTML, PDF, XML)</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-purple">Administrateur</span></td>
+            <td>Utilisateur avec le role "administrateur"</td>
+            <td>
+                <ul style="padding-left:16px;margin:0">
+                    <li>Toutes les fonctionnalites de l'auteur</li>
+                    <li>Panel d'administration (admin/index.php)</li>
+                    <li>Gestion des utilisateurs (creation, modification de role, activation/desactivation)</li>
+                    <li>Publication d'offres d'emploi</li>
+                    <li>Suppression de publications de n'importe quel utilisateur</li>
+                    <li>Statistiques de la plateforme</li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+
+    <h3>Diagramme des acteurs</h3>
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart LR
+    V["Visiteur"]
+    A["Auteur"]
+    ADM["Administrateur"]
+
+    V -->|"S'inscrire / Se connecter"| A
+    A -->|"Promotion de role"| ADM
+
+    subgraph acces_v ["Acces Visiteur"]
+        LOGIN2["Connexion"]
+        INSCR["Inscription"]
+    end
+
+    subgraph acces_a ["Acces Auteur"]
+        FEED2["Fil d'actualite"]
+        PROFIL2["Profil + CV"]
+        RESEAU2["Reseau"]
+        MSG2["Messagerie + Appels"]
+        RECH2["Recherche"]
+        EMPL2["Emplois"]
+        NOTIF2["Notifications"]
+    end
+
+    subgraph acces_adm ["Acces Administrateur"]
+        PANEL["Panel Admin"]
+        GESTION["Gestion utilisateurs"]
+        PUB_EMPLOI["Publication offres"]
+        STATS["Statistiques"]
+    end
+
+    V --> acces_v
+    A --> acces_a
+    ADM --> acces_adm
+    ADM --> acces_a
+        </pre>
+    </div>
+</div>
+
+<!-- 3. FONCTIONNALITES -->
+<div class="section page-break" id="fonctionnalites">
+    <h2>3. Liste des fonctionnalites principales</h2>
+
+    <p>Les fonctionnalites sont classees par priorite : <span class="badge badge-red">Haute</span> <span class="badge badge-orange">Moyenne</span> <span class="badge badge-green">Basse</span></p>
+
+    <h3>3.1 Authentification &amp; inscription</h3>
+    <div class="feature-grid">
+        <div class="feature-card priority-high">
+            <h4>F01 — Inscription <span class="badge badge-red">Haute</span></h4>
+            <p>Creation de compte avec pseudo, email ECE (@edu.ece.fr ou @ece.fr), mot de passe (min. 8 caracteres). Validation des champs cote serveur.</p>
+        </div>
+        <div class="feature-card priority-high">
+            <h4>F02 — Connexion <span class="badge badge-red">Haute</span></h4>
+            <p>Authentification par pseudo ou email + mot de passe. Session PHP securisee (httponly, samesite). Hash bcrypt.</p>
+        </div>
+        <div class="feature-card priority-high">
+            <h4>F03 — Deconnexion <span class="badge badge-red">Haute</span></h4>
+            <p>Destruction de session et redirection vers la page de connexion.</p>
+        </div>
+    </div>
+
+    <h3>3.2 Profil utilisateur</h3>
+    <div class="feature-grid">
+        <div class="feature-card priority-high">
+            <h4>F04 — Gestion du profil <span class="badge badge-red">Haute</span></h4>
+            <p>Edition du titre, biographie, localisation, site web, telephone. Upload d'avatar et d'image de fond.</p>
+        </div>
+        <div class="feature-card priority-high">
+            <h4>F05 — Formations <span class="badge badge-red">Haute</span></h4>
+            <p>CRUD des formations academiques (etablissement, diplome, domaine, dates, description).</p>
+        </div>
+        <div class="feature-card priority-high">
+            <h4>F06 — Projets <span class="badge badge-red">Haute</span></h4>
+            <p>CRUD des projets (titre, type, description, dates, lien GitHub/web). Marquage "en cours".</p>
+        </div>
+        <div class="feature-card priority-medium">
+            <h4>F07 — Albums photo <span class="badge badge-orange">Moyenne</span></h4>
+            <p>Creation d'albums photo, ajout de publications de type photo dans un album.</p>
+        </div>
+    </div>
+
+    <h3>3.3 Publications &amp; interactions</h3>
+    <div class="feature-grid">
+        <div class="feature-card priority-high">
+            <h4>F08 — Publications <span class="badge badge-red">Haute</span></h4>
+            <p>Creation de publications (statut, photo, video, CV, evenement). Choix de visibilite : public, amis, prive. Upload de fichiers.</p>
+        </div>
+        <div class="feature-card priority-high">
+            <h4>F09 — Reactions <span class="badge badge-red">Haute</span></h4>
+            <p>4 types de reactions : J'aime, Bravo, Soutien, Interessant. Une reaction par utilisateur par publication.</p>
+        </div>
+        <div class="feature-card priority-high">
+            <h4>F10 — Commentaires <span class="badge badge-red">Haute</span></h4>
+            <p>Ajout de commentaires texte sur les publications.</p>
+        </div>
+        <div class="feature-card priority-medium">
+            <h4>F11 — Partage <span class="badge badge-orange">Moyenne</span></h4>
+            <p>Partage d'une publication existante (auto-reference via publication_originale_id).</p>
+        </div>
+    </div>
+
+    <h3>3.4 Reseau social</h3>
+    <div class="feature-grid">
+        <div class="feature-card priority-high">
+            <h4>F12 — Demandes de connexion <span class="badge badge-red">Haute</span></h4>
+            <p>Envoi, acceptation, refus et annulation de demandes d'amitie. Notification au destinataire.</p>
+        </div>
+        <div class="feature-card priority-medium">
+            <h4>F13 — Suggestions d'amis <span class="badge badge-orange">Moyenne</span></h4>
+            <p>Algorithme "amis d'amis" pour suggerer des connexions pertinentes avec compteur d'amis en commun.</p>
+        </div>
+    </div>
+
+    <h3>3.5 Messagerie &amp; appels</h3>
+    <div class="feature-grid">
+        <div class="feature-card priority-high">
+            <h4>F14 — Messagerie privee <span class="badge badge-red">Haute</span></h4>
+            <p>Conversations 1-a-1 avec les amis. Envoi de messages texte. Polling automatique (toutes les 3s). Indicateur de messages non lus.</p>
+        </div>
+        <div class="feature-card priority-medium">
+            <h4>F15 — Appels audio/video <span class="badge badge-orange">Moyenne</span></h4>
+            <p>Interface d'appels avec statuts (sonnerie, en cours, termine, refuse, manque). Enregistrement dans la table appels.</p>
+        </div>
+    </div>
+
+    <h3>3.6 Recherche</h3>
+    <div class="feature-grid">
+        <div class="feature-card priority-high">
+            <h4>F16 — Recherche globale <span class="badge badge-red">Haute</span></h4>
+            <p>Recherche par mots-cles (min. 2 caracteres) sur 3 categories : personnes (nom, prenom, pseudo, titre), publications (contenu public), emplois (titre, entreprise, description).</p>
+        </div>
+    </div>
+
+    <h3>3.7 Emplois &amp; stages</h3>
+    <div class="feature-grid">
+        <div class="feature-card priority-high">
+            <h4>F17 — Consultation des offres <span class="badge badge-red">Haute</span></h4>
+            <p>Liste filtrable des offres (type, mots-cles). 6 types de contrat : CDI, CDD, stage, alternance, freelance, benevolat. Liens de candidature et email de contact.</p>
+        </div>
+        <div class="feature-card priority-high">
+            <h4>F18 — Publication d'offres (admin) <span class="badge badge-red">Haute</span></h4>
+            <p>Formulaire complet de publication d'offre d'emploi reserve aux administrateurs.</p>
+        </div>
+    </div>
+
+    <h3>3.8 CV</h3>
+    <div class="feature-grid">
+        <div class="feature-card priority-medium">
+            <h4>F19 — Generation de CV <span class="badge badge-orange">Moyenne</span></h4>
+            <p>Generation automatique du CV a partir des donnees du profil (formations, projets, bio). 3 formats : HTML (web), PDF (impression navigateur), XML (export structuree).</p>
+        </div>
+        <div class="feature-card priority-medium">
+            <h4>F20 — Import de CV (XML) <span class="badge badge-orange">Moyenne</span></h4>
+            <p>Import d'un fichier CV au format XML pour remplir automatiquement les formations et projets du profil.</p>
+        </div>
+    </div>
+
+    <h3>3.9 Notifications</h3>
+    <div class="feature-grid">
+        <div class="feature-card priority-high">
+            <h4>F21 — Systeme de notifications <span class="badge badge-red">Haute</span></h4>
+            <p>Notifications en temps reel : demande d'ami, ami accepte, reaction, commentaire, partage, evenement, emploi, systeme. Badge de compteur dans la navbar. Page listant toutes les notifications.</p>
+        </div>
+    </div>
+
+    <h3>3.10 Administration</h3>
+    <div class="feature-grid">
+        <div class="feature-card priority-high">
+            <h4>F22 — Panel d'administration <span class="badge badge-red">Haute</span></h4>
+            <p>Dashboard avec statistiques (utilisateurs, publications, connexions, emplois). Liste filtrable des utilisateurs avec actions : creer un compte, changer de role, activer/desactiver.</p>
+        </div>
+    </div>
+
+    <h3>3.11 Theming &amp; responsive</h3>
+    <div class="feature-grid">
+        <div class="feature-card priority-low">
+            <h4>F23 — Themes saisonniers <span class="badge badge-green">Basse</span></h4>
+            <p>Themes CSS automatiques selon la date : Noel, Saint-Valentin, Nouvel An. Detection automatique dans header.php.</p>
+        </div>
+        <div class="feature-card priority-medium">
+            <h4>F24 — Interface responsive / mobile <span class="badge badge-orange">Moyenne</span></h4>
+            <p>Design adaptatif Bootstrap 5. Barre de navigation mobile en bas de l'ecran. En-tete mobile compact.</p>
+        </div>
+    </div>
+</div>
+
+<!-- 4. CAS D'UTILISATION -->
+<div class="section page-break" id="cas-utilisation">
+    <h2>4. Cas d'utilisation</h2>
+
+    <h3>4.1 Diagramme de cas d'utilisation</h3>
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart TB
+    subgraph system ["Systeme ECE In"]
+        UC1["S'inscrire"]
+        UC2["Se connecter"]
+        UC3["Gerer son profil"]
+        UC4["Publier du contenu"]
+        UC5["Reagir / Commenter"]
+        UC6["Gerer son reseau"]
+        UC7["Envoyer des messages"]
+        UC8["Passer un appel"]
+        UC9["Rechercher"]
+        UC10["Consulter les emplois"]
+        UC11["Generer son CV"]
+        UC12["Gerer les utilisateurs"]
+        UC13["Publier une offre"]
+    end
+
+    V["Visiteur"] --> UC1
+    V --> UC2
+
+    A["Auteur"] --> UC3
+    A --> UC4
+    A --> UC5
+    A --> UC6
+    A --> UC7
+    A --> UC8
+    A --> UC9
+    A --> UC10
+    A --> UC11
+
+    ADM["Administrateur"] --> UC12
+    ADM --> UC13
+    ADM --> UC4
+    ADM --> UC5
+        </pre>
+    </div>
+
+    <h3>4.2 Details des cas d'utilisation</h3>
+
+    <!-- UC1 -->
+    <div class="uc-card">
+        <h4>CU-01 : S'inscrire sur ECE In</h4>
+        <div class="uc-field"><span class="uc-label">Acteur principal :</span> <span class="uc-value">Visiteur</span></div>
+        <div class="uc-field"><span class="uc-label">Pre-conditions :</span> <span class="uc-value">L'utilisateur possede une adresse email ECE (@edu.ece.fr ou @ece.fr)</span></div>
+        <div class="uc-field"><span class="uc-label">Scenario nominal :</span></div>
+        <ol>
+            <li>Le visiteur accede a la page de connexion (login.php)</li>
+            <li>Il clique sur l'onglet "S'inscrire"</li>
+            <li>Il remplit le formulaire : prenom, nom, pseudo, email ECE, mot de passe (x2)</li>
+            <li>Il accepte les conditions d'utilisation</li>
+            <li>Le systeme valide les champs (format email, unicite pseudo/email, force mdp)</li>
+            <li>Le systeme cree le compte avec le role "auteur" et hash bcrypt du mdp</li>
+            <li>Un message de succes s'affiche, redirection vers le formulaire de connexion</li>
+        </ol>
+        <div class="uc-field"><span class="uc-label">Scenarios alternatifs :</span></div>
+        <ul>
+            <li>5a. Email non ECE → message d'erreur "Seules les adresses email ECE sont autorisees"</li>
+            <li>5b. Pseudo deja pris → message d'erreur "Ce pseudo est deja utilise"</li>
+            <li>5c. Mot de passe trop court → message d'erreur "Min. 8 caracteres"</li>
+        </ul>
+        <div class="uc-field"><span class="uc-label">Post-conditions :</span> <span class="uc-value">Un nouveau compte utilisateur est cree dans la base avec statut actif</span></div>
+    </div>
+
+    <!-- UC2 -->
+    <div class="uc-card">
+        <h4>CU-02 : Se connecter</h4>
+        <div class="uc-field"><span class="uc-label">Acteur principal :</span> <span class="uc-value">Visiteur</span></div>
+        <div class="uc-field"><span class="uc-label">Pre-conditions :</span> <span class="uc-value">L'utilisateur possede un compte actif</span></div>
+        <div class="uc-field"><span class="uc-label">Scenario nominal :</span></div>
+        <ol>
+            <li>Le visiteur saisit son pseudo (ou email) et son mot de passe</li>
+            <li>Le systeme recherche l'utilisateur dans la base</li>
+            <li>Le systeme verifie le mot de passe via bcrypt</li>
+            <li>Une session est creee ($_SESSION[utilisateur_id, pseudo, role])</li>
+            <li>La derniere connexion est mise a jour</li>
+            <li>Redirection vers le fil d'actualite (index.php)</li>
+        </ol>
+        <div class="uc-field"><span class="uc-label">Scenarios alternatifs :</span></div>
+        <ul>
+            <li>2a. Utilisateur introuvable → "Pseudo ou email introuvable"</li>
+            <li>3a. Mot de passe incorrect → "Mot de passe incorrect"</li>
+            <li>2b. Compte desactive → l'utilisateur n'est pas trouve (actif = 0)</li>
+        </ul>
+    </div>
+
+    <!-- UC3 -->
+    <div class="uc-card">
+        <h4>CU-03 : Publier du contenu</h4>
+        <div class="uc-field"><span class="uc-label">Acteur principal :</span> <span class="uc-value">Auteur</span></div>
+        <div class="uc-field"><span class="uc-label">Pre-conditions :</span> <span class="uc-value">L'utilisateur est authentifie</span></div>
+        <div class="uc-field"><span class="uc-label">Scenario nominal :</span></div>
+        <ol>
+            <li>L'utilisateur clique sur la zone "Quoi de neuf ?" ou sur un bouton (Photo, Video, Evenement, CV)</li>
+            <li>Une modale s'ouvre avec le formulaire de publication</li>
+            <li>Il choisit le type (statut, photo, video, cv, evenement), la visibilite (public, amis, prive)</li>
+            <li>Il saisit le contenu texte et optionnellement un fichier, un lieu, une humeur</li>
+            <li>Il soumet le formulaire (AJAX vers api/posts.php)</li>
+            <li>Le systeme cree la publication en base et envoie les notifications aux amis concernes</li>
+            <li>La publication apparait dans le fil d'actualite</li>
+        </ol>
+    </div>
+
+    <!-- UC4 -->
+    <div class="uc-card">
+        <h4>CU-04 : Gerer son reseau (ajouter un ami)</h4>
+        <div class="uc-field"><span class="uc-label">Acteur principal :</span> <span class="uc-value">Auteur</span></div>
+        <div class="uc-field"><span class="uc-label">Scenario nominal :</span></div>
+        <ol>
+            <li>L'utilisateur navigue vers la page Reseau ou le profil d'un autre utilisateur</li>
+            <li>Il clique sur "Se connecter" / "Ajouter"</li>
+            <li>Le systeme cree une entree dans connexions (statut: en_attente)</li>
+            <li>Le destinataire recoit une notification de type "demande_ami"</li>
+            <li>Le destinataire accepte ou refuse la demande</li>
+            <li>Si accepte : statut passe a "accepte", notification "ami_accepte" envoyee</li>
+        </ol>
+        <div class="uc-field"><span class="uc-label">Extension :</span> <span class="uc-value">L'utilisateur peut annuler une demande envoyee avant qu'elle soit traitee</span></div>
+    </div>
+
+    <!-- UC5 -->
+    <div class="uc-card">
+        <h4>CU-05 : Envoyer un message prive</h4>
+        <div class="uc-field"><span class="uc-label">Acteur principal :</span> <span class="uc-value">Auteur</span></div>
+        <div class="uc-field"><span class="uc-label">Pre-conditions :</span> <span class="uc-value">Les deux utilisateurs sont amis (connexion acceptee)</span></div>
+        <div class="uc-field"><span class="uc-label">Scenario nominal :</span></div>
+        <ol>
+            <li>L'utilisateur accede a la messagerie</li>
+            <li>Il selectionne une conversation existante ou cree une nouvelle conversation</li>
+            <li>Il saisit un message dans la zone de texte</li>
+            <li>Il clique sur Envoyer (AJAX vers api/messages.php)</li>
+            <li>Le message est insere en base (table messages)</li>
+            <li>Le destinataire voit le message apparaitre (polling toutes les 3 secondes)</li>
+        </ol>
+    </div>
+
+    <!-- UC6 -->
+    <div class="uc-card">
+        <h4>CU-06 : Consulter et postuler a une offre d'emploi</h4>
+        <div class="uc-field"><span class="uc-label">Acteur principal :</span> <span class="uc-value">Auteur</span></div>
+        <div class="uc-field"><span class="uc-label">Scenario nominal :</span></div>
+        <ol>
+            <li>L'utilisateur navigue vers la page Emplois</li>
+            <li>Il filtre par type de contrat (stage, alternance, CDI...) et/ou mots-cles</li>
+            <li>Il consulte les offres affichees (titre, entreprise, lieu, salaire, description)</li>
+            <li>Il clique sur "Candidater" (redirection vers le lien externe) ou "Contacter" (email)</li>
+        </ol>
+    </div>
+
+    <!-- UC7 -->
+    <div class="uc-card">
+        <h4>CU-07 : Generer son CV</h4>
+        <div class="uc-field"><span class="uc-label">Acteur principal :</span> <span class="uc-value">Auteur</span></div>
+        <div class="uc-field"><span class="uc-label">Scenario nominal :</span></div>
+        <ol>
+            <li>L'utilisateur accede a l'onglet CV de son profil</li>
+            <li>Un apercu du CV est affiche (iframe HTML)</li>
+            <li>Il choisit le format d'export : HTML, PDF (impression navigateur) ou XML</li>
+            <li>Le systeme genere le CV a partir des donnees du profil, formations et projets</li>
+            <li>Optionnellement, il peut importer un CV depuis un fichier XML</li>
+        </ol>
+    </div>
+
+    <!-- UC8 -->
+    <div class="uc-card">
+        <h4>CU-08 : Gerer les utilisateurs (admin)</h4>
+        <div class="uc-field"><span class="uc-label">Acteur principal :</span> <span class="uc-value">Administrateur</span></div>
+        <div class="uc-field"><span class="uc-label">Pre-conditions :</span> <span class="uc-value">L'utilisateur a le role "administrateur"</span></div>
+        <div class="uc-field"><span class="uc-label">Scenario nominal :</span></div>
+        <ol>
+            <li>L'admin accede au panel d'administration</li>
+            <li>Il consulte les statistiques globales (nb utilisateurs, posts, connexions, emplois)</li>
+            <li>Il parcourt la liste des utilisateurs avec filtres (actif/inactif, role)</li>
+            <li>Il peut effectuer les actions suivantes :
+                <ul>
+                    <li>Creer un nouveau compte utilisateur</li>
+                    <li>Changer le role d'un utilisateur (auteur ↔ administrateur)</li>
+                    <li>Activer ou desactiver un compte</li>
+                    <li>Acceder au profil d'un utilisateur</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<!-- 5. REGLES METIER -->
+<div class="section page-break" id="regles-metier">
+    <h2>5. Regles metier</h2>
+
+    <table class="spec-table">
+        <tr><th>Code</th><th>Regle</th><th>Description</th></tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-01</span></td>
+            <td>Restriction email ECE</td>
+            <td>Seules les adresses @edu.ece.fr (etudiants) et @ece.fr (personnel) sont autorisees a l'inscription. Aucun autre domaine n'est accepte.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-02</span></td>
+            <td>Unicite pseudo et email</td>
+            <td>Le pseudo et l'email doivent etre uniques dans la base. Un meme email ne peut etre utilise que pour un seul compte.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-03</span></td>
+            <td>Securite mot de passe</td>
+            <td>Le mot de passe doit contenir au minimum 8 caracteres. Il est stocke en hash bcrypt (password_hash).</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-04</span></td>
+            <td>Visibilite des publications</td>
+            <td>3 niveaux : "public" (visible par tous), "amis" (visible uniquement par les amis acceptes), "prive" (visible uniquement par l'auteur). Le filtrage est applique cote serveur dans les requetes SQL.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-05</span></td>
+            <td>Reaction unique</td>
+            <td>Un utilisateur ne peut placer qu'une seule reaction par publication (contrainte UNIQUE en base). Changer de type de reaction remplace l'ancienne.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-06</span></td>
+            <td>Connexion bidirectionnelle</td>
+            <td>Une demande de connexion passe par 3 etats : en_attente → accepte ou refuse. Il ne peut y avoir qu'une seule demande entre deux utilisateurs (contrainte UNIQUE).</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-07</span></td>
+            <td>Messagerie entre amis</td>
+            <td>Les conversations ne peuvent etre creees qu'entre utilisateurs ayant une connexion acceptee. Le systeme verifie la participation a la conversation pour chaque action.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-08</span></td>
+            <td>Suppression en cascade</td>
+            <td>La suppression d'un utilisateur entraine la suppression de toutes ses donnees (formations, projets, publications, reactions, commentaires, messages) via ON DELETE CASCADE.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-09</span></td>
+            <td>Acces admin restreint</td>
+            <td>Le panel d'administration est protege par la fonction requireAdmin() qui verifie le role en session. Toute tentative d'acces par un non-admin redirige vers l'accueil.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-10</span></td>
+            <td>Publication d'emplois par admin</td>
+            <td>Seuls les administrateurs peuvent creer de nouvelles offres d'emploi. Tous les utilisateurs authentifies peuvent consulter les offres actives.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-11</span></td>
+            <td>Format pseudo</td>
+            <td>Le pseudo ne peut contenir que des lettres, chiffres, tirets et underscores (regex: /^[a-z0-9_\-]{3,50}$/i).</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-12</span></td>
+            <td>Recherche minimum</td>
+            <td>La fonction de recherche requiert un minimum de 2 caracteres pour eviter les requetes trop larges.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-13</span></td>
+            <td>Upload securise</td>
+            <td>Les fichiers uploades (avatars, fonds) sont valides par type MIME (PHOTO_TYPES) et taille maximale (MAX_PHOTO_SIZE) avant acceptation.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">RM-14</span></td>
+            <td>Notifications automatiques</td>
+            <td>Les notifications sont generees automatiquement par le systeme lors de : demande/acceptation d'ami, reaction, commentaire, partage, nouvel evenement, nouvelle offre d'emploi.</td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+            primaryColor: '#e8f0fe',
+            primaryTextColor: '#1a1a2e',
+            primaryBorderColor: '#0a66c2',
+            lineColor: '#6c757d',
+            secondaryColor: '#f4f6f8',
+            tertiaryColor: '#fff'
+        },
+        flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+    });
+</script>
+</body>
+</html>

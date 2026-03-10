@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECE In — Design du Front-End (Storyboard &amp; Wireframes)</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root { --primary: #0a66c2; --dark: #1a1a2e; --gray: #6c757d; --light: #f4f6f8; --border: #dee2e6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #333; line-height: 1.6; background: #fff; }
+        .page-break { page-break-before: always; }
+
+        /* Header */
+        .doc-header { background: var(--dark); color: #fff; padding: 60px 40px; text-align: center; }
+        .doc-header h1 { font-size: 2.4rem; margin-bottom: 8px; }
+        .doc-header .subtitle { font-size: 1.1rem; opacity: .8; }
+        .doc-header .meta { margin-top: 16px; font-size: .9rem; opacity: .6; }
+        .logo { font-size: 2rem; font-weight: 900; margin-bottom: 12px; }
+        .logo .ece { color: #fff; } .logo .in { color: #3b82f6; }
+
+        /* Sections */
+        .section { max-width: 1100px; margin: 0 auto; padding: 48px 32px; }
+        .section h2 { font-size: 1.6rem; color: var(--dark); border-bottom: 3px solid var(--primary); padding-bottom: 8px; margin-bottom: 24px; }
+        .section h3 { font-size: 1.2rem; color: var(--primary); margin: 32px 0 16px; }
+        .section p, .section li { font-size: .95rem; color: var(--gray); }
+        .section ul { padding-left: 20px; margin-bottom: 16px; }
+
+        /* Mermaid */
+        .mermaid-wrapper { background: var(--light); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin: 24px 0; overflow-x: auto; }
+
+        /* Wireframes */
+        .wireframe { border: 2px solid var(--border); border-radius: 8px; background: #fff; margin: 24px 0; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+        .wf-title { background: var(--light); padding: 10px 16px; font-weight: 700; font-size: .85rem; color: var(--dark); border-bottom: 1px solid var(--border); }
+        .wf-body { padding: 0; }
+
+        /* Wireframe components */
+        .wf-navbar { background: #e8edf2; padding: 10px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); font-size: .75rem; }
+        .wf-logo { font-weight: 900; font-size: .9rem; }
+        .wf-logo .ece { color: var(--dark); } .wf-logo .in { color: var(--primary); }
+        .wf-search { flex: 1; max-width: 240px; background: #fff; border: 1px solid #ccc; border-radius: 16px; padding: 4px 12px; color: #999; font-size: .7rem; }
+        .wf-nav-links { display: flex; gap: 16px; margin-left: auto; }
+        .wf-nav-item { text-align: center; font-size: .65rem; color: var(--gray); }
+        .wf-nav-item .icon { display: block; font-size: 1rem; margin-bottom: 2px; }
+
+        .wf-container { display: flex; gap: 16px; padding: 16px; }
+        .wf-col { display: flex; flex-direction: column; gap: 12px; }
+        .wf-col-left { width: 22%; }
+        .wf-col-center { flex: 1; }
+        .wf-col-right { width: 22%; }
+
+        .wf-card { background: var(--light); border: 1px dashed #bbb; border-radius: 6px; padding: 12px; }
+        .wf-card-title { font-size: .72rem; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+        .wf-placeholder { background: #ddd; border-radius: 4px; height: 12px; margin: 4px 0; }
+        .wf-placeholder.short { width: 60%; }
+        .wf-placeholder.medium { width: 80%; }
+        .wf-avatar { width: 36px; height: 36px; border-radius: 50%; background: #bbb; flex-shrink: 0; }
+        .wf-avatar-sm { width: 28px; height: 28px; border-radius: 50%; background: #bbb; flex-shrink: 0; }
+        .wf-btn { display: inline-block; background: var(--primary); color: #fff; font-size: .6rem; padding: 4px 10px; border-radius: 4px; }
+        .wf-btn-outline { display: inline-block; border: 1px solid var(--primary); color: var(--primary); font-size: .6rem; padding: 4px 10px; border-radius: 4px; }
+        .wf-btn-light { display: inline-block; background: #e9ecef; font-size: .6rem; padding: 4px 10px; border-radius: 4px; color: #555; }
+        .wf-row { display: flex; gap: 8px; align-items: center; }
+        .wf-input { flex: 1; background: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 6px 10px; font-size: .7rem; color: #999; }
+        .wf-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 12px; }
+        .wf-tab { padding: 6px 14px; font-size: .7rem; color: var(--gray); border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .wf-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+        .wf-badge { display: inline-block; background: var(--primary); color: #fff; font-size: .55rem; padding: 2px 6px; border-radius: 8px; }
+        .wf-badge-warn { background: #ffc107; color: #333; }
+        .wf-badge-success { background: #198754; color: #fff; }
+        .wf-divider { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+        .wf-text { font-size: .7rem; color: var(--gray); }
+        .wf-text-dark { font-size: .7rem; color: var(--dark); font-weight: 600; }
+        .wf-split { display: flex; min-height: 360px; }
+        .wf-split-left { width: 50%; background: linear-gradient(135deg, #0a66c2, #1a1a2e); display: flex; align-items: center; justify-content: center; color: #fff; padding: 32px; }
+        .wf-split-right { width: 50%; padding: 24px 32px; display: flex; flex-direction: column; justify-content: center; }
+        .wf-cover-img { background: linear-gradient(135deg, #667eea, #764ba2); height: 80px; border-radius: 6px 6px 0 0; }
+        .wf-msg-list { width: 30%; border-right: 1px solid var(--border); }
+        .wf-msg-chat { flex: 1; display: flex; flex-direction: column; }
+        .wf-msg-item { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-bottom: 1px solid #eee; }
+        .wf-msg-item.active { background: #e8f0fe; }
+        .wf-bubble { display: inline-block; padding: 6px 12px; border-radius: 16px; font-size: .7rem; max-width: 70%; }
+        .wf-bubble-me { background: var(--primary); color: #fff; margin-left: auto; }
+        .wf-bubble-other { background: var(--light); color: var(--dark); }
+        .wf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .wf-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .wf-stat { text-align: center; padding: 12px; }
+        .wf-stat-number { font-size: 1.4rem; font-weight: 700; color: var(--primary); }
+        .wf-stat-label { font-size: .65rem; color: var(--gray); }
+        .wf-table { width: 100%; border-collapse: collapse; font-size: .7rem; }
+        .wf-table th, .wf-table td { padding: 6px 10px; border-bottom: 1px solid #eee; text-align: left; }
+        .wf-table th { background: var(--light); font-weight: 600; color: var(--dark); }
+        .wf-desc { font-size: .85rem; color: var(--gray); margin: 8px 0 20px; line-height: 1.5; }
+        .wf-annotation { font-size: .7rem; color: var(--primary); font-style: italic; margin-top: 8px; }
+
+        @media print {
+            .doc-header { padding: 30px 20px; }
+            .section { padding: 24px 16px; }
+            .mermaid-wrapper { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- PAGE DE GARDE -->
+<!-- ============================================================ -->
+<div class="doc-header">
+    <div class="logo"><span class="ece">ECE</span><span class="in">In</span></div>
+    <h1>Design du Front-End</h1>
+    <div class="subtitle">Storyboard &amp; Wireframes</div>
+    <div class="meta">Livrable de conception — Mars 2026</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TABLE DES MATIÈRES -->
+<!-- ============================================================ -->
+<div class="section">
+    <h2>Table des matieres</h2>
+    <ol style="font-size:.95rem; line-height:2.2">
+        <li><a href="#storyboard" style="color:var(--primary)">Storyboard — Navigation et cheminement utilisateur</a></li>
+        <li><a href="#wf-login" style="color:var(--primary)">Wireframe — Page de connexion / inscription</a></li>
+        <li><a href="#wf-feed" style="color:var(--primary)">Wireframe — Fil d'actualite (Accueil)</a></li>
+        <li><a href="#wf-profil" style="color:var(--primary)">Wireframe — Profil utilisateur</a></li>
+        <li><a href="#wf-messagerie" style="color:var(--primary)">Wireframe — Messagerie</a></li>
+        <li><a href="#wf-reseau" style="color:var(--primary)">Wireframe — Mon Reseau</a></li>
+        <li><a href="#wf-recherche" style="color:var(--primary)">Wireframe — Recherche</a></li>
+        <li><a href="#wf-emplois" style="color:var(--primary)">Wireframe — Emplois &amp; Stages</a></li>
+        <li><a href="#wf-notifs" style="color:var(--primary)">Wireframe — Notifications</a></li>
+        <li><a href="#wf-admin" style="color:var(--primary)">Wireframe — Panel d'administration</a></li>
+    </ol>
+</div>
+
+<!-- ============================================================ -->
+<!-- 1. STORYBOARD -->
+<!-- ============================================================ -->
+<div class="section page-break" id="storyboard">
+    <h2>1. Storyboard — Navigation et cheminement utilisateur</h2>
+    <p class="wf-desc">
+        Ce diagramme presente l'ensemble des pages de l'application ECE In et les liens de navigation entre elles.
+        Trois parcours sont identifies : le visiteur (non connecte), l'utilisateur authentifie (auteur) et l'administrateur.
+    </p>
+
+    <h3>1.1 Parcours global</h3>
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart TD
+    subgraph visiteur [Visiteur non connecte]
+        LOGIN["login.php<br/>Connexion / Inscription"]
+    end
+
+    subgraph auth [Utilisateur authentifie]
+        FEED["index.php<br/>Fil d'actualite"]
+        PROFIL["profil.php<br/>Mon Profil"]
+        RESEAU["reseau.php<br/>Mon Reseau"]
+        MSG["messagerie.php<br/>Messagerie"]
+        NOTIF["notifications.php<br/>Notifications"]
+        RECHERCHE["recherche.php<br/>Recherche"]
+        EMPLOIS["emplois.php<br/>Emplois & Stages"]
+        USER["utilisateur.php<br/>Profil Autre"]
+        CV["cv/generer_cv.php<br/>Generation CV"]
+        LOGOUT["logout.php<br/>Deconnexion"]
+    end
+
+    subgraph admin [Administrateur]
+        ADMIN["admin/index.php<br/>Panel Admin"]
+    end
+
+    LOGIN -->|"Connexion reussie"| FEED
+    LOGIN -->|"Inscription reussie"| LOGIN
+
+    FEED <-->|"Navbar"| PROFIL
+    FEED <-->|"Navbar"| RESEAU
+    FEED <-->|"Navbar"| MSG
+    FEED <-->|"Navbar"| NOTIF
+    FEED <-->|"Navbar"| EMPLOIS
+    FEED -->|"Barre recherche"| RECHERCHE
+    FEED -->|"Clic profil autre"| USER
+
+    PROFIL -->|"Onglet CV"| CV
+    PROFIL -->|"Menu dropdown"| LOGOUT
+
+    RESEAU -->|"Clic Message"| MSG
+    RESEAU -->|"Clic Profil"| USER
+
+    MSG -->|"Clic Profil contact"| USER
+    RECHERCHE -->|"Clic Personne"| USER
+    RECHERCHE -->|"Clic Emploi"| EMPLOIS
+
+    USER -->|"Envoyer message"| MSG
+
+    PROFIL -->|"Dropdown Admin"| ADMIN
+    ADMIN -->|"Clic Profil user"| USER
+
+    LOGOUT -->|"Redirection"| LOGIN
+        </pre>
+    </div>
+
+    <h3>1.2 Navigation depuis la Navbar (commune a toutes les pages)</h3>
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart LR
+    NAV["Barre de Navigation"]
+    NAV --> HOME["Accueil"]
+    NAV --> RES["Mon Reseau"]
+    NAV --> VOUS["Vous / Profil"]
+    NAV --> NOTIF2["Notifications"]
+    NAV --> MSG2["Messagerie"]
+    NAV --> EMP2["Emplois"]
+    NAV --> SEARCH["Recherche"]
+
+    VOUS --> DROP["Menu Deroulant"]
+    DROP --> MONPROFIL["Mon Profil"]
+    DROP --> MONCV["Mon CV"]
+    DROP --> PARAMS["Parametres"]
+    DROP --> ADMLINK["Administration"]
+    DROP --> DECO["Deconnexion"]
+        </pre>
+    </div>
+
+    <h3>1.3 Onglets du profil utilisateur</h3>
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart LR
+    P["profil.php"] --> O1["Profil<br/>Infos + bio"]
+    P --> O2["Publications<br/>Liste posts"]
+    P --> O3["Formations<br/>Parcours academique"]
+    P --> O4["Projets<br/>Realisations"]
+    P --> O5["Albums<br/>Photos"]
+    P --> O6["CV<br/>Generation & Import"]
+    P --> O7["Parametres<br/>Edition compte"]
+        </pre>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 2. WIREFRAME : LOGIN -->
+<!-- ============================================================ -->
+<div class="section page-break" id="wf-login">
+    <h2>2. Wireframe — Page de connexion / inscription</h2>
+    <p class="wf-desc">
+        Page plein ecran en deux panneaux : un visuel de marque a gauche et le formulaire a droite.
+        Deux onglets permettent de basculer entre connexion et inscription.
+    </p>
+    <div class="wireframe">
+        <div class="wf-title">login.php — Connexion / Inscription</div>
+        <div class="wf-body">
+            <div class="wf-split">
+                <div class="wf-split-left">
+                    <div style="text-align:center">
+                        <div style="font-size:1.8rem;font-weight:900;margin-bottom:8px"><span>ECE</span><span style="color:#93c5fd">In</span></div>
+                        <div style="font-size:1rem;font-weight:600;margin-bottom:6px">Bienvenue sur ECE In</div>
+                        <div style="font-size:.75rem;opacity:.8">Le reseau professionnel de la communaute ECE Paris</div>
+                        <div style="margin-top:20px;font-size:.7rem;opacity:.7;line-height:2">
+                            <div>&#x1f465; Connectez-vous avec votre reseau</div>
+                            <div>&#x1f4bc; Trouvez stages &amp; emplois</div>
+                            <div>&#x1f3c6; Partagez vos realisations</div>
+                            <div>&#x1f4ac; Echangez en temps reel</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wf-split-right">
+                    <div class="wf-tabs" style="margin-bottom:20px">
+                        <div class="wf-tab active">Connexion</div>
+                        <div class="wf-tab">S'inscrire</div>
+                    </div>
+                    <div class="wf-text-dark" style="font-size:.85rem;margin-bottom:16px">Connexion a ECE In</div>
+                    <div style="margin-bottom:12px">
+                        <div class="wf-text" style="margin-bottom:4px">Pseudo ou Email ECE</div>
+                        <div class="wf-input">votre.pseudo ou email@edu.ece.fr</div>
+                    </div>
+                    <div style="margin-bottom:16px">
+                        <div class="wf-text" style="margin-bottom:4px">Mot de passe</div>
+                        <div class="wf-input">&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</div>
+                    </div>
+                    <div class="wf-btn" style="width:100%;text-align:center;padding:8px">Se connecter</div>
+                    <div class="wf-annotation">Onglet "S'inscrire" : Prenom, Nom, Pseudo, Email ECE, Mot de passe, Confirmation, CGU</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 3. WIREFRAME : FEED -->
+<!-- ============================================================ -->
+<div class="section page-break" id="wf-feed">
+    <h2>3. Wireframe — Fil d'actualite (Accueil)</h2>
+    <p class="wf-desc">
+        Layout 3 colonnes : carte profil rapide a gauche, fil de publications au centre, suggestions et offres a droite.
+        Un carrousel d'evenements s'affiche en haut de la colonne centrale.
+    </p>
+    <div class="wireframe">
+        <div class="wf-title">index.php — Fil d'actualite</div>
+        <div class="wf-body">
+            <!-- Navbar -->
+            <div class="wf-navbar">
+                <div class="wf-logo"><span class="ece">ECE</span><span class="in">In</span></div>
+                <div class="wf-search">Rechercher des personnes, emplois...</div>
+                <div class="wf-nav-links">
+                    <div class="wf-nav-item"><span class="icon">&#x1f3e0;</span>Accueil</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f465;</span>Reseau</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f464;</span>Vous</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f514;</span>Notifs</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4ac;</span>Messages</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4bc;</span>Emplois</div>
+                </div>
+            </div>
+            <!-- 3 colonnes -->
+            <div class="wf-container">
+                <!-- Gauche -->
+                <div class="wf-col wf-col-left">
+                    <div class="wf-card">
+                        <div class="wf-cover-img" style="height:40px;margin:-12px -12px 8px;border-radius:6px 6px 0 0"></div>
+                        <div style="text-align:center">
+                            <div class="wf-avatar" style="margin:-28px auto 6px;border:2px solid #fff"></div>
+                            <div class="wf-text-dark">Prenom Nom</div>
+                            <div class="wf-text">Titre professionnel</div>
+                            <div class="wf-btn-outline" style="margin-top:8px;width:100%;text-align:center">Voir mon profil</div>
+                        </div>
+                    </div>
+                    <div class="wf-card">
+                        <div class="wf-card-title">Raccourcis</div>
+                        <div class="wf-text">&#x1f4c4; Mon CV</div>
+                        <div class="wf-text">&#x1f4bc; Offres d'emploi</div>
+                        <div class="wf-text">&#x1f5bc; Mes albums</div>
+                    </div>
+                </div>
+                <!-- Centre -->
+                <div class="wf-col wf-col-center">
+                    <!-- Evenements -->
+                    <div class="wf-card" style="border-color:var(--primary)">
+                        <div class="wf-card-title" style="color:var(--primary)">&#x1f4c5; Evenements a venir</div>
+                        <div class="wf-row">
+                            <div style="background:var(--primary);color:#fff;padding:6px 10px;border-radius:6px;text-align:center;font-size:.6rem;line-height:1.2">
+                                <div>MAR</div><div style="font-size:1rem;font-weight:700">14</div>
+                            </div>
+                            <div>
+                                <div class="wf-badge" style="font-size:.5rem">Officiel ECE</div>
+                                <div class="wf-text-dark" style="font-size:.65rem">Portes Ouvertes ECE Paris 2026</div>
+                                <div class="wf-text">ECE Paris - 37 Quai de Grenelle</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Zone publication -->
+                    <div class="wf-card">
+                        <div class="wf-row" style="margin-bottom:8px">
+                            <div class="wf-avatar"></div>
+                            <div class="wf-input" style="border-radius:20px">Quoi de neuf, Prenom ?</div>
+                        </div>
+                        <hr class="wf-divider">
+                        <div class="wf-row" style="justify-content:space-around">
+                            <div class="wf-text">&#x1f5bc; Photo</div>
+                            <div class="wf-text">&#x1f3a5; Video</div>
+                            <div class="wf-text">&#x1f4c5; Evenement</div>
+                            <div class="wf-text">&#x1f4c4; CV</div>
+                        </div>
+                    </div>
+                    <!-- Post 1 -->
+                    <div class="wf-card">
+                        <div class="wf-row" style="margin-bottom:8px">
+                            <div class="wf-avatar-sm"></div>
+                            <div>
+                                <div class="wf-text-dark" style="font-size:.65rem">Jean Dupont</div>
+                                <div class="wf-text" style="font-size:.55rem">Etudiant ING2 &middot; il y a 2h</div>
+                            </div>
+                        </div>
+                        <div class="wf-placeholder"></div>
+                        <div class="wf-placeholder medium"></div>
+                        <div class="wf-placeholder short"></div>
+                        <hr class="wf-divider">
+                        <div class="wf-row" style="justify-content:space-around">
+                            <div class="wf-text">&#x1f44d; 3 reactions</div>
+                            <div class="wf-text">&#x1f4ac; 2 commentaires</div>
+                            <div class="wf-text">&#x1f501; Partager</div>
+                        </div>
+                    </div>
+                    <!-- Post 2 -->
+                    <div class="wf-card">
+                        <div class="wf-row" style="margin-bottom:8px">
+                            <div class="wf-avatar-sm"></div>
+                            <div>
+                                <div class="wf-text-dark" style="font-size:.65rem">Marie Martin</div>
+                                <div class="wf-text" style="font-size:.55rem">Etudiante ING3 &middot; il y a 5h</div>
+                            </div>
+                        </div>
+                        <div class="wf-placeholder"></div>
+                        <div class="wf-placeholder short"></div>
+                        <hr class="wf-divider">
+                        <div class="wf-row" style="justify-content:space-around">
+                            <div class="wf-text">&#x1f44d; 1 reaction</div>
+                            <div class="wf-text">&#x1f4ac; 1 commentaire</div>
+                            <div class="wf-text">&#x1f501; Partager</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Droite -->
+                <div class="wf-col wf-col-right">
+                    <div class="wf-card">
+                        <div class="wf-card-title">&#x1f465; Personnes a connaitre</div>
+                        <div class="wf-row" style="margin-bottom:6px">
+                            <div class="wf-avatar-sm"></div>
+                            <div style="flex:1">
+                                <div class="wf-text-dark" style="font-size:.6rem">Lucas Petit</div>
+                                <div class="wf-text" style="font-size:.5rem">Etudiant ING1</div>
+                            </div>
+                            <div class="wf-btn" style="font-size:.5rem;padding:2px 6px">+</div>
+                        </div>
+                        <div class="wf-row" style="margin-bottom:6px">
+                            <div class="wf-avatar-sm"></div>
+                            <div style="flex:1">
+                                <div class="wf-text-dark" style="font-size:.6rem">Sophie Leblanc</div>
+                                <div class="wf-text" style="font-size:.5rem">Enseignante</div>
+                            </div>
+                            <div class="wf-btn" style="font-size:.5rem;padding:2px 6px">+</div>
+                        </div>
+                    </div>
+                    <div class="wf-card">
+                        <div class="wf-card-title">&#x1f4bc; Offres recentes</div>
+                        <div style="border-bottom:1px solid #eee;padding-bottom:6px;margin-bottom:6px">
+                            <div class="wf-text-dark" style="font-size:.6rem">Dev Full-Stack (Stage)</div>
+                            <div class="wf-text" style="font-size:.5rem">Startup TechParis</div>
+                            <div class="wf-badge" style="font-size:.45rem;margin-top:2px">Stage</div>
+                        </div>
+                        <div style="padding-bottom:6px">
+                            <div class="wf-text-dark" style="font-size:.6rem">Data Science (Alternance)</div>
+                            <div class="wf-text" style="font-size:.5rem">BNP Paribas</div>
+                            <div class="wf-badge wf-badge-warn" style="font-size:.45rem;margin-top:2px">Alternance</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 4. WIREFRAME : PROFIL -->
+<!-- ============================================================ -->
+<div class="section page-break" id="wf-profil">
+    <h2>4. Wireframe — Profil utilisateur</h2>
+    <p class="wf-desc">
+        Banniere avec photo de fond, avatar, informations principales et boutons d'action.
+        Navigation par onglets (7) : Profil, Publications, Formations, Projets, Albums, CV, Parametres.
+    </p>
+    <div class="wireframe">
+        <div class="wf-title">profil.php — Mon Profil (Onglet Profil)</div>
+        <div class="wf-body">
+            <div class="wf-navbar">
+                <div class="wf-logo"><span class="ece">ECE</span><span class="in">In</span></div>
+                <div class="wf-search">Rechercher...</div>
+                <div class="wf-nav-links">
+                    <div class="wf-nav-item"><span class="icon">&#x1f3e0;</span>Accueil</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f465;</span>Reseau</div>
+                    <div class="wf-nav-item" style="color:var(--primary);font-weight:600"><span class="icon">&#x1f464;</span>Vous</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f514;</span>Notifs</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4ac;</span>Messages</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4bc;</span>Emplois</div>
+                </div>
+            </div>
+            <div style="padding:16px">
+                <!-- Banniere -->
+                <div class="wf-card" style="padding:0;overflow:hidden">
+                    <div class="wf-cover-img" style="height:100px"></div>
+                    <div style="padding:0 16px 12px;display:flex;align-items:flex-end;gap:16px;margin-top:-30px">
+                        <div style="width:80px;height:80px;border-radius:50%;background:#bbb;border:3px solid #fff;flex-shrink:0"></div>
+                        <div style="flex:1;padding-bottom:4px">
+                            <div class="wf-text-dark" style="font-size:1rem">Prenom Nom</div>
+                            <div class="wf-text">Titre professionnel</div>
+                            <div class="wf-text" style="font-size:.6rem">&#x1f4cd; Paris, France</div>
+                        </div>
+                        <div class="wf-btn" style="margin-bottom:4px">&#x270f; Modifier le profil</div>
+                        <div class="wf-btn-outline" style="margin-bottom:4px">&#x1f4c4; Mon CV</div>
+                    </div>
+                    <!-- Onglets -->
+                    <div class="wf-tabs" style="padding:0 16px">
+                        <div class="wf-tab active">Profil</div>
+                        <div class="wf-tab">Publications</div>
+                        <div class="wf-tab">Formations</div>
+                        <div class="wf-tab">Projets</div>
+                        <div class="wf-tab">Albums</div>
+                        <div class="wf-tab">CV</div>
+                        <div class="wf-tab">Parametres</div>
+                    </div>
+                </div>
+                <!-- Contenu onglet Profil -->
+                <div style="display:flex;gap:16px;margin-top:16px">
+                    <div style="width:35%">
+                        <div class="wf-card">
+                            <div class="wf-card-title">Informations</div>
+                            <div class="wf-text" style="margin-bottom:8px">Biographie de l'utilisateur...</div>
+                            <hr class="wf-divider">
+                            <div class="wf-text">&#x1f4cd; Paris, France</div>
+                            <div class="wf-text">&#x1f517; monportfolio.fr</div>
+                            <div class="wf-text">&#x1f4e7; email@edu.ece.fr</div>
+                            <div class="wf-text">&#x1f4c5; Membre depuis jan. 2026</div>
+                        </div>
+                    </div>
+                    <div style="flex:1">
+                        <div class="wf-card" style="margin-bottom:12px">
+                            <div class="wf-row" style="justify-content:space-between;margin-bottom:8px">
+                                <div class="wf-card-title" style="margin:0">&#x1f393; Formations</div>
+                                <div class="wf-btn-light">Tout voir</div>
+                            </div>
+                            <div class="wf-row" style="margin-bottom:6px">
+                                <div style="font-size:1.2rem">&#x1f3eb;</div>
+                                <div>
+                                    <div class="wf-text-dark" style="font-size:.65rem">Diplome d'ingenieur</div>
+                                    <div class="wf-text" style="font-size:.55rem">ECE Paris</div>
+                                    <div class="wf-text" style="font-size:.5rem">sept. 2022 - Present</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wf-card">
+                            <div class="wf-row" style="justify-content:space-between;margin-bottom:8px">
+                                <div class="wf-card-title" style="margin:0">&#x1f4cb; Projets</div>
+                                <div class="wf-btn-light">Tout voir</div>
+                            </div>
+                            <div>
+                                <div class="wf-text-dark" style="font-size:.65rem">Projet Machine Learning</div>
+                                <div class="wf-badge-success" style="font-size:.45rem;display:inline-block;padding:1px 6px;border-radius:8px;color:#fff;background:#198754">En cours</div>
+                                <div class="wf-text" style="font-size:.55rem">Description du projet...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 5. WIREFRAME : MESSAGERIE -->
+<!-- ============================================================ -->
+<div class="section page-break" id="wf-messagerie">
+    <h2>5. Wireframe — Messagerie</h2>
+    <p class="wf-desc">
+        Interface de chat en deux panneaux : liste des conversations a gauche (30%) et fenetre de chat a droite (70%).
+        Boutons d'appel audio/video dans l'en-tete du chat.
+    </p>
+    <div class="wireframe">
+        <div class="wf-title">messagerie.php — Messagerie &amp; Appels</div>
+        <div class="wf-body">
+            <div class="wf-navbar">
+                <div class="wf-logo"><span class="ece">ECE</span><span class="in">In</span></div>
+                <div class="wf-search">Rechercher...</div>
+                <div class="wf-nav-links">
+                    <div class="wf-nav-item"><span class="icon">&#x1f3e0;</span>Accueil</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f465;</span>Reseau</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f464;</span>Vous</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f514;</span>Notifs</div>
+                    <div class="wf-nav-item" style="color:var(--primary);font-weight:600"><span class="icon">&#x1f4ac;</span>Messages</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4bc;</span>Emplois</div>
+                </div>
+            </div>
+            <div style="display:flex;min-height:420px">
+                <!-- Liste conversations -->
+                <div class="wf-msg-list">
+                    <div style="padding:10px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+                        <div class="wf-text-dark">Messagerie</div>
+                        <div class="wf-btn" style="font-size:.5rem;padding:2px 6px;border-radius:50%">+</div>
+                    </div>
+                    <div style="padding:6px 12px;border-bottom:1px solid #eee">
+                        <div class="wf-input" style="font-size:.6rem;border-radius:12px">Rechercher...</div>
+                    </div>
+                    <!-- Conv 1 active -->
+                    <div class="wf-msg-item active">
+                        <div class="wf-avatar-sm"></div>
+                        <div style="flex:1;min-width:0">
+                            <div class="wf-row" style="justify-content:space-between">
+                                <div class="wf-text-dark" style="font-size:.6rem">Marie Martin</div>
+                                <div class="wf-text" style="font-size:.45rem">il y a 5min</div>
+                            </div>
+                            <div class="wf-text" style="font-size:.55rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Super, merci pour l'info !</div>
+                        </div>
+                    </div>
+                    <!-- Conv 2 -->
+                    <div class="wf-msg-item">
+                        <div class="wf-avatar-sm"></div>
+                        <div style="flex:1;min-width:0">
+                            <div class="wf-row" style="justify-content:space-between">
+                                <div class="wf-text-dark" style="font-size:.6rem">Lucas Petit</div>
+                                <div class="wf-text" style="font-size:.45rem">hier</div>
+                            </div>
+                            <div class="wf-text" style="font-size:.55rem">Salut, tu es dispo demain ?</div>
+                        </div>
+                    </div>
+                    <!-- Conv 3 -->
+                    <div class="wf-msg-item">
+                        <div class="wf-avatar-sm"></div>
+                        <div style="flex:1;min-width:0">
+                            <div class="wf-row" style="justify-content:space-between">
+                                <div class="wf-text-dark" style="font-size:.6rem">Sophie Leblanc</div>
+                                <div class="wf-text" style="font-size:.45rem">lun.</div>
+                            </div>
+                            <div class="wf-text" style="font-size:.55rem">Conference confirmee pour...</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Chat -->
+                <div class="wf-msg-chat">
+                    <!-- Header chat -->
+                    <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+                        <div class="wf-avatar-sm"></div>
+                        <div style="flex:1">
+                            <div class="wf-text-dark">Marie Martin</div>
+                            <div class="wf-text" style="font-size:.55rem">Etudiante ING3 - Finance & Technologie</div>
+                        </div>
+                        <div class="wf-btn-light" style="border-radius:50%;padding:4px 7px">&#x1f4de;</div>
+                        <div class="wf-btn-light" style="border-radius:50%;padding:4px 7px">&#x1f4f9;</div>
+                        <div class="wf-btn-light" style="border-radius:50%;padding:4px 7px">&#x1f464;</div>
+                    </div>
+                    <!-- Messages -->
+                    <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto">
+                        <div style="display:flex;gap:6px;align-items:flex-end">
+                            <div class="wf-avatar-sm" style="width:24px;height:24px"></div>
+                            <div class="wf-bubble wf-bubble-other">Salut ! Tu as vu l'offre de stage chez TechParis ?</div>
+                        </div>
+                        <div style="display:flex;gap:6px;align-items:flex-end;justify-content:flex-end">
+                            <div class="wf-bubble wf-bubble-me">Oui, je vais postuler cette semaine !</div>
+                            <div class="wf-avatar-sm" style="width:24px;height:24px"></div>
+                        </div>
+                        <div style="display:flex;gap:6px;align-items:flex-end">
+                            <div class="wf-avatar-sm" style="width:24px;height:24px"></div>
+                            <div class="wf-bubble wf-bubble-other">Super, merci pour l'info !</div>
+                        </div>
+                    </div>
+                    <!-- Zone saisie -->
+                    <div style="padding:10px 16px;border-top:1px solid var(--border);background:var(--light);display:flex;gap:8px">
+                        <div class="wf-btn-light" style="border-radius:50%;padding:4px 7px">&#x1f642;</div>
+                        <div class="wf-input" style="flex:1">Ecrivez votre message...</div>
+                        <div class="wf-btn" style="padding:4px 10px">&#x27a4;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 6. WIREFRAME : RESEAU -->
+<!-- ============================================================ -->
+<div class="section page-break" id="wf-reseau">
+    <h2>6. Wireframe — Mon Reseau</h2>
+    <p class="wf-desc">
+        Layout 2 colonnes : menu lateral a gauche (liens vers sections) et contenu principal a droite.
+        Sections : invitations recues, mes connexions, invitations envoyees, suggestions.
+    </p>
+    <div class="wireframe">
+        <div class="wf-title">reseau.php — Mon Reseau</div>
+        <div class="wf-body">
+            <div class="wf-navbar">
+                <div class="wf-logo"><span class="ece">ECE</span><span class="in">In</span></div>
+                <div class="wf-search">Rechercher...</div>
+                <div class="wf-nav-links">
+                    <div class="wf-nav-item"><span class="icon">&#x1f3e0;</span>Accueil</div>
+                    <div class="wf-nav-item" style="color:var(--primary);font-weight:600"><span class="icon">&#x1f465;</span>Reseau</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f464;</span>Vous</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f514;</span>Notifs</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4ac;</span>Messages</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4bc;</span>Emplois</div>
+                </div>
+            </div>
+            <div class="wf-container">
+                <!-- Sidebar -->
+                <div class="wf-col" style="width:22%">
+                    <div class="wf-card">
+                        <div class="wf-card-title">Mon Reseau</div>
+                        <div class="wf-text" style="padding:4px 0;border-bottom:1px solid #eee">&#x1f465; Connexions <span class="wf-badge" style="float:right;font-size:.5rem">12</span></div>
+                        <div class="wf-text" style="padding:4px 0;border-bottom:1px solid #eee">&#x1f4e8; Invitations recues <span style="float:right;background:#dc3545;color:#fff;font-size:.5rem;padding:1px 5px;border-radius:8px">2</span></div>
+                        <div class="wf-text" style="padding:4px 0;border-bottom:1px solid #eee">&#x27a4; Invitations envoyees</div>
+                        <div class="wf-text" style="padding:4px 0">&#x1f4a1; Suggestions</div>
+                    </div>
+                </div>
+                <!-- Contenu -->
+                <div class="wf-col" style="flex:1">
+                    <!-- Invitations recues -->
+                    <div>
+                        <div class="wf-text-dark" style="margin-bottom:8px">&#x1f4e8; Invitations recues <span style="background:#dc3545;color:#fff;font-size:.55rem;padding:1px 6px;border-radius:8px;margin-left:4px">2</span></div>
+                        <div class="wf-grid">
+                            <div class="wf-card" style="text-align:center">
+                                <div class="wf-avatar" style="margin:0 auto 6px"></div>
+                                <div class="wf-text-dark" style="font-size:.65rem">Lucas Petit</div>
+                                <div class="wf-text" style="font-size:.55rem">Etudiant ING1</div>
+                                <div style="display:flex;gap:4px;margin-top:8px">
+                                    <div class="wf-btn" style="flex:1;text-align:center;font-size:.55rem">Accepter</div>
+                                    <div class="wf-btn-light" style="flex:1;text-align:center;font-size:.55rem">Refuser</div>
+                                </div>
+                            </div>
+                            <div class="wf-card" style="text-align:center">
+                                <div class="wf-avatar" style="margin:0 auto 6px"></div>
+                                <div class="wf-text-dark" style="font-size:.65rem">Sophie Leblanc</div>
+                                <div class="wf-text" style="font-size:.55rem">Enseignante</div>
+                                <div style="display:flex;gap:4px;margin-top:8px">
+                                    <div class="wf-btn" style="flex:1;text-align:center;font-size:.55rem">Accepter</div>
+                                    <div class="wf-btn-light" style="flex:1;text-align:center;font-size:.55rem">Refuser</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mes connexions -->
+                    <div style="margin-top:20px">
+                        <div class="wf-text-dark" style="margin-bottom:8px">&#x1f465; Mes connexions (12)</div>
+                        <div class="wf-grid">
+                            <div class="wf-card">
+                                <div class="wf-row" style="margin-bottom:6px">
+                                    <div class="wf-avatar"></div>
+                                    <div>
+                                        <div class="wf-text-dark" style="font-size:.65rem">Marie Martin</div>
+                                        <div class="wf-text" style="font-size:.5rem">@mmartin</div>
+                                        <div class="wf-text" style="font-size:.5rem">Etudiante ING3</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;gap:4px">
+                                    <div class="wf-btn-outline" style="flex:1;text-align:center;font-size:.5rem">Message</div>
+                                    <div class="wf-btn-light" style="flex:1;text-align:center;font-size:.5rem">Profil</div>
+                                </div>
+                            </div>
+                            <div class="wf-card">
+                                <div class="wf-row" style="margin-bottom:6px">
+                                    <div class="wf-avatar"></div>
+                                    <div>
+                                        <div class="wf-text-dark" style="font-size:.65rem">Jean Dupont</div>
+                                        <div class="wf-text" style="font-size:.5rem">@jdupont</div>
+                                        <div class="wf-text" style="font-size:.5rem">Etudiant ING2</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;gap:4px">
+                                    <div class="wf-btn-outline" style="flex:1;text-align:center;font-size:.5rem">Message</div>
+                                    <div class="wf-btn-light" style="flex:1;text-align:center;font-size:.5rem">Profil</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Suggestions -->
+                    <div style="margin-top:20px">
+                        <div class="wf-text-dark" style="margin-bottom:8px">&#x1f4a1; Personnes que vous pourriez connaitre</div>
+                        <div class="wf-grid">
+                            <div class="wf-card" style="text-align:center">
+                                <div class="wf-avatar" style="margin:0 auto 6px"></div>
+                                <div class="wf-text-dark" style="font-size:.65rem">Personne A</div>
+                                <div class="wf-text" style="font-size:.5rem">2 amis en commun</div>
+                                <div class="wf-btn-outline" style="width:100%;text-align:center;font-size:.5rem;margin-top:6px">Se connecter</div>
+                            </div>
+                            <div class="wf-card" style="text-align:center">
+                                <div class="wf-avatar" style="margin:0 auto 6px"></div>
+                                <div class="wf-text-dark" style="font-size:.65rem">Personne B</div>
+                                <div class="wf-text" style="font-size:.5rem">1 ami en commun</div>
+                                <div class="wf-btn-outline" style="width:100%;text-align:center;font-size:.5rem;margin-top:6px">Se connecter</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 7. WIREFRAME : RECHERCHE -->
+<!-- ============================================================ -->
+<div class="section page-break" id="wf-recherche">
+    <h2>7. Wireframe — Recherche</h2>
+    <p class="wf-desc">
+        Page de resultats organisee en 3 sections : Personnes, Publications et Emplois.
+        La barre de recherche de la navbar est utilisee pour lancer la requete.
+    </p>
+    <div class="wireframe">
+        <div class="wf-title">recherche.php — Resultats de recherche</div>
+        <div class="wf-body">
+            <div class="wf-navbar">
+                <div class="wf-logo"><span class="ece">ECE</span><span class="in">In</span></div>
+                <div class="wf-search" style="border-color:var(--primary);font-weight:600;color:#333">machine learning</div>
+                <div class="wf-nav-links">
+                    <div class="wf-nav-item"><span class="icon">&#x1f3e0;</span>Accueil</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f465;</span>Reseau</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f464;</span>Vous</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f514;</span>Notifs</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4ac;</span>Messages</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4bc;</span>Emplois</div>
+                </div>
+            </div>
+            <div style="padding:16px;max-width:800px;margin:0 auto">
+                <div class="wf-text-dark" style="font-size:1rem;margin-bottom:20px">&#x1f50d; Resultats pour &laquo; machine learning &raquo;</div>
+
+                <!-- Personnes -->
+                <div class="wf-text-dark" style="margin-bottom:8px;color:var(--gray)">Personnes</div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+                    <div class="wf-card" style="text-align:center">
+                        <div class="wf-avatar" style="margin:0 auto 6px"></div>
+                        <div class="wf-text-dark" style="font-size:.65rem">Jean Dupont</div>
+                        <div class="wf-text" style="font-size:.5rem">ML Engineer</div>
+                        <div class="wf-btn-outline" style="width:100%;text-align:center;font-size:.5rem;margin-top:6px">Connecter</div>
+                    </div>
+                    <div class="wf-card" style="text-align:center">
+                        <div class="wf-avatar" style="margin:0 auto 6px"></div>
+                        <div class="wf-text-dark" style="font-size:.65rem">Personne X</div>
+                        <div class="wf-text" style="font-size:.5rem">Data Scientist</div>
+                        <div class="wf-btn-outline" style="width:100%;text-align:center;font-size:.5rem;margin-top:6px">Connecter</div>
+                    </div>
+                </div>
+
+                <!-- Publications -->
+                <div class="wf-text-dark" style="margin-bottom:8px;color:var(--gray)">Publications</div>
+                <div class="wf-card" style="margin-bottom:8px">
+                    <div class="wf-row" style="margin-bottom:6px">
+                        <div class="wf-avatar-sm"></div>
+                        <div>
+                            <div class="wf-text-dark" style="font-size:.65rem">Jean Dupont</div>
+                            <div class="wf-text" style="font-size:.5rem">il y a 2h</div>
+                        </div>
+                    </div>
+                    <div class="wf-text" style="font-size:.65rem">Tres content d'avoir termine mon projet de machine learning ! L'algorithme atteint 95%...</div>
+                </div>
+
+                <!-- Emplois -->
+                <div class="wf-text-dark" style="margin-bottom:8px;margin-top:20px;color:var(--gray)">Emplois &amp; Stages</div>
+                <div class="wf-card">
+                    <div class="wf-row" style="justify-content:space-between">
+                        <div>
+                            <div class="wf-text-dark" style="font-size:.7rem">Ingenieur Data Science (Alternance)</div>
+                            <div class="wf-text" style="font-size:.55rem">BNP Paribas &middot; Paris 9e</div>
+                        </div>
+                        <div class="wf-btn-light" style="font-size:.55rem">Voir</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 8. WIREFRAME : EMPLOIS -->
+<!-- ============================================================ -->
+<div class="section page-break" id="wf-emplois">
+    <h2>8. Wireframe — Emplois &amp; Stages</h2>
+    <p class="wf-desc">
+        Layout 2 colonnes : filtres a gauche (type de contrat, mots-cles) et liste d'offres a droite.
+        Chaque offre affiche le titre, l'entreprise, le type (badge couleur), lieu, salaire et boutons d'action.
+    </p>
+    <div class="wireframe">
+        <div class="wf-title">emplois.php — Emplois &amp; Opportunites</div>
+        <div class="wf-body">
+            <div class="wf-navbar">
+                <div class="wf-logo"><span class="ece">ECE</span><span class="in">In</span></div>
+                <div class="wf-search">Rechercher...</div>
+                <div class="wf-nav-links">
+                    <div class="wf-nav-item"><span class="icon">&#x1f3e0;</span>Accueil</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f465;</span>Reseau</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f464;</span>Vous</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f514;</span>Notifs</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4ac;</span>Messages</div>
+                    <div class="wf-nav-item" style="color:var(--primary);font-weight:600"><span class="icon">&#x1f4bc;</span>Emplois</div>
+                </div>
+            </div>
+            <div style="padding:16px">
+                <div class="wf-row" style="justify-content:space-between;margin-bottom:16px">
+                    <div>
+                        <div class="wf-text-dark" style="font-size:1rem">&#x1f4bc; Emplois &amp; Opportunites</div>
+                        <div class="wf-text">Stages, alternances, CDI, CDD</div>
+                    </div>
+                    <div class="wf-btn">+ Publier une offre</div>
+                </div>
+                <div style="display:flex;gap:16px">
+                    <!-- Filtres -->
+                    <div style="width:22%">
+                        <div class="wf-card" style="margin-bottom:12px">
+                            <div class="wf-card-title">&#x2699; Filtres</div>
+                            <div class="wf-text" style="margin-bottom:4px;font-weight:600">Mots-cles</div>
+                            <div class="wf-input" style="margin-bottom:8px;font-size:.6rem">Titre, entreprise...</div>
+                            <div class="wf-text" style="margin-bottom:4px;font-weight:600">Type de contrat</div>
+                            <div class="wf-text" style="font-size:.6rem">&#x25C9; Tous</div>
+                            <div class="wf-text" style="font-size:.6rem">&#x25CB; Stage</div>
+                            <div class="wf-text" style="font-size:.6rem">&#x25CB; Alternance</div>
+                            <div class="wf-text" style="font-size:.6rem">&#x25CB; CDI</div>
+                            <div class="wf-text" style="font-size:.6rem">&#x25CB; CDD</div>
+                            <div class="wf-text" style="font-size:.6rem">&#x25CB; Freelance</div>
+                            <div class="wf-btn" style="width:100%;text-align:center;margin-top:8px;font-size:.55rem">Rechercher</div>
+                        </div>
+                        <div class="wf-card">
+                            <div class="wf-card-title">&#x1f4a1; Conseil</div>
+                            <div class="wf-text" style="font-size:.6rem">Completez votre profil ECE In !</div>
+                            <div class="wf-btn-outline" style="width:100%;text-align:center;margin-top:6px;font-size:.5rem">Mon CV</div>
+                        </div>
+                    </div>
+                    <!-- Offres -->
+                    <div style="flex:1">
+                        <div class="wf-text" style="margin-bottom:12px"><strong>3</strong> offres trouvees</div>
+
+                        <div class="wf-card" style="margin-bottom:10px">
+                            <div class="wf-row" style="align-items:flex-start;gap:12px">
+                                <div style="width:40px;height:40px;background:var(--light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">&#x1f3e2;</div>
+                                <div style="flex:1">
+                                    <div class="wf-row" style="justify-content:space-between">
+                                        <div>
+                                            <div class="wf-text-dark">Developpeur Full-Stack (Stage)</div>
+                                            <div class="wf-text" style="color:var(--primary);font-size:.65rem">Startup TechParis</div>
+                                        </div>
+                                        <div class="wf-badge">Stage</div>
+                                    </div>
+                                    <div class="wf-row" style="gap:16px;margin:6px 0">
+                                        <div class="wf-text" style="font-size:.6rem">&#x1f4cd; Paris 10e</div>
+                                        <div class="wf-text" style="font-size:.6rem">&#x1f4b0; 1200EUR/mois</div>
+                                        <div class="wf-text" style="font-size:.6rem">&#x1f4c5; Des le 01/04/2026</div>
+                                    </div>
+                                    <div class="wf-placeholder" style="margin:4px 0"></div>
+                                    <div class="wf-placeholder medium"></div>
+                                    <div class="wf-row" style="margin-top:8px;gap:6px">
+                                        <div class="wf-btn" style="font-size:.55rem">Candidater</div>
+                                        <div class="wf-btn-outline" style="font-size:.55rem">Contacter</div>
+                                        <div class="wf-btn-light" style="font-size:.55rem">&#x1f516;</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wf-card" style="margin-bottom:10px">
+                            <div class="wf-row" style="align-items:flex-start;gap:12px">
+                                <div style="width:40px;height:40px;background:var(--light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">&#x1f3e2;</div>
+                                <div style="flex:1">
+                                    <div class="wf-row" style="justify-content:space-between">
+                                        <div>
+                                            <div class="wf-text-dark">Ingenieur Data Science (Alternance)</div>
+                                            <div class="wf-text" style="color:var(--primary);font-size:.65rem">BNP Paribas</div>
+                                        </div>
+                                        <div class="wf-badge wf-badge-warn">Alternance</div>
+                                    </div>
+                                    <div class="wf-row" style="gap:16px;margin:6px 0">
+                                        <div class="wf-text" style="font-size:.6rem">&#x1f4cd; Paris 9e</div>
+                                        <div class="wf-text" style="font-size:.6rem">&#x1f4b0; 1500EUR/mois</div>
+                                    </div>
+                                    <div class="wf-placeholder" style="margin:4px 0"></div>
+                                    <div class="wf-row" style="margin-top:8px;gap:6px">
+                                        <div class="wf-btn-outline" style="font-size:.55rem">Contacter</div>
+                                        <div class="wf-btn-light" style="font-size:.55rem">&#x1f516;</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 9. WIREFRAME : NOTIFICATIONS -->
+<!-- ============================================================ -->
+<div class="section page-break" id="wf-notifs">
+    <h2>9. Wireframe — Notifications</h2>
+    <p class="wf-desc">
+        Page listant toutes les notifications de l'utilisateur : demandes d'amis, reactions, commentaires,
+        partages, evenements et offres d'emploi. Badge compteur dans la navbar. Bouton "Tout marquer comme lu".
+    </p>
+    <div class="wireframe">
+        <div class="wf-title">notifications.php — Notifications</div>
+        <div class="wf-body">
+            <div class="wf-navbar">
+                <div class="wf-logo"><span class="ece">ECE</span><span class="in">In</span></div>
+                <div class="wf-search">Rechercher...</div>
+                <div class="wf-nav-links">
+                    <div class="wf-nav-item"><span class="icon">&#x1f3e0;</span>Accueil</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f465;</span>Reseau</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f464;</span>Vous</div>
+                    <div class="wf-nav-item" style="color:var(--primary);font-weight:600"><span class="icon">&#x1f514;</span>Notifs <span style="background:#dc3545;color:#fff;font-size:.45rem;padding:1px 4px;border-radius:8px;vertical-align:top">4</span></div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4ac;</span>Messages</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4bc;</span>Emplois</div>
+                </div>
+            </div>
+            <div style="padding:16px;max-width:700px;margin:0 auto">
+                <div class="wf-row" style="justify-content:space-between;margin-bottom:16px">
+                    <div class="wf-text-dark" style="font-size:1rem">&#x1f514; Notifications</div>
+                    <div class="wf-btn-outline" style="font-size:.6rem">Tout marquer comme lu</div>
+                </div>
+
+                <!-- Notification non lue : demande ami -->
+                <div class="wf-card" style="margin-bottom:8px;background:#e8f0fe;border-color:var(--primary)">
+                    <div class="wf-row" style="gap:10px">
+                        <div class="wf-avatar-sm"></div>
+                        <div style="flex:1">
+                            <div class="wf-text-dark" style="font-size:.7rem">
+                                <span style="background:#0a66c2;color:#fff;font-size:.45rem;padding:1px 6px;border-radius:8px;margin-right:4px">Demande</span>
+                                Lucas Petit vous a envoye une demande de connexion.
+                            </div>
+                            <div class="wf-text" style="font-size:.55rem">il y a 10 min</div>
+                        </div>
+                        <div style="display:flex;gap:4px">
+                            <div class="wf-btn" style="font-size:.5rem;padding:3px 8px">Accepter</div>
+                            <div class="wf-btn-light" style="font-size:.5rem;padding:3px 8px">Refuser</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification non lue : reaction -->
+                <div class="wf-card" style="margin-bottom:8px;background:#e8f0fe;border-color:var(--primary)">
+                    <div class="wf-row" style="gap:10px">
+                        <div class="wf-avatar-sm"></div>
+                        <div style="flex:1">
+                            <div class="wf-text-dark" style="font-size:.7rem">
+                                <span style="background:#198754;color:#fff;font-size:.45rem;padding:1px 6px;border-radius:8px;margin-right:4px">Reaction</span>
+                                Marie Martin a reagi &#x1f44d; a votre publication.
+                            </div>
+                            <div class="wf-text" style="font-size:.55rem">il y a 30 min</div>
+                        </div>
+                        <div class="wf-btn-light" style="font-size:.5rem;padding:3px 8px">Voir</div>
+                    </div>
+                </div>
+
+                <!-- Notification non lue : commentaire -->
+                <div class="wf-card" style="margin-bottom:8px;background:#e8f0fe;border-color:var(--primary)">
+                    <div class="wf-row" style="gap:10px">
+                        <div class="wf-avatar-sm"></div>
+                        <div style="flex:1">
+                            <div class="wf-text-dark" style="font-size:.7rem">
+                                <span style="background:#ffc107;color:#333;font-size:.45rem;padding:1px 6px;border-radius:8px;margin-right:4px">Commentaire</span>
+                                Sophie Leblanc a commente votre publication : "Tres bien ! Tu devrais..."
+                            </div>
+                            <div class="wf-text" style="font-size:.55rem">il y a 2h</div>
+                        </div>
+                        <div class="wf-btn-light" style="font-size:.5rem;padding:3px 8px">Voir</div>
+                    </div>
+                </div>
+
+                <!-- Notification non lue : evenement -->
+                <div class="wf-card" style="margin-bottom:8px;background:#e8f0fe;border-color:var(--primary)">
+                    <div class="wf-row" style="gap:10px">
+                        <div style="width:28px;height:28px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;flex-shrink:0">&#x1f4c5;</div>
+                        <div style="flex:1">
+                            <div class="wf-text-dark" style="font-size:.7rem">
+                                <span style="background:#6f42c1;color:#fff;font-size:.45rem;padding:1px 6px;border-radius:8px;margin-right:4px">Evenement</span>
+                                Portes Ouvertes ECE Paris 2026 — le 14 mars
+                            </div>
+                            <div class="wf-text" style="font-size:.55rem">il y a 5h</div>
+                        </div>
+                        <div class="wf-btn-light" style="font-size:.5rem;padding:3px 8px">Voir</div>
+                    </div>
+                </div>
+
+                <!-- Notification lue : ami accepte -->
+                <div class="wf-card" style="margin-bottom:8px">
+                    <div class="wf-row" style="gap:10px">
+                        <div class="wf-avatar-sm"></div>
+                        <div style="flex:1">
+                            <div class="wf-text" style="font-size:.7rem">
+                                <span style="background:#e9ecef;color:#555;font-size:.45rem;padding:1px 6px;border-radius:8px;margin-right:4px">Ami</span>
+                                Jean Dupont a accepte votre demande de connexion.
+                            </div>
+                            <div class="wf-text" style="font-size:.55rem">hier</div>
+                        </div>
+                        <div class="wf-btn-light" style="font-size:.5rem;padding:3px 8px">Profil</div>
+                    </div>
+                </div>
+
+                <!-- Notification lue : emploi -->
+                <div class="wf-card" style="margin-bottom:8px">
+                    <div class="wf-row" style="gap:10px">
+                        <div style="width:28px;height:28px;background:#e9ecef;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0">&#x1f4bc;</div>
+                        <div style="flex:1">
+                            <div class="wf-text" style="font-size:.7rem">
+                                <span style="background:#e9ecef;color:#555;font-size:.45rem;padding:1px 6px;border-radius:8px;margin-right:4px">Emploi</span>
+                                Nouvelle offre : Developpeur Full-Stack (Stage) chez Startup TechParis
+                            </div>
+                            <div class="wf-text" style="font-size:.55rem">lundi</div>
+                        </div>
+                        <div class="wf-btn-light" style="font-size:.5rem;padding:3px 8px">Voir</div>
+                    </div>
+                </div>
+
+                <div class="wf-annotation">Les notifications non lues sont surlignees en bleu. Les types : demande_ami, ami_accepte, reaction, commentaire, partage, evenement, emploi, systeme.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 10. WIREFRAME : ADMIN -->
+<!-- ============================================================ -->
+<div class="section page-break" id="wf-admin">
+    <h2>10. Wireframe — Panel d'administration</h2>
+    <p class="wf-desc">
+        Accessible uniquement aux administrateurs. Dashboard avec statistiques globales, puis liste filtrable des utilisateurs
+        avec actions (ajouter, changer role, activer/desactiver).
+    </p>
+    <div class="wireframe">
+        <div class="wf-title">admin/index.php — Administration</div>
+        <div class="wf-body">
+            <div class="wf-navbar">
+                <div class="wf-logo"><span class="ece">ECE</span><span class="in">In</span></div>
+                <div class="wf-search">Rechercher...</div>
+                <div class="wf-nav-links">
+                    <div class="wf-nav-item"><span class="icon">&#x1f3e0;</span>Accueil</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f465;</span>Reseau</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f464;</span>Vous</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f514;</span>Notifs</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4ac;</span>Messages</div>
+                    <div class="wf-nav-item"><span class="icon">&#x1f4bc;</span>Emplois</div>
+                </div>
+            </div>
+            <div style="padding:16px">
+                <div class="wf-row" style="justify-content:space-between;margin-bottom:16px">
+                    <div class="wf-text-dark" style="font-size:1rem">&#x1f6e1; Administration ECE In</div>
+                    <div class="wf-btn-light">&#x2190; Retour au site</div>
+                </div>
+                <!-- Stats -->
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+                    <div class="wf-card" style="text-align:center">
+                        <div class="wf-stat-number">156</div>
+                        <div class="wf-stat-label">Utilisateurs</div>
+                    </div>
+                    <div class="wf-card" style="text-align:center">
+                        <div class="wf-stat-number" style="color:#198754">423</div>
+                        <div class="wf-stat-label">Publications</div>
+                    </div>
+                    <div class="wf-card" style="text-align:center">
+                        <div class="wf-stat-number" style="color:#ffc107">89</div>
+                        <div class="wf-stat-label">Connexions</div>
+                    </div>
+                    <div class="wf-card" style="text-align:center">
+                        <div class="wf-stat-number" style="color:#dc3545">12</div>
+                        <div class="wf-stat-label">Offres emplois</div>
+                    </div>
+                </div>
+                <!-- Gestion utilisateurs -->
+                <div class="wf-card">
+                    <div class="wf-row" style="justify-content:space-between;margin-bottom:12px">
+                        <div class="wf-card-title" style="margin:0">&#x1f465; Gestion des utilisateurs</div>
+                        <div class="wf-row" style="gap:6px">
+                            <div class="wf-input" style="width:160px;font-size:.6rem">Rechercher un utilisateur...</div>
+                            <div class="wf-btn-light" style="font-size:.55rem">Actifs</div>
+                            <div class="wf-btn-light" style="font-size:.55rem">Tous</div>
+                            <div class="wf-btn" style="font-size:.55rem">+ Ajouter</div>
+                        </div>
+                    </div>
+                    <table class="wf-table">
+                        <thead>
+                            <tr><th>Utilisateur</th><th>Email</th><th>Role</th><th>Statut</th><th>Derniere connexion</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="wf-row"><div class="wf-avatar-sm"></div><div>admin<br/><span style="font-size:.55rem;color:#999">Administrateur ECE In</span></div></div></td>
+                                <td>admin@ece.fr</td>
+                                <td><span style="background:#dc3545;color:#fff;font-size:.5rem;padding:1px 6px;border-radius:8px">Administrateur</span></td>
+                                <td><span style="background:#198754;color:#fff;font-size:.5rem;padding:1px 6px;border-radius:8px">Actif</span></td>
+                                <td style="font-size:.6rem">Aujourd'hui</td>
+                                <td><span class="wf-btn-light" style="font-size:.45rem">Role</span> <span class="wf-btn-light" style="font-size:.45rem">Desactiver</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="wf-row"><div class="wf-avatar-sm"></div><div>jdupont<br/><span style="font-size:.55rem;color:#999">Jean Dupont</span></div></div></td>
+                                <td>jean.dupont@edu.ece.fr</td>
+                                <td><span style="background:var(--primary);color:#fff;font-size:.5rem;padding:1px 6px;border-radius:8px">Auteur</span></td>
+                                <td><span style="background:#198754;color:#fff;font-size:.5rem;padding:1px 6px;border-radius:8px">Actif</span></td>
+                                <td style="font-size:.6rem">Hier</td>
+                                <td><span class="wf-btn-light" style="font-size:.45rem">Role</span> <span class="wf-btn-light" style="font-size:.45rem">Desactiver</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="wf-row"><div class="wf-avatar-sm"></div><div>mmartin<br/><span style="font-size:.55rem;color:#999">Marie Martin</span></div></div></td>
+                                <td>marie.martin@edu.ece.fr</td>
+                                <td><span style="background:var(--primary);color:#fff;font-size:.5rem;padding:1px 6px;border-radius:8px">Auteur</span></td>
+                                <td><span style="background:#198754;color:#fff;font-size:.5rem;padding:1px 6px;border-radius:8px">Actif</span></td>
+                                <td style="font-size:.6rem">Lundi</td>
+                                <td><span class="wf-btn-light" style="font-size:.45rem">Role</span> <span class="wf-btn-light" style="font-size:.45rem">Desactiver</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+            primaryColor: '#e8f0fe',
+            primaryTextColor: '#1a1a2e',
+            primaryBorderColor: '#0a66c2',
+            lineColor: '#6c757d',
+            secondaryColor: '#f4f6f8',
+            tertiaryColor: '#fff'
+        },
+        flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECE In — Architecture du Systeme</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root { --primary: #0a66c2; --dark: #1a1a2e; --gray: #6c757d; --light: #f4f6f8; --border: #dee2e6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #333; line-height: 1.6; background: #fff; }
+        .page-break { page-break-before: always; }
+        .doc-header { background: var(--dark); color: #fff; padding: 60px 40px; text-align: center; }
+        .doc-header h1 { font-size: 2.4rem; margin-bottom: 8px; }
+        .doc-header .subtitle { font-size: 1.1rem; opacity: .8; }
+        .doc-header .meta { margin-top: 16px; font-size: .9rem; opacity: .6; }
+        .logo { font-size: 2rem; font-weight: 900; margin-bottom: 12px; }
+        .logo .ece { color: #fff; } .logo .in { color: #3b82f6; }
+        .section { max-width: 1100px; margin: 0 auto; padding: 48px 32px; }
+        .section h2 { font-size: 1.6rem; color: var(--dark); border-bottom: 3px solid var(--primary); padding-bottom: 8px; margin-bottom: 24px; }
+        .section h3 { font-size: 1.15rem; color: var(--primary); margin: 28px 0 12px; }
+        .section p, .section li { font-size: .95rem; color: var(--gray); }
+        .section ul { padding-left: 20px; margin-bottom: 16px; }
+        .mermaid-wrapper { background: var(--light); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin: 24px 0; overflow-x: auto; }
+        table.tech-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .88rem; }
+        table.tech-table th { background: var(--dark); color: #fff; padding: 10px 14px; text-align: left; }
+        table.tech-table td { padding: 8px 14px; border-bottom: 1px solid #eee; }
+        table.tech-table tr:nth-child(even) { background: #f9fafb; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: .78rem; font-weight: 600; }
+        .badge-blue { background: #e8f0fe; color: var(--primary); }
+        .badge-green { background: #d4edda; color: #155724; }
+        .badge-orange { background: #fff3cd; color: #856404; }
+        .badge-red { background: #f8d7da; color: #721c24; }
+        .file-tree { font-family: 'Courier New', monospace; font-size: .85rem; background: var(--light); padding: 20px; border-radius: 8px; border: 1px solid var(--border); line-height: 1.8; }
+        .file-tree .folder { color: var(--primary); font-weight: 700; }
+        .file-tree .file { color: var(--dark); }
+        .file-tree .desc { color: var(--gray); font-family: 'Segoe UI', sans-serif; font-size: .8rem; }
+        @media print {
+            .mermaid-wrapper { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PAGE DE GARDE -->
+<div class="doc-header">
+    <div class="logo"><span class="ece">ECE</span><span class="in">In</span></div>
+    <h1>Architecture du Systeme</h1>
+    <div class="subtitle">Composants front-end, back-end et infrastructure</div>
+    <div class="meta">Livrable de conception — Mars 2026</div>
+</div>
+
+<!-- 1. VUE D'ENSEMBLE -->
+<div class="section">
+    <h2>1. Vue d'ensemble de l'architecture</h2>
+    <p>
+        ECE In est une application web monolithique PHP suivant une architecture 3 tiers :
+        couche presentation (client), couche logique (serveur PHP) et couche donnees (MySQL).
+    </p>
+
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart TB
+    subgraph client ["Couche Client (Navigateur)"]
+        HTML["HTML5 / CSS3"]
+        BS["Bootstrap 5"]
+        JS["JavaScript / jQuery"]
+        ICONS["Bootstrap Icons"]
+    end
+
+    subgraph serveur ["Couche Serveur (PHP 8.3)"]
+        subgraph pages ["Pages PHP (Front Controller)"]
+            LOGIN_P["login.php"]
+            INDEX_P["index.php"]
+            PROFIL_P["profil.php"]
+            MSG_P["messagerie.php"]
+            RESEAU_P["reseau.php"]
+            RECHERCHE_P["recherche.php"]
+            EMPLOIS_P["emplois.php"]
+            NOTIF_P["notifications.php"]
+            ADMIN_P["admin/index.php"]
+            CV_P["cv/generer_cv.php"]
+        end
+        subgraph api ["API Endpoints (JSON/AJAX)"]
+            API_POSTS["api/posts.php"]
+            API_MSG["api/messages.php"]
+            API_AMIS["api/amis.php"]
+            API_NOTIF["api/notifications.php"]
+            API_CALLS["api/calls.php"]
+            API_UPLOAD["api/upload.php"]
+            API_MEDIA["api/media.php"]
+            API_ALBUMS["api/albums.php"]
+            API_CV["api/import_cv.php"]
+        end
+        subgraph config ["Configuration"]
+            CONFIG["config/config.php"]
+            DB_CONF["config/database.php"]
+        end
+        subgraph includes ["Composants partages"]
+            HEADER["includes/header.php"]
+            NAVBAR["includes/navbar.php"]
+            FOOTER["includes/footer.php"]
+            POST_CARD["includes/post_card.php"]
+        end
+    end
+
+    subgraph data ["Couche Donnees"]
+        MYSQL[("MySQL<br/>Base ecein<br/>16 tables")]
+    end
+
+    subgraph deploy ["Deploiement"]
+        RAILWAY["Railway"]
+        PROCFILE["Procfile"]
+        NIXPACKS["nixpacks.toml"]
+    end
+
+    client -->|"HTTP GET/POST"| pages
+    client -->|"AJAX (fetch/jQuery)"| api
+    pages --> config
+    pages --> includes
+    api --> config
+    config --> DB_CONF
+    DB_CONF -->|"PDO (MySQL)"| MYSQL
+    serveur --> deploy
+        </pre>
+    </div>
+</div>
+
+<!-- 2. STACK TECHNIQUE -->
+<div class="section page-break">
+    <h2>2. Stack technique</h2>
+
+    <table class="tech-table">
+        <tr><th>Couche</th><th>Technologie</th><th>Version</th><th>Role</th></tr>
+        <tr>
+            <td><span class="badge badge-blue">Front-End</span></td>
+            <td>HTML5 / CSS3</td><td>-</td>
+            <td>Structure et style des pages</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">Front-End</span></td>
+            <td>Bootstrap</td><td>5.3</td>
+            <td>Framework CSS responsive, composants UI</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">Front-End</span></td>
+            <td>Bootstrap Icons</td><td>1.11</td>
+            <td>Bibliotheque d'icones</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-blue">Front-End</span></td>
+            <td>JavaScript / jQuery</td><td>-</td>
+            <td>Interactions dynamiques, AJAX</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">Back-End</span></td>
+            <td>PHP</td><td>8.3</td>
+            <td>Langage serveur, logique metier</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">Back-End</span></td>
+            <td>PDO (PHP Data Objects)</td><td>-</td>
+            <td>Couche d'abstraction base de donnees</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">Back-End</span></td>
+            <td>Sessions PHP</td><td>-</td>
+            <td>Authentification et gestion de session</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">Back-End</span></td>
+            <td>bcrypt (password_hash)</td><td>-</td>
+            <td>Hachage securise des mots de passe</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-orange">Base de donnees</span></td>
+            <td>MySQL</td><td>8.x</td>
+            <td>SGBD relationnel, moteur InnoDB</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-red">Deploiement</span></td>
+            <td>Railway</td><td>-</td>
+            <td>Plateforme d'hebergement cloud (PaaS)</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-red">Deploiement</span></td>
+            <td>Nixpacks</td><td>-</td>
+            <td>Build system automatique (detection PHP)</td>
+        </tr>
+    </table>
+</div>
+
+<!-- 3. ARBORESCENCE DES FICHIERS -->
+<div class="section page-break">
+    <h2>3. Arborescence des fichiers</h2>
+    <div class="file-tree">
+<span class="folder">projet-web-2026/</span>
+├── <span class="file">index.php</span>              <span class="desc">— Page d'accueil / fil d'actualite</span>
+├── <span class="file">login.php</span>              <span class="desc">— Connexion et inscription</span>
+├── <span class="file">logout.php</span>             <span class="desc">— Deconnexion</span>
+├── <span class="file">profil.php</span>             <span class="desc">— Profil utilisateur (7 onglets)</span>
+├── <span class="file">utilisateur.php</span>        <span class="desc">— Profil d'un autre utilisateur</span>
+├── <span class="file">reseau.php</span>             <span class="desc">— Mon reseau / amis</span>
+├── <span class="file">messagerie.php</span>         <span class="desc">— Messagerie et appels</span>
+├── <span class="file">recherche.php</span>          <span class="desc">— Recherche (personnes, posts, emplois)</span>
+├── <span class="file">notifications.php</span>      <span class="desc">— Liste des notifications</span>
+├── <span class="file">emplois.php</span>            <span class="desc">— Offres d'emploi et stages</span>
+├── <span class="file">composer.json</span>          <span class="desc">— Dependances PHP</span>
+├── <span class="file">Procfile</span>               <span class="desc">— Configuration Railway</span>
+├── <span class="file">nixpacks.toml</span>          <span class="desc">— Configuration Nixpacks (PHP 8.3)</span>
+│
+├── <span class="folder">admin/</span>
+│   └── <span class="file">index.php</span>          <span class="desc">— Panel d'administration</span>
+│
+├── <span class="folder">api/</span>                   <span class="desc">— Endpoints AJAX (reponses JSON)</span>
+│   ├── <span class="file">posts.php</span>          <span class="desc">— CRUD publications, reactions, commentaires</span>
+│   ├── <span class="file">messages.php</span>       <span class="desc">— Envoi et polling des messages</span>
+│   ├── <span class="file">amis.php</span>           <span class="desc">— Demandes d'amitie</span>
+│   ├── <span class="file">notifications.php</span>  <span class="desc">— Marquer notifications lues</span>
+│   ├── <span class="file">calls.php</span>          <span class="desc">— Gestion appels audio/video</span>
+│   ├── <span class="file">upload.php</span>         <span class="desc">— Upload avatar et fond</span>
+│   ├── <span class="file">media.php</span>          <span class="desc">— Servir les fichiers media</span>
+│   ├── <span class="file">albums.php</span>         <span class="desc">— CRUD albums photo</span>
+│   └── <span class="file">import_cv.php</span>      <span class="desc">— Import CV depuis XML</span>
+│
+├── <span class="folder">assets/</span>                <span class="desc">— Ressources statiques</span>
+│   ├── <span class="folder">css/</span>
+│   │   ├── <span class="file">style.css</span>      <span class="desc">— Styles principaux</span>
+│   │   ├── <span class="file">mobile-app.css</span> <span class="desc">— Styles PWA/mobile</span>
+│   │   └── <span class="folder">themes/</span>
+│   │       ├── <span class="file">noel.css</span>   <span class="desc">— Theme Noel</span>
+│   │       └── <span class="file">saint-valentin.css</span> <span class="desc">— Theme Saint-Valentin</span>
+│   ├── <span class="folder">images/</span>
+│   │   └── <span class="file">default_avatar.svg</span>
+│   └── <span class="folder">js/</span>
+│       ├── <span class="file">main.js</span>        <span class="desc">— JavaScript global</span>
+│       └── <span class="file">messagerie.js</span>  <span class="desc">— Logique messagerie et appels</span>
+│
+├── <span class="folder">config/</span>
+│   ├── <span class="file">config.php</span>         <span class="desc">— Configuration, helpers, constantes, session</span>
+│   └── <span class="file">database.php</span>       <span class="desc">— Connexion PDO, migrations auto</span>
+│
+├── <span class="folder">cv/</span>
+│   └── <span class="file">generer_cv.php</span>     <span class="desc">— Generation CV (HTML, PDF, XML)</span>
+│
+├── <span class="folder">database/</span>
+│   ├── <span class="file">schema.sql</span>         <span class="desc">— Schema complet + donnees de test</span>
+│   ├── <span class="file">dump.sql</span>           <span class="desc">— Dump complet de la base</span>
+│   └── <span class="file">README.md</span>          <span class="desc">— Documentation de la base</span>
+│
+└── <span class="folder">includes/</span>              <span class="desc">— Composants PHP reutilisables</span>
+    ├── <span class="file">header.php</span>         <span class="desc">— En-tete HTML, meta, CSS</span>
+    ├── <span class="file">navbar.php</span>         <span class="desc">— Barre de navigation desktop + mobile</span>
+    ├── <span class="file">footer.php</span>         <span class="desc">— Pied de page, scripts JS</span>
+    └── <span class="file">post_card.php</span>      <span class="desc">— Composant carte de publication</span>
+    </div>
+</div>
+
+<!-- 4. FLUX DE DONNEES -->
+<div class="section page-break">
+    <h2>4. Flux de donnees</h2>
+
+    <h3>4.1 Flux d'une requete standard (page PHP)</h3>
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+sequenceDiagram
+    participant N as Navigateur
+    participant P as Page PHP
+    participant C as config.php
+    participant D as database.php
+    participant M as MySQL
+
+    N->>P: GET /index.php
+    P->>C: require config.php
+    C->>C: session_start(), constantes, helpers
+    C->>D: getDB()
+    D->>M: Connexion PDO (MySQL)
+    M-->>D: Connexion etablie
+    P->>M: SELECT publications, evenements, suggestions
+    M-->>P: Resultats (PDOStatement)
+    P->>P: include header.php, navbar.php
+    P->>P: Genere le HTML avec les donnees
+    P->>P: include footer.php
+    P-->>N: Reponse HTML complete
+        </pre>
+    </div>
+
+    <h3>4.2 Flux AJAX (API endpoint)</h3>
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+sequenceDiagram
+    participant N as Navigateur (JS)
+    participant A as api/posts.php
+    participant C as config.php
+    participant M as MySQL
+
+    N->>A: POST /api/posts.php (action=publier, FormData)
+    A->>C: require config.php
+    C->>C: Verification session (requireConnexion)
+    A->>M: INSERT INTO publications (...)
+    M-->>A: OK (lastInsertId)
+    A->>M: INSERT INTO notifications (...)
+    M-->>A: OK
+    A-->>N: JSON { success: true, post_id: 42 }
+    N->>N: Mise a jour du DOM (ajout du post)
+        </pre>
+    </div>
+
+    <h3>4.3 Flux d'authentification</h3>
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+sequenceDiagram
+    participant N as Navigateur
+    participant L as login.php
+    participant C as config.php
+    participant M as MySQL
+
+    N->>L: POST /login.php (pseudo, mot_de_passe)
+    L->>C: require config.php
+    L->>M: SELECT * FROM utilisateurs WHERE pseudo = ?
+    M-->>L: Utilisateur trouve
+    L->>L: password_verify(mdp, hash_bcrypt)
+    alt Mot de passe correct
+        L->>L: $_SESSION[utilisateur_id] = id
+        L->>M: UPDATE derniere_connexion = NOW()
+        L-->>N: Redirect 302 → index.php
+    else Mot de passe incorrect
+        L-->>N: HTML avec message d'erreur
+    end
+        </pre>
+    </div>
+
+    <h3>4.4 Flux messagerie (polling)</h3>
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+sequenceDiagram
+    participant N as Navigateur (JS)
+    participant A as api/messages.php
+    participant M as MySQL
+
+    loop Toutes les 3 secondes
+        N->>A: GET /api/messages.php?action=poll&conv=5&last=42
+        A->>M: SELECT * FROM messages WHERE conversation_id=5 AND id > 42
+        M-->>A: Nouveaux messages (ou vide)
+        A-->>N: JSON [ {id:43, contenu:"..."}, ... ]
+        N->>N: Afficher les nouveaux messages dans le DOM
+    end
+        </pre>
+    </div>
+</div>
+
+<!-- 5. SECURITE -->
+<div class="section page-break">
+    <h2>5. Securite de l'architecture</h2>
+
+    <table class="tech-table">
+        <tr><th>Mecanisme</th><th>Implementation</th><th>Couche</th></tr>
+        <tr>
+            <td>Authentification</td>
+            <td>Sessions PHP securisees (httponly, samesite=Strict), bcrypt pour les mots de passe</td>
+            <td><span class="badge badge-green">Serveur</span></td>
+        </tr>
+        <tr>
+            <td>Autorisation</td>
+            <td>Fonctions requireConnexion() et requireAdmin() en debut de chaque page/API</td>
+            <td><span class="badge badge-green">Serveur</span></td>
+        </tr>
+        <tr>
+            <td>Injection SQL</td>
+            <td>Requetes preparees PDO avec placeholders (?) partout</td>
+            <td><span class="badge badge-orange">Base</span></td>
+        </tr>
+        <tr>
+            <td>XSS (Cross-Site Scripting)</td>
+            <td>Fonction h() (htmlspecialchars) sur toutes les sorties utilisateur</td>
+            <td><span class="badge badge-green">Serveur</span></td>
+        </tr>
+        <tr>
+            <td>Restriction inscription</td>
+            <td>Emails limites aux domaines @edu.ece.fr et @ece.fr</td>
+            <td><span class="badge badge-green">Serveur</span></td>
+        </tr>
+        <tr>
+            <td>Upload securise</td>
+            <td>Validation MIME type + taille maximale (PHOTO_TYPES, MAX_PHOTO_SIZE)</td>
+            <td><span class="badge badge-green">Serveur</span></td>
+        </tr>
+        <tr>
+            <td>Visibilite des posts</td>
+            <td>3 niveaux (public, amis, prive) verifies cote serveur dans les requetes SQL</td>
+            <td><span class="badge badge-orange">Base</span></td>
+        </tr>
+    </table>
+</div>
+
+<!-- 6. DEPLOIEMENT -->
+<div class="section">
+    <h2>6. Infrastructure de deploiement</h2>
+
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart LR
+    subgraph dev ["Environnement Developpement"]
+        CODE["Code Source<br/>(PHP + Assets)"]
+        LOCAL_DB["MySQL Local"]
+    end
+
+    subgraph git ["Versioning"]
+        GIT["Git Repository"]
+    end
+
+    subgraph railway ["Railway (Production)"]
+        NIXP["Nixpacks Build<br/>PHP 8.3 + extensions"]
+        PROC["Procfile<br/>php -S 0.0.0.0:$PORT"]
+        PROD_DB[("MySQL Railway<br/>MYSQL_URL")]
+    end
+
+    CODE -->|"git push"| GIT
+    GIT -->|"Auto-deploy"| NIXP
+    NIXP --> PROC
+    PROC -->|"PDO"| PROD_DB
+    CODE -->|"php -S localhost"| LOCAL_DB
+        </pre>
+    </div>
+
+    <h3>Configuration du deploiement</h3>
+    <table class="tech-table">
+        <tr><th>Fichier</th><th>Contenu</th><th>Role</th></tr>
+        <tr>
+            <td>Procfile</td>
+            <td><code>web: php -S 0.0.0.0:$PORT -t .</code></td>
+            <td>Commande de demarrage du serveur PHP built-in</td>
+        </tr>
+        <tr>
+            <td>nixpacks.toml</td>
+            <td><code>[phases.setup] nixPkgs = ["php83", "php83Extensions.pdo_mysql"]</code></td>
+            <td>Specification de la version PHP et extensions requises</td>
+        </tr>
+        <tr>
+            <td>composer.json</td>
+            <td><code>require: { "php": ">=8.1", "ext-pdo": "*", "ext-pdo_mysql": "*" }</code></td>
+            <td>Dependances PHP et extensions requises</td>
+        </tr>
+    </table>
+
+    <h3>Variables d'environnement (Railway)</h3>
+    <table class="tech-table">
+        <tr><th>Variable</th><th>Description</th><th>Exemple</th></tr>
+        <tr><td>MYSQL_URL</td><td>URL de connexion MySQL complete</td><td>mysql://user:pass@host:3306/ecein</td></tr>
+        <tr><td>MYSQLHOST</td><td>Hote MySQL</td><td>containers-us-west.railway.app</td></tr>
+        <tr><td>MYSQLPORT</td><td>Port MySQL</td><td>3306</td></tr>
+        <tr><td>MYSQLDATABASE</td><td>Nom de la base</td><td>ecein</td></tr>
+        <tr><td>MYSQLUSER</td><td>Utilisateur MySQL</td><td>root</td></tr>
+        <tr><td>MYSQLPASSWORD</td><td>Mot de passe MySQL</td><td>***</td></tr>
+        <tr><td>PORT</td><td>Port du serveur web (defini par Railway)</td><td>8080</td></tr>
+    </table>
+</div>
+
+<script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+            primaryColor: '#e8f0fe',
+            primaryTextColor: '#1a1a2e',
+            primaryBorderColor: '#0a66c2',
+            lineColor: '#6c757d',
+            secondaryColor: '#f4f6f8',
+            tertiaryColor: '#fff',
+            actorBkg: '#e8f0fe',
+            actorBorder: '#0a66c2',
+            actorTextColor: '#1a1a2e',
+            signalColor: '#333',
+            signalTextColor: '#333'
+        },
+        flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+        sequence: { useMaxWidth: true, actorMargin: 60, messageMargin: 40 }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECE In — Modele Entite-Association (MCD)</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root { --primary: #0a66c2; --dark: #1a1a2e; --gray: #6c757d; --light: #f4f6f8; --border: #dee2e6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #333; line-height: 1.6; background: #fff; }
+        .page-break { page-break-before: always; }
+        .doc-header { background: var(--dark); color: #fff; padding: 60px 40px; text-align: center; }
+        .doc-header h1 { font-size: 2.4rem; margin-bottom: 8px; }
+        .doc-header .subtitle { font-size: 1.1rem; opacity: .8; }
+        .doc-header .meta { margin-top: 16px; font-size: .9rem; opacity: .6; }
+        .logo { font-size: 2rem; font-weight: 900; margin-bottom: 12px; }
+        .logo .ece { color: #fff; } .logo .in { color: #3b82f6; }
+        .section { max-width: 1200px; margin: 0 auto; padding: 48px 32px; }
+        .section h2 { font-size: 1.6rem; color: var(--dark); border-bottom: 3px solid var(--primary); padding-bottom: 8px; margin-bottom: 24px; }
+        .section h3 { font-size: 1.15rem; color: var(--primary); margin: 28px 0 12px; }
+        .section p { font-size: .95rem; color: var(--gray); margin-bottom: 12px; }
+        .mermaid-wrapper { background: var(--light); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin: 24px 0; overflow-x: auto; }
+        table.entity-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .85rem; }
+        table.entity-table th { background: var(--dark); color: #fff; padding: 8px 12px; text-align: left; }
+        table.entity-table td { padding: 6px 12px; border-bottom: 1px solid #eee; }
+        table.entity-table tr:nth-child(even) { background: #f9fafb; }
+        .pk { text-decoration: underline; font-weight: 700; }
+        .fk { color: var(--primary); font-style: italic; }
+        .field-type { color: var(--gray); font-size: .8rem; }
+        .legend { display: flex; gap: 24px; flex-wrap: wrap; margin: 16px 0; font-size: .85rem; }
+        .legend span { display: flex; align-items: center; gap: 6px; }
+        .legend .dot { width: 12px; height: 12px; border-radius: 3px; }
+        .note { background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 12px 16px; margin: 16px 0; font-size: .85rem; }
+        @media print {
+            .mermaid-wrapper { page-break-inside: avoid; }
+            .section { padding: 24px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PAGE DE GARDE -->
+<div class="doc-header">
+    <div class="logo"><span class="ece">ECE</span><span class="in">In</span></div>
+    <h1>Modele Entite-Association</h1>
+    <div class="subtitle">Conception de la base de donnees</div>
+    <div class="meta">Livrable de conception — Mars 2026</div>
+</div>
+
+<!-- DIAGRAMME ER -->
+<div class="section">
+    <h2>1. Diagramme Entite-Association</h2>
+    <p>
+        Ce diagramme represente les 16 entites de la base de donnees <strong>ecein</strong> (MySQL/InnoDB, charset utf8mb4).
+        Les cles primaires sont soulignees, les cles etrangeres sont en italique bleu. Les cardinalites suivent la notation (min,max).
+    </p>
+
+    <div class="legend">
+        <span><span class="dot" style="background:var(--dark)"></span> <span class="pk">Cle primaire (PK)</span></span>
+        <span><span class="dot" style="background:var(--primary)"></span> <span class="fk">Cle etrangere (FK)</span></span>
+        <span><span class="dot" style="background:#198754"></span> Champ obligatoire (NOT NULL)</span>
+        <span><span class="dot" style="background:#ffc107"></span> Champ optionnel (DEFAULT NULL)</span>
+    </div>
+
+    <div class="mermaid-wrapper">
+        <pre class="mermaid">
+erDiagram
+    UTILISATEURS {
+        int id PK
+        varchar pseudo UK
+        varchar email UK
+        varchar mot_de_passe
+        varchar nom
+        varchar prenom
+        enum role
+        varchar photo
+        varchar image_fond
+        varchar titre
+        text biographie
+        varchar localisation
+        varchar site_web
+        varchar telephone
+        date date_naissance
+        datetime date_inscription
+        datetime derniere_connexion
+        tinyint actif
+    }
+
+    FORMATIONS {
+        int id PK
+        int utilisateur_id FK
+        varchar etablissement
+        varchar diplome
+        varchar domaine
+        date date_debut
+        date date_fin
+        tinyint en_cours
+        text description
+        varchar lieu
+    }
+
+    PROJETS {
+        int id PK
+        int utilisateur_id FK
+        varchar titre
+        text description
+        date date_debut
+        date date_fin
+        tinyint en_cours
+        varchar lien
+        varchar type
+    }
+
+    PUBLICATIONS {
+        int id PK
+        int utilisateur_id FK
+        enum type
+        text contenu
+        varchar fichier
+        varchar fichier_mime
+        varchar lieu
+        varchar humeur
+        enum visibilite
+        int publication_originale_id FK
+        datetime date_publication
+        datetime date_modification
+    }
+
+    REACTIONS {
+        int id PK
+        int publication_id FK
+        int utilisateur_id FK
+        enum type
+        datetime date_reaction
+    }
+
+    COMMENTAIRES {
+        int id PK
+        int publication_id FK
+        int utilisateur_id FK
+        text contenu
+        datetime date_commentaire
+    }
+
+    CONNEXIONS {
+        int id PK
+        int demandeur_id FK
+        int destinataire_id FK
+        enum statut
+        datetime date_demande
+        datetime date_reponse
+    }
+
+    CONVERSATIONS {
+        int id PK
+        varchar nom
+        tinyint est_groupe
+        datetime date_creation
+    }
+
+    CONVERSATION_PARTICIPANTS {
+        int conversation_id PK_FK
+        int utilisateur_id PK_FK
+        datetime date_ajout
+    }
+
+    MESSAGES {
+        int id PK
+        int conversation_id FK
+        int expediteur_id FK
+        text contenu
+        tinyint lu
+        datetime date_envoi
+    }
+
+    NOTIFICATIONS {
+        int id PK
+        int utilisateur_id FK
+        int expediteur_id FK
+        enum type
+        text message
+        varchar lien
+        tinyint lue
+        datetime date_notification
+    }
+
+    EMPLOIS {
+        int id PK
+        int publie_par FK
+        varchar titre
+        varchar entreprise
+        text description
+        enum type
+        varchar lieu
+        varchar salaire
+        date date_debut
+        date date_limite
+        varchar lien_candidature
+        varchar contact_email
+        datetime date_publication
+        tinyint actif
+    }
+
+    EVENEMENTS {
+        int id PK
+        int organisateur_id FK
+        varchar titre
+        text description
+        varchar lieu
+        datetime date_debut
+        datetime date_fin
+        varchar image
+        varchar lien
+        tinyint est_officiel
+        datetime date_publication
+    }
+
+    ALBUMS {
+        int id PK
+        int utilisateur_id FK
+        varchar nom
+        text description
+        varchar couverture
+        datetime date_creation
+    }
+
+    ALBUM_PHOTOS {
+        int album_id PK_FK
+        int publication_id PK_FK
+    }
+
+    APPELS {
+        int id PK
+        int appelant_id FK
+        int receveur_id FK
+        int conversation_id FK
+        enum type
+        enum statut
+        datetime date_debut
+        datetime date_fin
+    }
+
+    UTILISATEURS ||--o{ FORMATIONS : "possede"
+    UTILISATEURS ||--o{ PROJETS : "realise"
+    UTILISATEURS ||--o{ PUBLICATIONS : "publie"
+    UTILISATEURS ||--o{ REACTIONS : "reagit"
+    UTILISATEURS ||--o{ COMMENTAIRES : "commente"
+    UTILISATEURS ||--o{ CONNEXIONS : "demande"
+    UTILISATEURS ||--o{ CONNEXIONS : "recoit"
+    UTILISATEURS ||--o{ CONVERSATION_PARTICIPANTS : "participe"
+    UTILISATEURS ||--o{ MESSAGES : "envoie"
+    UTILISATEURS ||--o{ NOTIFICATIONS : "recoit"
+    UTILISATEURS ||--o{ NOTIFICATIONS : "emet"
+    UTILISATEURS ||--o{ EMPLOIS : "publie"
+    UTILISATEURS ||--o{ EVENEMENTS : "organise"
+    UTILISATEURS ||--o{ ALBUMS : "cree"
+    UTILISATEURS ||--o{ APPELS : "appelle"
+    UTILISATEURS ||--o{ APPELS : "recoit"
+
+    PUBLICATIONS ||--o{ REACTIONS : "recoit"
+    PUBLICATIONS ||--o{ COMMENTAIRES : "contient"
+    PUBLICATIONS ||--o| PUBLICATIONS : "partage"
+    PUBLICATIONS ||--o{ ALBUM_PHOTOS : "appartient"
+
+    CONVERSATIONS ||--o{ CONVERSATION_PARTICIPANTS : "inclut"
+    CONVERSATIONS ||--o{ MESSAGES : "contient"
+    CONVERSATIONS ||--o{ APPELS : "concerne"
+
+    ALBUMS ||--o{ ALBUM_PHOTOS : "regroupe"
+        </pre>
+    </div>
+</div>
+
+<!-- DETAIL DES ENTITES -->
+<div class="section page-break">
+    <h2>2. Detail des entites</h2>
+
+    <h3>2.1 UTILISATEURS</h3>
+    <p>Table centrale du systeme. Represente tous les membres du reseau ECE In.</p>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td>pseudo</td><td class="field-type">VARCHAR(50)</td><td>NOT NULL, UNIQUE</td><td>Nom d'utilisateur</td></tr>
+        <tr><td>email</td><td class="field-type">VARCHAR(100)</td><td>NOT NULL, UNIQUE</td><td>Email ECE (@edu.ece.fr ou @ece.fr)</td></tr>
+        <tr><td>mot_de_passe</td><td class="field-type">VARCHAR(255)</td><td>NOT NULL</td><td>Hash bcrypt du mot de passe</td></tr>
+        <tr><td>nom</td><td class="field-type">VARCHAR(100)</td><td>NOT NULL</td><td>Nom de famille</td></tr>
+        <tr><td>prenom</td><td class="field-type">VARCHAR(100)</td><td>NOT NULL</td><td>Prenom</td></tr>
+        <tr><td>role</td><td class="field-type">ENUM('auteur','administrateur')</td><td>NOT NULL, DEFAULT 'auteur'</td><td>Role dans le systeme</td></tr>
+        <tr><td>photo</td><td class="field-type">VARCHAR(255)</td><td>DEFAULT avatar</td><td>Chemin vers l'avatar</td></tr>
+        <tr><td>image_fond</td><td class="field-type">VARCHAR(255)</td><td>DEFAULT bg</td><td>Image de couverture du profil</td></tr>
+        <tr><td>titre</td><td class="field-type">VARCHAR(200)</td><td>NULL</td><td>Titre professionnel</td></tr>
+        <tr><td>biographie</td><td class="field-type">TEXT</td><td>NULL</td><td>Description personnelle</td></tr>
+        <tr><td>localisation</td><td class="field-type">VARCHAR(200)</td><td>NULL</td><td>Ville, pays</td></tr>
+        <tr><td>site_web</td><td class="field-type">VARCHAR(255)</td><td>NULL</td><td>URL du portfolio</td></tr>
+        <tr><td>telephone</td><td class="field-type">VARCHAR(30)</td><td>NULL</td><td>Numero de telephone</td></tr>
+        <tr><td>date_naissance</td><td class="field-type">DATE</td><td>NULL</td><td>Date de naissance</td></tr>
+        <tr><td>date_inscription</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date de creation du compte</td></tr>
+        <tr><td>derniere_connexion</td><td class="field-type">DATETIME</td><td>NULL</td><td>Derniere activite</td></tr>
+        <tr><td>actif</td><td class="field-type">TINYINT(1)</td><td>NOT NULL, DEFAULT 1</td><td>Compte actif/desactive</td></tr>
+    </table>
+
+    <h3>2.2 FORMATIONS</h3>
+    <p>Parcours academique d'un utilisateur.</p>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">utilisateur_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Proprietaire</td></tr>
+        <tr><td>etablissement</td><td class="field-type">VARCHAR(200)</td><td>NOT NULL</td><td>Nom de l'ecole/universite</td></tr>
+        <tr><td>diplome</td><td class="field-type">VARCHAR(200)</td><td>NOT NULL</td><td>Intitule du diplome</td></tr>
+        <tr><td>domaine</td><td class="field-type">VARCHAR(200)</td><td>NULL</td><td>Domaine d'etude</td></tr>
+        <tr><td>date_debut</td><td class="field-type">DATE</td><td>NOT NULL</td><td>Debut de la formation</td></tr>
+        <tr><td>date_fin</td><td class="field-type">DATE</td><td>NULL</td><td>Fin de la formation</td></tr>
+        <tr><td>en_cours</td><td class="field-type">TINYINT(1)</td><td>DEFAULT 0</td><td>Formation en cours</td></tr>
+        <tr><td>description</td><td class="field-type">TEXT</td><td>NULL</td><td>Details supplementaires</td></tr>
+        <tr><td>lieu</td><td class="field-type">VARCHAR(200)</td><td>NULL</td><td>Localisation</td></tr>
+    </table>
+
+    <h3>2.3 PROJETS</h3>
+    <p>Projets realises par un utilisateur.</p>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">utilisateur_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Proprietaire</td></tr>
+        <tr><td>titre</td><td class="field-type">VARCHAR(200)</td><td>NOT NULL</td><td>Nom du projet</td></tr>
+        <tr><td>description</td><td class="field-type">TEXT</td><td>NULL</td><td>Description</td></tr>
+        <tr><td>date_debut</td><td class="field-type">DATE</td><td>NULL</td><td>Debut</td></tr>
+        <tr><td>date_fin</td><td class="field-type">DATE</td><td>NULL</td><td>Fin</td></tr>
+        <tr><td>en_cours</td><td class="field-type">TINYINT(1)</td><td>DEFAULT 0</td><td>Projet en cours</td></tr>
+        <tr><td>lien</td><td class="field-type">VARCHAR(255)</td><td>NULL</td><td>URL du projet (GitHub, etc.)</td></tr>
+        <tr><td>type</td><td class="field-type">VARCHAR(100)</td><td>NULL</td><td>Type (academique, personnel, entreprise...)</td></tr>
+    </table>
+
+    <h3>2.4 PUBLICATIONS</h3>
+    <p>Contenu publie sur le fil d'actualite (statut, photo, video, CV, evenement, partage).</p>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">utilisateur_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Auteur</td></tr>
+        <tr><td>type</td><td class="field-type">ENUM('statut','photo','video','cv','evenement','partage')</td><td>NOT NULL, DEFAULT 'statut'</td><td>Type de publication</td></tr>
+        <tr><td>contenu</td><td class="field-type">TEXT</td><td>NULL</td><td>Texte de la publication</td></tr>
+        <tr><td>fichier</td><td class="field-type">VARCHAR(255)</td><td>NULL</td><td>Chemin du fichier joint</td></tr>
+        <tr><td>fichier_mime</td><td class="field-type">VARCHAR(100)</td><td>NULL</td><td>Type MIME du fichier</td></tr>
+        <tr><td>lieu</td><td class="field-type">VARCHAR(200)</td><td>NULL</td><td>Localisation</td></tr>
+        <tr><td>humeur</td><td class="field-type">VARCHAR(100)</td><td>NULL</td><td>Sentiment</td></tr>
+        <tr><td>visibilite</td><td class="field-type">ENUM('public','amis','prive')</td><td>NOT NULL, DEFAULT 'public'</td><td>Niveau de visibilite</td></tr>
+        <tr><td class="fk">publication_originale_id</td><td class="field-type">INT</td><td>NULL, FK → publications(id) ON DELETE SET NULL</td><td>Publication partagee (auto-reference)</td></tr>
+        <tr><td>date_publication</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date de creation</td></tr>
+        <tr><td>date_modification</td><td class="field-type">DATETIME</td><td>NULL</td><td>Derniere modification</td></tr>
+    </table>
+
+    <h3>2.5 REACTIONS</h3>
+    <p>Reactions des utilisateurs sur les publications. Un utilisateur ne peut reagir qu'une fois par publication.</p>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">publication_id</td><td class="field-type">INT</td><td>NOT NULL, FK → publications(id) ON DELETE CASCADE</td><td>Publication reagie</td></tr>
+        <tr><td class="fk">utilisateur_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Auteur reaction</td></tr>
+        <tr><td>type</td><td class="field-type">ENUM('jaime','bravo','soutien','interessant')</td><td>NOT NULL, DEFAULT 'jaime'</td><td>Type de reaction</td></tr>
+        <tr><td>date_reaction</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date de la reaction</td></tr>
+    </table>
+    <div class="note">Contrainte UNIQUE sur (publication_id, utilisateur_id) : une seule reaction par utilisateur et par publication.</div>
+
+    <h3>2.6 COMMENTAIRES</h3>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">publication_id</td><td class="field-type">INT</td><td>NOT NULL, FK → publications(id) ON DELETE CASCADE</td><td>Publication commentee</td></tr>
+        <tr><td class="fk">utilisateur_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Auteur du commentaire</td></tr>
+        <tr><td>contenu</td><td class="field-type">TEXT</td><td>NOT NULL</td><td>Texte du commentaire</td></tr>
+        <tr><td>date_commentaire</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date</td></tr>
+    </table>
+
+    <h3>2.7 CONNEXIONS</h3>
+    <p>Systeme d'amitie bidirectionnelle avec demande/acceptation.</p>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">demandeur_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Personne qui envoie la demande</td></tr>
+        <tr><td class="fk">destinataire_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Personne qui recoit la demande</td></tr>
+        <tr><td>statut</td><td class="field-type">ENUM('en_attente','accepte','refuse')</td><td>NOT NULL, DEFAULT 'en_attente'</td><td>Etat de la demande</td></tr>
+        <tr><td>date_demande</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date d'envoi</td></tr>
+        <tr><td>date_reponse</td><td class="field-type">DATETIME</td><td>NULL</td><td>Date de reponse</td></tr>
+    </table>
+    <div class="note">Contrainte UNIQUE sur (demandeur_id, destinataire_id) : une seule demande possible entre deux utilisateurs.</div>
+
+    <h3>2.8 CONVERSATIONS</h3>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td>nom</td><td class="field-type">VARCHAR(200)</td><td>NULL</td><td>Nom du groupe (si groupe)</td></tr>
+        <tr><td>est_groupe</td><td class="field-type">TINYINT(1)</td><td>DEFAULT 0</td><td>Conversation de groupe</td></tr>
+        <tr><td>date_creation</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date de creation</td></tr>
+    </table>
+
+    <h3>2.9 CONVERSATION_PARTICIPANTS</h3>
+    <p>Table d'association entre conversations et utilisateurs (cle primaire composite).</p>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk fk">conversation_id</td><td class="field-type">INT</td><td>PK, FK → conversations(id) ON DELETE CASCADE</td><td>Conversation</td></tr>
+        <tr><td class="pk fk">utilisateur_id</td><td class="field-type">INT</td><td>PK, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Participant</td></tr>
+        <tr><td>date_ajout</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date d'ajout</td></tr>
+    </table>
+
+    <h3>2.10 MESSAGES</h3>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">conversation_id</td><td class="field-type">INT</td><td>NOT NULL, FK → conversations(id) ON DELETE CASCADE</td><td>Conversation</td></tr>
+        <tr><td class="fk">expediteur_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Expediteur</td></tr>
+        <tr><td>contenu</td><td class="field-type">TEXT</td><td>NOT NULL</td><td>Texte du message</td></tr>
+        <tr><td>lu</td><td class="field-type">TINYINT(1)</td><td>DEFAULT 0</td><td>Message lu par le destinataire</td></tr>
+        <tr><td>date_envoi</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date d'envoi</td></tr>
+    </table>
+
+    <h3>2.11 NOTIFICATIONS</h3>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">utilisateur_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Destinataire de la notification</td></tr>
+        <tr><td class="fk">expediteur_id</td><td class="field-type">INT</td><td>NULL, FK → utilisateurs(id) ON DELETE SET NULL</td><td>Declencheur</td></tr>
+        <tr><td>type</td><td class="field-type">ENUM('demande_ami','ami_accepte','reaction','commentaire','partage','evenement','emploi','systeme')</td><td>NOT NULL</td><td>Type de notification</td></tr>
+        <tr><td>message</td><td class="field-type">TEXT</td><td>NOT NULL</td><td>Texte affiche</td></tr>
+        <tr><td>lien</td><td class="field-type">VARCHAR(255)</td><td>NULL</td><td>URL cible</td></tr>
+        <tr><td>lue</td><td class="field-type">TINYINT(1)</td><td>DEFAULT 0</td><td>Lue ou non</td></tr>
+        <tr><td>date_notification</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date de creation</td></tr>
+    </table>
+
+    <h3>2.12 EMPLOIS</h3>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">publie_par</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Auteur (admin)</td></tr>
+        <tr><td>titre</td><td class="field-type">VARCHAR(200)</td><td>NOT NULL</td><td>Intitule du poste</td></tr>
+        <tr><td>entreprise</td><td class="field-type">VARCHAR(200)</td><td>NOT NULL</td><td>Nom de l'entreprise</td></tr>
+        <tr><td>description</td><td class="field-type">TEXT</td><td>NOT NULL</td><td>Description du poste</td></tr>
+        <tr><td>type</td><td class="field-type">ENUM('cdi','cdd','stage','alternance','freelance','benevole')</td><td>NOT NULL</td><td>Type de contrat</td></tr>
+        <tr><td>lieu</td><td class="field-type">VARCHAR(200)</td><td>NULL</td><td>Localisation</td></tr>
+        <tr><td>salaire</td><td class="field-type">VARCHAR(100)</td><td>NULL</td><td>Remuneration</td></tr>
+        <tr><td>date_debut</td><td class="field-type">DATE</td><td>NULL</td><td>Date de debut prevue</td></tr>
+        <tr><td>date_limite</td><td class="field-type">DATE</td><td>NULL</td><td>Date limite de candidature</td></tr>
+        <tr><td>lien_candidature</td><td class="field-type">VARCHAR(255)</td><td>NULL</td><td>URL pour candidater</td></tr>
+        <tr><td>contact_email</td><td class="field-type">VARCHAR(100)</td><td>NULL</td><td>Email de contact RH</td></tr>
+        <tr><td>date_publication</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date de publication</td></tr>
+        <tr><td>actif</td><td class="field-type">TINYINT(1)</td><td>DEFAULT 1</td><td>Offre active</td></tr>
+    </table>
+
+    <h3>2.13 EVENEMENTS</h3>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">organisateur_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Organisateur</td></tr>
+        <tr><td>titre</td><td class="field-type">VARCHAR(200)</td><td>NOT NULL</td><td>Titre de l'evenement</td></tr>
+        <tr><td>description</td><td class="field-type">TEXT</td><td>NULL</td><td>Description</td></tr>
+        <tr><td>lieu</td><td class="field-type">VARCHAR(200)</td><td>NULL</td><td>Lieu</td></tr>
+        <tr><td>date_debut</td><td class="field-type">DATETIME</td><td>NOT NULL</td><td>Date et heure de debut</td></tr>
+        <tr><td>date_fin</td><td class="field-type">DATETIME</td><td>NULL</td><td>Date et heure de fin</td></tr>
+        <tr><td>image</td><td class="field-type">VARCHAR(255)</td><td>NULL</td><td>Image de l'evenement</td></tr>
+        <tr><td>lien</td><td class="field-type">VARCHAR(255)</td><td>NULL</td><td>Lien externe</td></tr>
+        <tr><td>est_officiel</td><td class="field-type">TINYINT(1)</td><td>DEFAULT 0</td><td>Evenement officiel ECE</td></tr>
+        <tr><td>date_publication</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date de publication</td></tr>
+    </table>
+
+    <h3>2.14 ALBUMS</h3>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">utilisateur_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Proprietaire</td></tr>
+        <tr><td>nom</td><td class="field-type">VARCHAR(200)</td><td>NOT NULL</td><td>Nom de l'album</td></tr>
+        <tr><td>description</td><td class="field-type">TEXT</td><td>NULL</td><td>Description</td></tr>
+        <tr><td>couverture</td><td class="field-type">VARCHAR(255)</td><td>NULL</td><td>Image de couverture</td></tr>
+        <tr><td>date_creation</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Date de creation</td></tr>
+    </table>
+
+    <h3>2.15 ALBUM_PHOTOS</h3>
+    <p>Table d'association entre albums et publications (photos). Cle primaire composite.</p>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk fk">album_id</td><td class="field-type">INT</td><td>PK, FK → albums(id) ON DELETE CASCADE</td><td>Album</td></tr>
+        <tr><td class="pk fk">publication_id</td><td class="field-type">INT</td><td>PK, FK → publications(id) ON DELETE CASCADE</td><td>Publication photo</td></tr>
+    </table>
+
+    <h3>2.16 APPELS</h3>
+    <p>Enregistrement des appels audio/video entre utilisateurs.</p>
+    <table class="entity-table">
+        <tr><th>Champ</th><th>Type</th><th>Contraintes</th><th>Description</th></tr>
+        <tr><td class="pk">id</td><td class="field-type">INT AUTO_INCREMENT</td><td>PRIMARY KEY</td><td>Identifiant unique</td></tr>
+        <tr><td class="fk">appelant_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Initiateur de l'appel</td></tr>
+        <tr><td class="fk">receveur_id</td><td class="field-type">INT</td><td>NOT NULL, FK → utilisateurs(id) ON DELETE CASCADE</td><td>Destinataire de l'appel</td></tr>
+        <tr><td class="fk">conversation_id</td><td class="field-type">INT</td><td>NOT NULL, FK → conversations(id) ON DELETE CASCADE</td><td>Conversation associee</td></tr>
+        <tr><td>type</td><td class="field-type">ENUM('audio','video')</td><td>NOT NULL, DEFAULT 'audio'</td><td>Type d'appel</td></tr>
+        <tr><td>statut</td><td class="field-type">ENUM('sonnerie','en_cours','termine','refuse','manque')</td><td>NOT NULL, DEFAULT 'sonnerie'</td><td>Etat de l'appel</td></tr>
+        <tr><td>date_debut</td><td class="field-type">DATETIME</td><td>NOT NULL, DEFAULT NOW()</td><td>Debut de l'appel</td></tr>
+        <tr><td>date_fin</td><td class="field-type">DATETIME</td><td>NULL</td><td>Fin de l'appel</td></tr>
+    </table>
+</div>
+
+<!-- CARDINALITES -->
+<div class="section page-break">
+    <h2>3. Resume des associations et cardinalites</h2>
+    <table class="entity-table">
+        <tr><th>Association</th><th>Entite 1</th><th>Card.</th><th>Entite 2</th><th>Card.</th><th>Description</th></tr>
+        <tr><td>possede</td><td>UTILISATEURS</td><td>(1,1)</td><td>FORMATIONS</td><td>(0,N)</td><td>Un utilisateur possede 0 ou N formations</td></tr>
+        <tr><td>realise</td><td>UTILISATEURS</td><td>(1,1)</td><td>PROJETS</td><td>(0,N)</td><td>Un utilisateur realise 0 ou N projets</td></tr>
+        <tr><td>publie</td><td>UTILISATEURS</td><td>(1,1)</td><td>PUBLICATIONS</td><td>(0,N)</td><td>Un utilisateur publie 0 ou N publications</td></tr>
+        <tr><td>reagit</td><td>UTILISATEURS</td><td>(1,1)</td><td>REACTIONS</td><td>(0,N)</td><td>Un utilisateur a 0 ou N reactions</td></tr>
+        <tr><td>recoit_reactions</td><td>PUBLICATIONS</td><td>(1,1)</td><td>REACTIONS</td><td>(0,N)</td><td>Une publication recoit 0 ou N reactions</td></tr>
+        <tr><td>commente</td><td>UTILISATEURS</td><td>(1,1)</td><td>COMMENTAIRES</td><td>(0,N)</td><td>Un utilisateur ecrit 0 ou N commentaires</td></tr>
+        <tr><td>contient_commentaires</td><td>PUBLICATIONS</td><td>(1,1)</td><td>COMMENTAIRES</td><td>(0,N)</td><td>Une publication a 0 ou N commentaires</td></tr>
+        <tr><td>demande_connexion</td><td>UTILISATEURS</td><td>(1,1)</td><td>CONNEXIONS</td><td>(0,N)</td><td>Un utilisateur envoie 0 ou N demandes</td></tr>
+        <tr><td>recoit_connexion</td><td>UTILISATEURS</td><td>(1,1)</td><td>CONNEXIONS</td><td>(0,N)</td><td>Un utilisateur recoit 0 ou N demandes</td></tr>
+        <tr><td>participe</td><td>UTILISATEURS</td><td>(0,N)</td><td>CONVERSATIONS</td><td>(0,N)</td><td>Relation N:M via CONVERSATION_PARTICIPANTS</td></tr>
+        <tr><td>envoie_message</td><td>UTILISATEURS</td><td>(1,1)</td><td>MESSAGES</td><td>(0,N)</td><td>Un utilisateur envoie 0 ou N messages</td></tr>
+        <tr><td>contient_messages</td><td>CONVERSATIONS</td><td>(1,1)</td><td>MESSAGES</td><td>(0,N)</td><td>Une conversation a 0 ou N messages</td></tr>
+        <tr><td>recoit_notif</td><td>UTILISATEURS</td><td>(1,1)</td><td>NOTIFICATIONS</td><td>(0,N)</td><td>Un utilisateur recoit 0 ou N notifications</td></tr>
+        <tr><td>publie_emploi</td><td>UTILISATEURS</td><td>(1,1)</td><td>EMPLOIS</td><td>(0,N)</td><td>Un admin publie 0 ou N offres</td></tr>
+        <tr><td>organise</td><td>UTILISATEURS</td><td>(1,1)</td><td>EVENEMENTS</td><td>(0,N)</td><td>Un utilisateur organise 0 ou N evenements</td></tr>
+        <tr><td>cree_album</td><td>UTILISATEURS</td><td>(1,1)</td><td>ALBUMS</td><td>(0,N)</td><td>Un utilisateur cree 0 ou N albums</td></tr>
+        <tr><td>regroupe_photos</td><td>ALBUMS</td><td>(0,N)</td><td>PUBLICATIONS</td><td>(0,N)</td><td>Relation N:M via ALBUM_PHOTOS</td></tr>
+        <tr><td>partage</td><td>PUBLICATIONS</td><td>(0,1)</td><td>PUBLICATIONS</td><td>(0,N)</td><td>Auto-reference : une publication peut en partager une autre</td></tr>
+        <tr><td>appelle</td><td>UTILISATEURS</td><td>(1,1)</td><td>APPELS</td><td>(0,N)</td><td>Un utilisateur lance 0 ou N appels</td></tr>
+        <tr><td>concerne_conv</td><td>CONVERSATIONS</td><td>(1,1)</td><td>APPELS</td><td>(0,N)</td><td>Un appel est lie a une conversation</td></tr>
+    </table>
+</div>
+
+<script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+            primaryColor: '#e8f0fe',
+            primaryTextColor: '#1a1a2e',
+            primaryBorderColor: '#0a66c2',
+            lineColor: '#6c757d'
+        },
+        er: { useMaxWidth: true, fontSize: 11, layoutDirection: 'TB' }
+    });
+</script>
+</body>
+</html>
