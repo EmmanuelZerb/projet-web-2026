@@ -1,9 +1,15 @@
 <?php
 /**
  * ECE In - Configuration générale du site
+ *
+ * Fichier de config central : toutes les pages de l'appli incluent ce fichier en premier.
+ * On y définit les constantes du site, les chemins, et les fonctions utilitaires communes
+ * (session, BDD, formatage, etc.). C'est le point d'entrée de la config.
  */
 
-// Démarrage de session sécurisée
+// --- Session et cookies sécurisés ---
+// On configure les paramètres des cookies de session pour limiter les attaques :
+// httponly empêche l'accès au cookie depuis du JS (XSS), samesite=Strict réduit les risques CSRF.
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
         'lifetime' => 3600,
@@ -34,7 +40,9 @@ define('SITE_URL', 'http://localhost/ecein');
 define('BASE_PATH', dirname(__DIR__));
 define('UPLOAD_PATH', BASE_PATH . '/uploads/');
 
-// Tailles maximales des uploads (en octets)
+// --- Limites d'upload ---
+// On limite la taille des fichiers pour éviter de saturer le serveur :
+// 5 Mo pour les photos, 50 Mo pour les vidéos, 10 Mo pour les CV. Suffisant pour un usage classique.
 define('MAX_PHOTO_SIZE', 5 * 1024 * 1024);    // 5 Mo
 define('MAX_VIDEO_SIZE', 50 * 1024 * 1024);   // 50 Mo
 define('MAX_CV_SIZE', 10 * 1024 * 1024);      // 10 Mo
@@ -113,6 +121,9 @@ function imageFond(string|null $path): string {
 
 /**
  * Récupère les infos de l'utilisateur connecté
+ * Utilise un pattern "static cache" : on ne fait la requête BDD qu'une fois par requête HTTP.
+ * Si on appelle getUtilisateurConnecte() plusieurs fois dans une même page, on évite de spammer la BDD.
+ *
  * @return array|null
  */
 function getUtilisateurConnecte(): ?array {
@@ -173,6 +184,9 @@ function getNbMessagesNonLus(): int {
 
 /**
  * Vérifie si deux utilisateurs sont amis
+ * La requête vérifie dans les 2 sens : soit A a demandé B, soit B a demandé A.
+ * Car une connexion peut être initiée par l'un ou l'autre, on cherche dans les deux cas.
+ *
  * @param int $userId1
  * @param int $userId2
  * @return string|null ('accepte', 'en_attente', null)
@@ -206,6 +220,9 @@ function formatDateFr(string $date): string {
 
 /**
  * Calcule le temps écoulé depuis une date
+ * Retourne un format lisible style "il y a 3h" ou "5 min" au lieu d'afficher une date complète.
+ * Plus parlant pour l'utilisateur qu'un "14/03/2026 10:42".
+ *
  * @param string $date
  * @return string
  */
@@ -232,6 +249,9 @@ function creerNotification(int $userId, ?int $expediteurId, string $type, string
 
 /**
  * Détecte les jours spéciaux pour adapter le thème
+ * Idée des thèmes saisonniers demandée dans le cahier des charges :
+ * Saint-Valentin, Noël, Nouvel An, etc. pour personnaliser l'interface selon la date.
+ *
  * @return array ['theme' => string, 'message' => string]
  */
 function getJourSpecial(): array {

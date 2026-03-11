@@ -1,5 +1,6 @@
 /**
  * ECE In - Script JavaScript principal
+ * Script JS chargé sur toutes les pages - gère les interactions AJAX globales
  * Utilise jQuery 3.7.1 + Bootstrap 5
  * Projet Web ING2 2026
  */
@@ -114,6 +115,7 @@ $(document).ready(function () {
 });
 
 // ===================== RÉAGIR À UN POST (AJAX) =====================
+// Toggle de réaction via AJAX sans rechargement de page
 
 function reagir(postId, typeReaction, btn) {
     $.post('api/posts.php', {
@@ -185,6 +187,7 @@ function creerHTMLCommentaire(c) {
 }
 
 // ===================== ENVOYER UN COMMENTAIRE =====================
+// Envoi de commentaires via AJAX
 
 function envoyerCommentaire(postId) {
     const $input   = $(`#input-commentaire-${postId}`);
@@ -280,6 +283,7 @@ function supprimerPost(postId) {
 }
 
 // ===================== ENVOYER DEMANDE D'AMI =====================
+// Envoi / acceptation de demandes d'ami via AJAX
 
 function envoyerDemande(userId, btn) {
     const $btn = $(btn);
@@ -410,7 +414,9 @@ setInterval(function () {
 }, 30000);
 
 // ===================== UTILITAIRES =====================
+// Fonctions helper réutilisées partout
 
+// Système de notifications visuelles (toasts Bootstrap)
 /**
  * Affiche un toast Bootstrap
  * @param {string} message

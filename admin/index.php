@@ -117,7 +117,7 @@ $utilisateurs = $stmtUsers->fetchAll();
     <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i><?= h($erreur) ?></div>
     <?php endif; ?>
 
-    <!-- Statistiques -->
+    <!-- Dashboard avec les statistiques clés du site : nb utilisateurs, posts, connexions, emplois -->
     <div class="row g-3 mb-4">
         <div class="col-sm-6 col-lg-3">
             <div class="card shadow-sm border-0 bg-primary text-white">
@@ -165,7 +165,7 @@ $utilisateurs = $stmtUsers->fetchAll();
         </div>
     </div>
 
-    <!-- Gestion des utilisateurs -->
+    <!-- Tableau CRUD : on peut ajouter, modifier le rôle, activer/désactiver les utilisateurs -->
     <div class="card shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span class="fw-bold"><i class="bi bi-people me-2"></i>Gestion des utilisateurs</span>
@@ -174,7 +174,7 @@ $utilisateurs = $stmtUsers->fetchAll();
             </button>
         </div>
 
-        <!-- Filtres -->
+        <!-- On peut filtrer les utilisateurs par rôle et par statut (actif/inactif) -->
         <div class="card-body border-bottom pb-3">
             <div class="d-flex flex-wrap gap-2">
                 <a href="?actif=tous" class="btn btn-sm <?= $filtreActif === 'tous' ? 'btn-secondary' : 'btn-light' ?>">Tous</a>
@@ -266,7 +266,7 @@ $utilisateurs = $stmtUsers->fetchAll();
     </div>
 </div>
 
-<!-- Modal Ajouter utilisateur -->
+<!-- L'admin peut créer un utilisateur directement (pas besoin de s'inscrire via le formulaire public) -->
 <div class="modal fade" id="modalAjouterUser" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">

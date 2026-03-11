@@ -1,6 +1,7 @@
 <?php
 /**
  * ECE In - Page profil d'un autre utilisateur
+ * Page de profil public d'un autre utilisateur (différent de profil.php qui est le profil perso)
  */
 require_once __DIR__ . '/config/config.php';
 requireConnexion();
@@ -10,7 +11,7 @@ $userId      = $_SESSION['utilisateur_id'];
 $userCourant = getUtilisateurConnecte();
 $profilId    = (int) ($_GET['id'] ?? 0);
 
-// Rediriger vers son propre profil si c'est l'utilisateur connecté
+// On redirige vers profil.php si c'est son propre profil
 if ($profilId === $userId) {
     redirect('profil.php');
 }
@@ -44,7 +45,7 @@ $stmtProj = $pdo->prepare("SELECT * FROM projets WHERE utilisateur_id = ? ORDER 
 $stmtProj->execute([$profilId]);
 $projets = $stmtProj->fetchAll();
 
-// Publications visibles (publiques + amis si connectés)
+// On affiche seulement les posts publics (ou amis si on est connecté avec lui)
 $query = "
     SELECT p.id, p.utilisateur_id, p.type, p.contenu, p.fichier, p.fichier_mime,
            p.lieu, p.humeur, p.visibilite, p.publication_originale_id, p.date_publication,

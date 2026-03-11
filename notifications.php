@@ -1,6 +1,7 @@
 <?php
 /**
- * ECE In - Page Notifications
+ * Page notifications – on affiche les événements liés au réseau de l'utilisateur
+ * (demandes d'amis, réactions, commentaires, partages, etc.)
  */
 require_once __DIR__ . '/config/config.php';
 requireConnexion();
@@ -9,11 +10,11 @@ $pdo    = getDB();
 $userId = $_SESSION['utilisateur_id'];
 $pageTitle = 'Notifications';
 
-// Marquer toutes les notifications comme lues
+// Dès qu'on charge la page, on marque toutes les notifications comme lues
 $pdo->prepare("UPDATE notifications SET lue = 1 WHERE utilisateur_id = ?")
     ->execute([$userId]);
 
-// Récupérer toutes les notifications
+// On récupère les 50 dernières notifs avec les infos de l'expéditeur (avatar, nom)
 $stmt = $pdo->prepare("
     SELECT n.*, u.nom, u.prenom, u.photo AS avatar_exp
     FROM notifications n
@@ -25,7 +26,7 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $notifications = $stmt->fetchAll();
 
-// Récupérer les événements à venir (pour tous)
+// Sidebar avec les prochains événements (comme dans le sujet)
 $stmtEvts = $pdo->prepare("
     SELECT e.*, u.nom, u.prenom, u.photo
     FROM evenements e
@@ -91,7 +92,7 @@ include __DIR__ . '/includes/navbar.php';
                                 </div>
                             </div>
 
-                            <!-- Icône type -->
+                            <!-- Chaque type de notif a son icône Bootstrap Icons -->
                             <div class="notif-type-icon">
                                 <?php
                                 $icons = [
@@ -164,6 +165,7 @@ include __DIR__ . '/includes/navbar.php';
     </div>
 </div>
 
+<!-- Bouton "tout marquer comme lu" : appel AJAX pour mettre à jour sans recharger la page -->
 <script>
 function toutMarquerLu() {
     $.post('api/notifications.php', { action: 'marquer_lu_tout' }, function() {

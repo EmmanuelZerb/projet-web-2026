@@ -71,6 +71,8 @@
         <li><a href="#fonctionnalites" style="color:var(--primary)">Liste des fonctionnalites principales</a></li>
         <li><a href="#cas-utilisation" style="color:var(--primary)">Cas d'utilisation</a></li>
         <li><a href="#regles-metier" style="color:var(--primary)">Regles metier</a></li>
+        <li><a href="#contraintes-techniques" style="color:var(--primary)">Contraintes techniques</a></li>
+        <li><a href="#criteres-validation" style="color:var(--primary)">Criteres de validation</a></li>
     </ol>
 </div>
 
@@ -608,6 +610,151 @@ flowchart TB
             <td><span class="badge badge-blue">RM-14</span></td>
             <td>Notifications automatiques</td>
             <td>Les notifications sont generees automatiquement par le systeme lors de : demande/acceptation d'ami, reaction, commentaire, partage, nouvel evenement, nouvelle offre d'emploi.</td>
+        </tr>
+    </table>
+</div>
+
+<!-- 6. CONTRAINTES TECHNIQUES -->
+<div class="section page-break" id="contraintes-techniques">
+    <h2>6. Contraintes techniques</h2>
+
+    <h3>6.1 Technologies imposees</h3>
+    <table class="spec-table">
+        <tr><th>Composant</th><th>Technologie</th><th>Version</th></tr>
+        <tr><td>Langage serveur</td><td>PHP</td><td>8.3+</td></tr>
+        <tr><td>Base de donnees</td><td>MySQL</td><td>8.0+ (InnoDB, utf8mb4)</td></tr>
+        <tr><td>Abstraction BDD</td><td>PDO</td><td>Extension PHP</td></tr>
+        <tr><td>Framework CSS</td><td>Bootstrap</td><td>5.3</td></tr>
+        <tr><td>JavaScript</td><td>jQuery + AJAX</td><td>3.7.1</td></tr>
+        <tr><td>Versioning</td><td>Git</td><td>GitHub</td></tr>
+        <tr><td>WebRTC</td><td>PeerJS</td><td>1.5.4</td></tr>
+    </table>
+
+    <h3>6.2 Contraintes de securite</h3>
+    <ul>
+        <li><strong>Injection SQL :</strong> Toutes les requetes utilisent des requetes preparees PDO avec parametres lies.</li>
+        <li><strong>XSS :</strong> Echappement systematique des donnees affichees via <code>htmlspecialchars()</code> (fonction <code>h()</code>).</li>
+        <li><strong>Mots de passe :</strong> Hachage bcrypt via <code>password_hash()</code>, verification avec <code>password_verify()</code>. Minimum 8 caracteres.</li>
+        <li><strong>Sessions PHP :</strong> Cookies securises (<code>httponly</code>, <code>samesite: Strict</code>), regeneration de l'ID de session a la connexion.</li>
+        <li><strong>Uploads :</strong> Validation du type MIME et de la taille (photos 5 Mo max, videos 50 Mo max, CV 10 Mo max).</li>
+        <li><strong>Controle d'acces :</strong> Fonctions <code>requireConnexion()</code> et <code>requireAdmin()</code> sur chaque page et API protegee.</li>
+        <li><strong>Domaine email :</strong> Inscription limitee aux adresses <code>@edu.ece.fr</code> et <code>@ece.fr</code>.</li>
+    </ul>
+
+    <h3>6.3 Contraintes d'architecture et performance</h3>
+    <ul>
+        <li><strong>Architecture :</strong> Application monolithique 3-tiers (Client HTML/CSS/JS — Serveur PHP — Base MySQL).</li>
+        <li><strong>Temps reel :</strong> Polling AJAX toutes les 1 a 3 secondes pour la messagerie et la detection d'appels.</li>
+        <li><strong>Appels audio/video :</strong> WebRTC peer-to-peer via PeerJS avec serveurs STUN (Google) et TURN (OpenRelay) en fallback pour la traversee NAT.</li>
+        <li><strong>Deploiement :</strong> Compatible Railway (PaaS) via Nixpacks avec configuration automatique PHP et extensions.</li>
+        <li><strong>Responsivite :</strong> Design responsive mobile-first via Bootstrap 5, navbar adaptative mobile/desktop.</li>
+        <li><strong>Moteur BDD :</strong> InnoDB pour transactions et cles etrangeres avec ON DELETE CASCADE. Index sur les colonnes de jointure et de recherche.</li>
+    </ul>
+
+    <h3>6.4 Contraintes de compatibilite</h3>
+    <ul>
+        <li>Navigateurs supportes : Chrome, Firefox, Safari, Edge (versions recentes).</li>
+        <li>Acces micro et camera via <code>navigator.mediaDevices.getUserMedia()</code> (HTTPS requis en production).</li>
+        <li>Encodage UTF-8 (utf8mb4) sur toute la chaine : base de donnees, PHP, HTML.</li>
+    </ul>
+</div>
+
+<!-- 7. CRITERES DE VALIDATION -->
+<div class="section page-break" id="criteres-validation">
+    <h2>7. Criteres de validation</h2>
+
+    <h3>7.1 Criteres fonctionnels</h3>
+    <table class="spec-table">
+        <tr><th>ID</th><th>Critere</th><th>Validation attendue</th></tr>
+        <tr>
+            <td><span class="badge badge-green">CV-01</span></td>
+            <td>Inscription et connexion</td>
+            <td>Un utilisateur peut creer un compte avec un email ECE, se connecter et acceder a son profil. Les emails non-ECE sont rejetes.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">CV-02</span></td>
+            <td>Publication de contenus</td>
+            <td>Un utilisateur peut publier un texte, une photo, une video ou un fichier. Le contenu s'affiche dans le fil d'actualite avec la date, l'auteur et la visibilite correcte.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">CV-03</span></td>
+            <td>Interactions sociales</td>
+            <td>Un utilisateur peut reagir, commenter et partager les publications. Les compteurs se mettent a jour en temps reel via AJAX.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">CV-04</span></td>
+            <td>Gestion du reseau</td>
+            <td>Un utilisateur peut envoyer, recevoir, accepter et refuser des demandes de connexion. Les connexions apparaissent dans la page Reseau.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">CV-05</span></td>
+            <td>Messagerie temps reel</td>
+            <td>Deux utilisateurs connectes peuvent echanger des messages texte. Les nouveaux messages apparaissent sans rechargement de page.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">CV-06</span></td>
+            <td>Appels audio et video</td>
+            <td>Un utilisateur peut lancer un appel audio ou video depuis la messagerie. Le destinataire recoit la notification en 1 a 2 secondes. La communication s'etablit via WebRTC.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">CV-07</span></td>
+            <td>Profil complet</td>
+            <td>Le profil affiche les informations personnelles, formations, projets, publications, albums photo et CV. Chaque section est editable par son proprietaire.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">CV-08</span></td>
+            <td>Recherche globale</td>
+            <td>La recherche retourne des resultats pertinents (utilisateurs, publications, emplois) a partir de 2 caracteres minimum.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">CV-09</span></td>
+            <td>Section Emplois</td>
+            <td>Les offres d'emploi s'affichent avec filtres (type, mots-cles). Les administrateurs peuvent creer, modifier et supprimer des offres.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">CV-10</span></td>
+            <td>Notifications</td>
+            <td>Les actions sociales generent des notifications. Le badge non-lu dans la navbar se met a jour dynamiquement.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">CV-11</span></td>
+            <td>Panel d'administration</td>
+            <td>Un administrateur peut gerer les utilisateurs (creer, activer/desactiver, modifier le role). Le panel affiche des statistiques globales.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-green">CV-12</span></td>
+            <td>Generation automatique de CV</td>
+            <td>Le systeme genere un CV au format HTML a partir des donnees du profil (formations, projets, competences) en un clic.</td>
+        </tr>
+    </table>
+
+    <h3>7.2 Criteres non-fonctionnels</h3>
+    <table class="spec-table">
+        <tr><th>ID</th><th>Critere</th><th>Seuil de validation</th></tr>
+        <tr>
+            <td><span class="badge badge-purple">CNF-01</span></td>
+            <td>Temps de chargement</td>
+            <td>Toutes les pages principales se chargent en moins de 3 secondes.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-purple">CNF-02</span></td>
+            <td>Responsivite</td>
+            <td>L'interface est utilisable sur ecrans de 320px a 1920px sans defilement horizontal.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-purple">CNF-03</span></td>
+            <td>Securite des donnees</td>
+            <td>Aucune injection SQL ou XSS possible sur les formulaires et champs de saisie.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-purple">CNF-04</span></td>
+            <td>Disponibilite</td>
+            <td>Application deployee et accessible en ligne via Railway.</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-purple">CNF-05</span></td>
+            <td>Qualite du code</td>
+            <td>Code indente, organise en fichiers logiques, avec commentaires sur les fonctions principales.</td>
         </tr>
     </table>
 </div>

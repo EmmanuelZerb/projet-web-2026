@@ -1,13 +1,13 @@
 -- =====================================================
 -- ECE In - Réseau Social Professionnel ECE Paris
--- Schéma de la base de données
+-- Schéma de la base de données MySQL pour ECE In - toutes les tables du réseau social
 -- =====================================================
 
 CREATE DATABASE IF NOT EXISTS ecein CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE ecein;
 
 -- =====================================================
--- Table : utilisateurs
+-- Table utilisateurs : stocke les comptes avec leurs infos de profil
 -- =====================================================
 CREATE TABLE IF NOT EXISTS utilisateurs (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : formations
+-- Table formations : parcours scolaire/universitaire des utilisateurs
 -- =====================================================
 CREATE TABLE IF NOT EXISTS formations (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS formations (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : projets
+-- Table projets : projets réalisés par les utilisateurs
 -- =====================================================
 CREATE TABLE IF NOT EXISTS projets (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS projets (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : publications (posts)
+-- Table publications : posts du fil d'actualité (statut, photo, vidéo, etc.)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS publications (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS publications (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : reactions
+-- Table reactions : likes et réactions sur les publications
 -- =====================================================
 CREATE TABLE IF NOT EXISTS reactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS reactions (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : commentaires
+-- Table commentaires : commentaires sur les publications
 -- =====================================================
 CREATE TABLE IF NOT EXISTS commentaires (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS commentaires (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : connexions (amis)
+-- Table connexions : les demandes d'ami (en_attente, accepte, refuse)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS connexions (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS connexions (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : conversations
+-- Table conversations : salons de messagerie privée
 -- =====================================================
 CREATE TABLE IF NOT EXISTS conversations (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS conversations (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : conversation_participants
+-- Table conversation_participants : qui fait partie de quelle conversation
 -- =====================================================
 CREATE TABLE IF NOT EXISTS conversation_participants (
     conversation_id INT NOT NULL,
@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS conversation_participants (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : messages
+-- Table messages : messages privés entre utilisateurs dans les conversations
 -- =====================================================
 CREATE TABLE IF NOT EXISTS messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS messages (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : notifications
+-- Table notifications : alertes (demandes d'ami, réactions, commentaires, etc.)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS notifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -189,7 +189,7 @@ CREATE TABLE IF NOT EXISTS notifications (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : emplois
+-- Table emplois : offres d'emploi/stage/alternance publiées sur le réseau
 -- =====================================================
 CREATE TABLE IF NOT EXISTS emplois (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS emplois (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : evenements
+-- Table evenements : événements (conférences, portes ouvertes, etc.)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS evenements (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS evenements (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : albums
+-- Table albums : albums photos des utilisateurs
 -- =====================================================
 CREATE TABLE IF NOT EXISTS albums (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -244,7 +244,7 @@ CREATE TABLE IF NOT EXISTS albums (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : album_photos
+-- Table album_photos : liaison albums <-> publications photos
 -- =====================================================
 CREATE TABLE IF NOT EXISTS album_photos (
     album_id INT NOT NULL,
@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS album_photos (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Table : appels (audio/vidéo)
+-- Table appels : historique des appels audio/vidéo WebRTC
 -- =====================================================
 CREATE TABLE IF NOT EXISTS appels (
     id INT AUTO_INCREMENT PRIMARY KEY,

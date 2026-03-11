@@ -1,13 +1,14 @@
 <?php
 /**
  * ECE In - Carte de publication (réutilisable)
+ * Composant réutilisable pour afficher une publication (utilisé sur la page d'accueil et le profil)
  * Variable attendue : $post (tableau de données de la publication)
  */
 if (!isset($post)) return;
 ?>
 <div class="card shadow-sm mb-3 post-card" id="post-<?= $post['id'] ?>">
     <div class="card-body">
-        <!-- En-tête du post -->
+        <!-- En-tête du post : avatar, nom, humeur, date relative, visibilité -->
         <div class="d-flex justify-content-between align-items-start mb-3">
             <div class="d-flex gap-3">
                 <a href="utilisateur.php?id=<?= $post['utilisateur_id'] ?>">
@@ -75,7 +76,7 @@ if (!isset($post)) return;
         </div>
         <?php endif; ?>
 
-        <!-- Média -->
+        <!-- On gère les images, vidéos et fichiers PDF différemment selon le type MIME -->
         <?php if ($post['fichier']): ?>
         <div class="post-media mb-3">
             <?php
@@ -110,7 +111,7 @@ if (!isset($post)) return;
         </div>
         <?php endif; ?>
 
-        <!-- Compteurs de réactions -->
+        <!-- Compteurs de réactions et commentaires, boutons d'interaction -->
         <?php if ($post['nb_reactions'] > 0 || $post['nb_commentaires'] > 0): ?>
         <div class="d-flex justify-content-between text-muted small mb-2 pb-2 border-bottom">
             <?php if ($post['nb_reactions'] > 0): ?>
@@ -150,7 +151,7 @@ if (!isset($post)) return;
             </button>
         </div>
 
-        <!-- Section commentaires (masquée par défaut) -->
+        <!-- Section dépliable avec les commentaires existants et champ de saisie -->
         <div class="commentaires-section mt-3" id="commentaires-<?= $post['id'] ?>" style="display:none">
             <div class="commentaires-liste" id="liste-commentaires-<?= $post['id'] ?>"></div>
             <div class="d-flex gap-2 mt-2">

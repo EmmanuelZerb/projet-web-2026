@@ -1,7 +1,7 @@
 /**
  * ECE In - Messagerie + Appels Audio/Vidéo
  * Chat temps réel via polling AJAX
- * Appels via WebRTC (PeerJS)
+ * Appels via WebRTC (PeerJS) avec TURN fallback
  */
 
 $(document).ready(function () {
@@ -21,6 +21,32 @@ $(document).ready(function () {
     let callStatusInterval = null;
     let ringTimeout = null;
     let audioCtx = null;
+    let peerReady = false;
+    let peerRetries = 0;
+
+    // Serveurs STUN (Google) + TURN (OpenRelay) pour traverser les NAT et pare-feu
+    const ICE_SERVERS = [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun3.l.google.com:19302' },
+        { urls: 'stun:stun4.l.google.com:19302' },
+        {
+            urls: 'turn:openrelay.metered.ca:80',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        },
+        {
+            urls: 'turn:openrelay.metered.ca:443',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        },
+        {
+            urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        }
+    ];
 
     if (typeof USER_ID !== 'undefined' && typeof Peer !== 'undefined') {
         initPeer();
@@ -28,43 +54,69 @@ $(document).ready(function () {
     }
 
     function initPeer() {
+        if (peer && !peer.destroyed) {
+            try { peer.destroy(); } catch (e) {}
+        }
+
+        var peerId = 'ecein_' + USER_ID;
+
         try {
-            peer = new Peer('ecein_' + USER_ID, {
+            peer = new Peer(peerId, {
                 debug: 0,
-                config: {
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:stun1.l.google.com:19302' }
-                    ]
-                }
+                config: { iceServers: ICE_SERVERS }
             });
 
-            peer.on('open', function () {
-                console.log('[ECE In] Connecté au serveur d\'appels');
+            peer.on('open', function (id) {
+                peerReady = true;
+                peerRetries = 0;
+                console.log('[ECE In] Connecté au serveur d\'appels, id:', id);
             });
 
             peer.on('call', function (call) {
                 window._incomingPeerCall = call;
+                console.log('[ECE In] Appel PeerJS entrant reçu');
             });
 
             peer.on('disconnected', function () {
-                if (peer && !peer.destroyed) peer.reconnect();
+                peerReady = false;
+                if (peer && !peer.destroyed) {
+                    setTimeout(function () { peer.reconnect(); }, 1000);
+                }
             });
 
             peer.on('error', function (err) {
-                console.warn('[ECE In] PeerJS:', err.type);
+                console.warn('[ECE In] PeerJS:', err.type, err.message);
                 if (err.type === 'peer-unavailable') {
                     afficherToast('L\'utilisateur n\'est pas joignable actuellement.', 'warning');
                     terminerAppelUI();
                 } else if (err.type === 'unavailable-id') {
+                    peerRetries++;
+                    var suffix = '_' + Date.now() % 100000;
                     setTimeout(function () {
-                        if (peer) peer.destroy();
-                        peer = new Peer('ecein_' + USER_ID + '_' + Date.now() % 10000, { debug: 0 });
-                    }, 2000);
+                        if (peer) { try { peer.destroy(); } catch(e) {} }
+                        peer = new Peer(peerId + suffix, {
+                            debug: 0,
+                            config: { iceServers: ICE_SERVERS }
+                        });
+                        peer.on('open', function () {
+                            peerReady = true;
+                            console.log('[ECE In] Reconnecté avec id alternatif');
+                        });
+                        peer.on('call', function (call) {
+                            window._incomingPeerCall = call;
+                        });
+                        peer.on('disconnected', function () {
+                            peerReady = false;
+                            if (peer && !peer.destroyed) peer.reconnect();
+                        });
+                    }, 1000);
+                } else if (err.type === 'network' || err.type === 'server-error') {
+                    peerReady = false;
+                    setTimeout(function () { initPeer(); }, 3000);
                 }
             });
         } catch (e) {
-            console.warn('[ECE In] PeerJS non disponible');
+            console.warn('[ECE In] PeerJS non disponible:', e);
         }
     }
 
@@ -76,14 +128,15 @@ $(document).ready(function () {
                     afficherAppelEntrant(res.appel);
                 }
             });
-        }, 2000);
+        }, 1000);
     }
 
     // ===== LANCER UN APPEL =====
 
     window.lancerAppel = function (type) {
-        if (!peer || peer.disconnected) {
-            afficherToast('Connexion au serveur d\'appels en cours, réessayez.', 'warning');
+        if (!peer || !peerReady) {
+            afficherToast('Connexion au serveur d\'appels en cours, réessayez dans un instant.', 'warning');
+            if (peer && peer.disconnected && !peer.destroyed) peer.reconnect();
             return;
         }
         if (!CONTACT_ID || currentCallId) return;
@@ -117,7 +170,7 @@ $(document).ready(function () {
                             terminerAppelUI();
                         }
                     });
-                }, 1500);
+                }, 800);
 
                 setTimeout(function () {
                     if (callStatusInterval) {
@@ -209,37 +262,9 @@ $(document).ready(function () {
                 }
 
                 if (isInitiator) {
-                    var remotePeerId = 'ecein_' + CONTACT_ID;
-                    currentCall = peer.call(remotePeerId, stream);
-                    if (currentCall) {
-                        handleCallStream(currentCall, type);
-                    } else {
-                        afficherToast('Impossible de joindre l\'utilisateur.', 'warning');
-                        terminerAppelCleanup();
-                    }
+                    connectAsInitiator(stream, type, 0);
                 } else {
-                    if (window._incomingPeerCall) {
-                        window._incomingPeerCall.answer(stream);
-                        currentCall = window._incomingPeerCall;
-                        handleCallStream(currentCall, type);
-                        window._incomingPeerCall = null;
-                    } else {
-                        // Fallback: wait briefly for peer call
-                        var waitCount = 0;
-                        var waitPeer = setInterval(function () {
-                            waitCount++;
-                            if (window._incomingPeerCall) {
-                                clearInterval(waitPeer);
-                                window._incomingPeerCall.answer(stream);
-                                currentCall = window._incomingPeerCall;
-                                handleCallStream(currentCall, type);
-                                window._incomingPeerCall = null;
-                            } else if (waitCount > 10) {
-                                clearInterval(waitPeer);
-                                afficherToast('Connexion audio/vidéo en attente...', 'info');
-                            }
-                        }, 500);
-                    }
+                    connectAsReceiver(stream, type);
                 }
             })
             .catch(function (err) {
@@ -250,6 +275,65 @@ $(document).ready(function () {
                 }
                 terminerAppelUI();
             });
+    }
+
+    // L'appelant initie la connexion WebRTC et retry jusqu'à 3 fois si le flux ne passe pas
+    function connectAsInitiator(stream, type, retryCount) {
+        var remotePeerId = 'ecein_' + CONTACT_ID;
+        console.log('[ECE In] Appel vers', remotePeerId, 'tentative', retryCount + 1);
+
+        currentCall = peer.call(remotePeerId, stream);
+        if (currentCall) {
+            handleCallStream(currentCall, type);
+
+            var streamReceived = false;
+            currentCall.on('stream', function () { streamReceived = true; });
+
+            setTimeout(function () {
+                if (!streamReceived && retryCount < 3 && currentCallId) {
+                    console.log('[ECE In] Pas de flux reçu, nouvelle tentative...');
+                    if (currentCall) currentCall.close();
+                    connectAsInitiator(stream, type, retryCount + 1);
+                }
+            }, 5000);
+        } else if (retryCount < 3) {
+            setTimeout(function () {
+                connectAsInitiator(stream, type, retryCount + 1);
+            }, 2000);
+        } else {
+            afficherToast('Impossible de joindre l\'utilisateur.', 'warning');
+            terminerAppelCleanup();
+        }
+    }
+
+    // Le receveur attend le signal PeerJS avant de répondre
+    function connectAsReceiver(stream, type) {
+        if (window._incomingPeerCall) {
+            answerPeerCall(window._incomingPeerCall, stream, type);
+            return;
+        }
+
+        var waitCount = 0;
+        var maxWait = 30;
+        var waitPeer = setInterval(function () {
+            waitCount++;
+            if (window._incomingPeerCall) {
+                clearInterval(waitPeer);
+                answerPeerCall(window._incomingPeerCall, stream, type);
+            } else if (waitCount >= maxWait) {
+                clearInterval(waitPeer);
+                console.warn('[ECE In] Timeout attente signal PeerJS');
+                afficherToast('Connexion en cours, veuillez patienter...', 'info');
+            }
+        }, 300);
+    }
+
+    function answerPeerCall(peerCall, stream, type) {
+        peerCall.answer(stream);
+        currentCall = peerCall;
+        handleCallStream(currentCall, type);
+        window._incomingPeerCall = null;
+        console.log('[ECE In] Appel PeerJS répondu avec succès');
     }
 
     function handleCallStream(call, type) {
@@ -509,6 +593,7 @@ $(document).ready(function () {
     });
 
     // ===== POLLING (nouveaux messages) =====
+    // On poll toutes les 3s pour récupérer les nouveaux messages (pas de WebSocket, c'est du polling AJAX classique)
 
     var intervalPolling = setInterval(function () {
         $.get('api/messages.php', {
@@ -528,6 +613,7 @@ $(document).ready(function () {
         });
     }, 3000);
 
+    // Quand on quitte la page, on envoie un signal pour terminer proprement l'appel en cours
     $(window).on('beforeunload', function () {
         clearInterval(intervalPolling);
         if (callPollingInterval) clearInterval(callPollingInterval);

@@ -1,6 +1,7 @@
 <?php
 /**
  * ECE In - Page de recherche
+ * Page de recherche globale : on cherche parmi les utilisateurs, publications et emplois.
  */
 require_once __DIR__ . '/config/config.php';
 requireConnexion();
@@ -14,9 +15,11 @@ $utilisateurs = [];
 $publications  = [];
 $emplois       = [];
 
+// On exige au minimum 2 caractères pour éviter des requêtes trop larges
 if (!empty($q) && strlen($q) >= 2) {
     $like = "%$q%";
 
+    // On cherche dans 3 tables différentes (utilisateurs, publications, emplois) avec LIKE
     // Recherche utilisateurs
     $stmt = $pdo->prepare("
         SELECT id, nom, prenom, pseudo, photo, titre, localisation
@@ -66,6 +69,7 @@ include __DIR__ . '/includes/navbar.php';
     </div>
 
     <?php else: ?>
+    <!-- On affiche les résultats par catégorie : utilisateurs d'abord, puis posts, puis emplois -->
     <h4 class="fw-bold mb-4">
         <i class="bi bi-search me-2"></i>Résultats pour «&nbsp;<?= h($q) ?>&nbsp;»
     </h4>

@@ -1,6 +1,7 @@
 <?php
 /**
  * ECE In - Page Mon Réseau
+ * Gestion des connexions entre utilisateurs (comme LinkedIn)
  */
 require_once __DIR__ . '/config/config.php';
 requireConnexion();
@@ -9,7 +10,7 @@ $pdo    = getDB();
 $userId = $_SESSION['utilisateur_id'];
 $pageTitle = 'Mon Réseau';
 
-// ===== Mes connexions (amis acceptés) =====
+// On récupère les amis avec un CASE WHEN : dans la table connexions, l'ami peut être demandeur_id ou destinataire_id
 $stmtAmis = $pdo->prepare("
     SELECT u.id, u.nom, u.prenom, u.pseudo, u.photo, u.titre, u.localisation, c.date_reponse
     FROM connexions c
@@ -24,7 +25,7 @@ $stmtAmis = $pdo->prepare("
 $stmtAmis->execute([$userId, $userId, $userId]);
 $amis = $stmtAmis->fetchAll();
 
-// ===== Demandes reçues =====
+// Les invitations en attente qu'on doit accepter ou refuser
 $stmtDemandes = $pdo->prepare("
     SELECT u.id, u.nom, u.prenom, u.pseudo, u.photo, u.titre, c.id AS connexion_id, c.date_demande
     FROM connexions c
@@ -45,7 +46,8 @@ $stmtEnvoyees = $pdo->prepare("
 $stmtEnvoyees->execute([$userId]);
 $envoyees = $stmtEnvoyees->fetchAll();
 
-// ===== Amis d'amis (suggestions) =====
+// Requête SQL un peu complexe : on cherche les amis d'amis qu'on connaît pas encore.
+// Le COUNT(*) donne le nombre d'amis en commun pour trier par pertinence
 $stmtSuggestions = $pdo->prepare("
     SELECT DISTINCT u.id, u.nom, u.prenom, u.pseudo, u.photo, u.titre,
         COUNT(*) as amis_communs

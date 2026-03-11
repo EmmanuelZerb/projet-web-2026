@@ -1,6 +1,7 @@
 <?php
 /**
  * ECE In - API AJAX : Messagerie (envoi et récupération de messages)
+ * Envoi et réception de messages en temps réel.
  */
 require_once __DIR__ . '/../config/config.php';
 requireConnexion();
@@ -21,6 +22,7 @@ if ($action === 'envoyer') {
         exit();
     }
 
+    // On vérifie que l'utilisateur fait partie de la conversation avant d'insérer (sécurité)
     // Vérifier participation
     $stmtCheck = $pdo->prepare("
         SELECT 1 FROM conversation_participants WHERE conversation_id = ? AND utilisateur_id = ?
@@ -54,6 +56,7 @@ if ($action === 'envoyer') {
     exit();
 }
 
+// Le client envoie l'ID du dernier message reçu, on renvoie seulement les nouveaux (optimisation)
 // ===================== RÉCUPÉRER LES NOUVEAUX MESSAGES (polling) =====================
 if ($action === 'polling') {
     $convId    = (int) ($_GET['conversation_id'] ?? 0);
@@ -85,6 +88,7 @@ if ($action === 'polling') {
     $stmt->execute([$convId, $dernierMsgId]);
     $messages = $stmt->fetchAll();
 
+    // On marque automatiquement les messages comme lus quand on les poll
     // Marquer comme lus
     $pdo->prepare("UPDATE messages SET lu = 1 WHERE conversation_id = ? AND expediteur_id != ?")
         ->execute([$convId, $userId]);

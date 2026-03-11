@@ -1,6 +1,9 @@
 <?php
 /**
  * ECE In - Page de connexion / inscription
+ *
+ * Point d'entrée de l'appli : c'est ici que les utilisateurs arrivent pour se connecter
+ * ou créer un compte. On gère les deux flux (connexion + inscription) sur la même page.
  */
 require_once __DIR__ . '/config/config.php';
 
@@ -19,7 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $email  = trim($_POST['email']  ?? '');
     $pdo    = getDB();
 
-    // Vérification : pseudo OU email + vérification existence
+    // Comme demandé dans le sujet : on accepte soit le pseudo soit l'email pour se connecter.
+    // Flexibilité pour l'utilisateur qui peut se souvenir de l'un ou l'autre.
     if (empty($pseudo) && empty($email)) {
         $erreur = 'Veuillez saisir votre pseudo ou votre adresse email.';
     } else {
@@ -34,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         if (!$utilisateur) {
             $erreur = 'Pseudo ou email introuvable. Vérifiez vos informations.';
         } elseif (!password_verify($_POST['mot_de_passe'] ?? '', $utilisateur['mot_de_passe'])) {
+            // Vérification bcrypt : on compare le mdp saisi avec le hash stocké en BDD.
             $erreur = 'Mot de passe incorrect.';
         } else {
             // Connexion réussie
@@ -60,12 +65,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $mdp2   = $_POST['mot_de_passe2'] ?? '';
     $pdo    = getDB();
 
-    // Validations
+    // Toutes les validations côté serveur : on ne fait jamais confiance au client.
+    // Même si le JS vérifie, un attaquant peut contourner le front.
     if (empty($nom) || empty($prenom) || empty($pseudo) || empty($email) || empty($mdp)) {
         $erreur = 'Tous les champs sont obligatoires.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $erreur = 'Adresse email invalide.';
     } elseif (!str_ends_with($email, '@edu.ece.fr') && !str_ends_with($email, '@ece.fr')) {
+        // Restriction domaine ECE comme demandé dans le sujet : seuls les emails de l'école.
         $erreur = 'Seules les adresses email ECE (@edu.ece.fr ou @ece.fr) sont autorisées.';
     } elseif (strlen($mdp) < 8) {
         $erreur = 'Le mot de passe doit contenir au moins 8 caractères.';
@@ -80,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         if ($stmt->fetch()) {
             $erreur = 'Ce pseudo ou email est déjà utilisé.';
         } else {
+            // Hashage bcrypt : on ne stocke jamais un mot de passe en clair en BDD.
             $hash = password_hash($mdp, PASSWORD_BCRYPT);
             $stmt = $pdo->prepare("
                 INSERT INTO utilisateurs (pseudo, email, mot_de_passe, nom, prenom, photo, image_fond, date_inscription)
@@ -276,6 +284,7 @@ include __DIR__ . '/includes/header.php';
     </div>
 </div>
 
+<!-- JS pour switcher entre les onglets connexion/inscription sans recharger la page -->
 <script>
 function switchMode(mode) {
     document.getElementById('form-connexion').style.display = mode === 'connexion' ? 'block' : 'none';

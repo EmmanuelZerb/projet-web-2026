@@ -1,6 +1,7 @@
 <?php
 /**
  * ECE In - API AJAX : Gestion des appels audio/vidéo
+ * La signalisation passe par le serveur, le média par WebRTC (P2P).
  */
 require_once __DIR__ . '/../config/config.php';
 requireConnexion();
@@ -11,6 +12,7 @@ $pdo    = getDB();
 $userId = $_SESSION['utilisateur_id'];
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 
+// L'appelant crée un enregistrement en BDD, le receveur le détecte via polling
 // ===================== INITIER UN APPEL =====================
 if ($action === 'initier') {
     $convId     = (int) ($_POST['conversation_id'] ?? 0);
@@ -22,9 +24,11 @@ if ($action === 'initier') {
         exit;
     }
 
-    // Annuler les appels en sonnerie existants de cet utilisateur
+    // Annuler les appels en sonnerie existants (des deux côtés)
     $pdo->prepare("UPDATE appels SET statut = 'manque', date_fin = NOW() WHERE appelant_id = ? AND statut = 'sonnerie'")
         ->execute([$userId]);
+    $pdo->prepare("UPDATE appels SET statut = 'manque', date_fin = NOW() WHERE receveur_id = ? AND statut = 'sonnerie' AND date_debut < DATE_SUB(NOW(), INTERVAL 45 SECOND)")
+        ->execute([$receveurId]);
 
     $stmt = $pdo->prepare("INSERT INTO appels (appelant_id, receveur_id, conversation_id, type) VALUES (?, ?, ?, ?)");
     $stmt->execute([$userId, $receveurId, $convId, $type]);
@@ -33,6 +37,7 @@ if ($action === 'initier') {
     exit;
 }
 
+// Le receveur poll cette route toutes les secondes pour détecter un appel entrant
 // ===================== VÉRIFIER LES APPELS ENTRANTS =====================
 if ($action === 'verifier') {
     $stmt = $pdo->prepare("
@@ -61,6 +66,7 @@ if ($action === 'statut') {
     exit;
 }
 
+// Quand le receveur accepte, le statut passe à "en_cours" et l'appelant le détecte via son propre polling
 // ===================== ACCEPTER =====================
 if ($action === 'accepter') {
     $appelId = (int) ($_POST['appel_id'] ?? 0);

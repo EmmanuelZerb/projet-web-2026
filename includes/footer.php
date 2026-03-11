@@ -1,8 +1,10 @@
 <?php
 /**
  * ECE In - Pied de page HTML commun
+ * Pied de page commun : contact, Google Maps, liens utiles, scripts JS
  */
 ?>
+<!-- Infos de contact de l'ECE (adresse, téléphone, email) comme demandé dans le sujet -->
 <!-- ===================== FOOTER ===================== -->
 <footer class="footer-ecein mt-5">
     <div class="footer-top">
@@ -70,10 +72,10 @@
                             <a href="mailto:<?= SITE_EMAIL ?>"><?= SITE_EMAIL ?></a>
                         </li>
                     </ul>
-                    <!-- Carte Google Maps intégrée (placeholder) -->
+                    <!-- Intégration Google Maps pour montrer la localisation de l'ECE -->
                     <div class="footer-map mt-3">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2625.648!2d2.2938!3d48.8462!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e6703285cb5e9f%3A0x1234567890!2sECE%20Paris!5e0!3m2!1sfr!2sfr!4v1234567890"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2625.9!2d2.2855!3d48.8510!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e6701b4f128b93%3A0x83e483bd8e2bff0d!2sECE%20Paris%20-%20%C3%89cole%20d&#39;ing%C3%A9nieurs!5e0!3m2!1sfr!2sfr!4v1709500000000"
                             width="100%" height="120" style="border:0; border-radius:8px;"
                             allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
@@ -101,7 +103,7 @@
 </footer>
 <!-- ===================== FIN FOOTER ===================== -->
 
-<!-- Modal Partager (global) -->
+<!-- Modal global pour partager des publications (utilisé sur toutes les pages) -->
 <?php if (isset($userCourant)): ?>
 <div class="modal fade" id="modalPartager" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -138,7 +140,7 @@
 </div>
 <?php endif; ?>
 
-<!-- jQuery -->
+<!-- On charge jQuery, Bootstrap JS, notre script principal, et PeerJS uniquement sur la messagerie -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

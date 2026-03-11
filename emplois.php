@@ -1,6 +1,6 @@
 <?php
 /**
- * ECE In - Page Emplois / Stages / Alternances
+ * Page "Emplois" du sujet – CDI, stages, alternances, CDD, freelance, etc.
  */
 require_once __DIR__ . '/config/config.php';
 requireConnexion();
@@ -9,11 +9,11 @@ $pdo    = getDB();
 $userId = $_SESSION['utilisateur_id'];
 $pageTitle = 'Emplois & Stages';
 
-// Filtres
+// On récupère les filtres GET (type d'emploi, mots-clés) pour affiner la recherche
 $filtreType      = $_GET['type'] ?? '';
 $filtreRecherche = trim($_GET['q'] ?? '');
 
-// Construire la requête avec filtres
+// Construction dynamique de la requête selon les filtres actifs
 $conditions = ['e.actif = 1'];
 $params = [];
 
@@ -76,6 +76,7 @@ include __DIR__ . '/includes/navbar.php';
             <p class="text-muted mb-0">Stages, alternances, CDI, CDD – Trouvez votre prochaine opportunité</p>
         </div>
         <?php if (estAdmin()): ?>
+        <!-- Les admins peuvent créer/modifier/supprimer des offres (gestion des droits) -->
         <button class="btn btn-ecein-primary" data-bs-toggle="modal" data-bs-target="#modalPublierEmploi">
             <i class="bi bi-plus-lg me-2"></i>Publier une offre
         </button>
@@ -84,7 +85,7 @@ include __DIR__ . '/includes/navbar.php';
 
     <div class="row g-4">
 
-        <!-- ===== FILTRES (sidebar) ===== -->
+        <!-- Filtres latéraux : types d'emploi (CDI, Stage, Alternance, etc.) -->
         <div class="col-lg-3 d-none d-lg-block">
             <div class="card shadow-sm mb-3">
                 <div class="card-header fw-bold">
@@ -148,7 +149,7 @@ include __DIR__ . '/includes/navbar.php';
             </div>
         </div>
 
-        <!-- ===== LISTE DES OFFRES ===== -->
+        <!-- Chaque offre affiche le titre, l'entreprise, la localisation et la date -->
         <div class="col-lg-9">
             <!-- Barre de recherche mobile -->
             <form class="d-lg-none mb-3" method="GET" action="emplois.php">

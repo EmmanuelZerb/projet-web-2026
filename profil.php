@@ -1,7 +1,7 @@
 <?php
 /**
  * ECE In - Page Profil (Vous)
- * Affiche le profil de l'utilisateur connecté avec ses formations, projets, CV
+ * Page "Vous" du sujet : affiche toutes les infos de l'utilisateur connecté
  */
 require_once __DIR__ . '/config/config.php';
 requireConnexion();
@@ -12,6 +12,7 @@ $userCourant = getUtilisateurConnecte();
 $onglet      = $_GET['onglet'] ?? 'profil';
 $pageTitle   = 'Mon Profil';
 
+// On charge tout d'un coup (formations, projets, posts, albums) pour les différents onglets
 // ===== Formations =====
 $stmtForm = $pdo->prepare("SELECT * FROM formations WHERE utilisateur_id = ? ORDER BY date_debut DESC");
 $stmtForm->execute([$userId]);
@@ -43,7 +44,7 @@ $stmtAlbums = $pdo->prepare("SELECT * FROM albums WHERE utilisateur_id = ? ORDER
 $stmtAlbums->execute([$userId]);
 $albums = $stmtAlbums->fetchAll();
 
-// ===== Traitement AJAX des mises à jour de profil =====
+// Gestion des actions (update profil, upload avatar, ajout formation/projet)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
@@ -67,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Upload avatar
+    // On vérifie le type MIME et la taille avant d'accepter le fichier (sécurité)
     if ($action === 'upload_avatar' && isset($_FILES['avatar'])) {
         $file = $_FILES['avatar'];
         if ($file['error'] === 0 && in_array($file['type'], PHOTO_TYPES) && $file['size'] <= MAX_PHOTO_SIZE) {
@@ -191,7 +192,7 @@ $userCourant = getUtilisateurConnecte();
             </div>
         </div>
 
-        <!-- Navigation onglets -->
+        <!-- Navigation par onglets : on utilise un paramètre GET pour savoir quel onglet afficher -->
         <div class="card-footer bg-transparent pt-0">
             <ul class="nav nav-tabs border-0 gap-1">
                 <li class="nav-item">
@@ -545,7 +546,7 @@ $userCourant = getUtilisateurConnecte();
     </div>
 
     <?php elseif ($onglet === 'cv'): ?>
-    <!-- ONGLET CV -->
+    <!-- ONGLET CV : le CV est généré automatiquement à partir des données du profil (comme demandé dans le sujet) -->
     <div class="row g-4">
         <div class="col-lg-4">
             <div class="card shadow-sm">
@@ -595,7 +596,7 @@ $userCourant = getUtilisateurConnecte();
     </div>
 
     <?php elseif ($onglet === 'albums'): ?>
-    <!-- ONGLET ALBUMS -->
+    <!-- ONGLET ALBUMS : fonctionnalité avancée - albums photos avec couverture -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0">Mes Albums Photos</h5>
         <button class="btn btn-ecein-primary" data-bs-toggle="modal" data-bs-target="#modalAlbum">

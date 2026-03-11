@@ -1,6 +1,7 @@
 <?php
 /**
- * ECE In - Page Messagerie (chat privé)
+ * ECE In - Page Messagerie
+ * Page de messagerie privée avec chat en temps réel et appels audio/vidéo (WebRTC)
  */
 require_once __DIR__ . '/config/config.php';
 requireConnexion();
@@ -11,7 +12,7 @@ $userCourant = getUtilisateurConnecte();
 $pageTitle   = 'Messagerie';
 $pageScript  = 'messagerie.js';
 
-// Créer une nouvelle conversation si demandé via GET
+// Si on arrive via ?contact=X, on crée ou récupère la conversation avec cette personne
 $contactId = (int) ($_GET['contact'] ?? 0);
 if ($contactId > 0 && $contactId !== $userId) {
     // Vérifier si une conversation 1-à-1 existe déjà
@@ -40,7 +41,7 @@ if ($contactId > 0 && $contactId !== $userId) {
 // Conversation active
 $convActiveId = $convActiveId ?? (int) ($_GET['conv'] ?? 0);
 
-// Liste des conversations
+// Requête un peu complexe avec plein de sous-requêtes : dernier message, nb de non-lus, infos du contact pour chaque conversation
 $stmtConvs = $pdo->prepare("
     SELECT c.id, c.nom, c.est_groupe, c.date_creation,
         (
@@ -89,7 +90,7 @@ $stmtConvs->execute([
 ]);
 $conversations = $stmtConvs->fetchAll();
 
-// Messages de la conversation active
+// On vérifie d'abord que l'user fait partie de la conversation (sécurité), puis on charge les messages et on les marque comme lus
 $messages = [];
 $contactActif = null;
 if ($convActiveId > 0) {
@@ -124,7 +125,7 @@ if ($convActiveId > 0) {
     }
 }
 
-// Amis pour créer une nouvelle conversation
+// Liste des amis pour le modal "nouvelle conversation"
 $stmtAmis = $pdo->prepare("
     SELECT u.id, u.nom, u.prenom, u.photo, u.titre
     FROM connexions c
@@ -336,7 +337,7 @@ include __DIR__ . '/includes/navbar.php';
     </div>
 </div>
 
-<!-- ===== OVERLAY APPEL AUDIO/VIDÉO ===== -->
+<!-- L'overlay HTML pour les appels audio/vidéo, avec les boutons accepter/refuser/raccrocher -->
 <div id="call-overlay" class="call-overlay" style="display:none">
     <div class="call-overlay-bg"></div>
     <div class="call-content">
@@ -378,6 +379,7 @@ include __DIR__ . '/includes/navbar.php';
 </div>
 
 <script>
+// On passe les données PHP au JavaScript via des constantes globales (nécessaire pour le polling AJAX)
 const chatEl = document.getElementById('chat-messages');
 if (chatEl) chatEl.scrollTop = chatEl.scrollHeight;
 

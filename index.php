@@ -1,6 +1,7 @@
 <?php
 /**
  * ECE In - Page d'Accueil (Fil d'actualité)
+ * C'est la page d'accueil / fil d'actualité, le cœur du réseau social
  */
 require_once __DIR__ . '/config/config.php';
 requireConnexion();
@@ -12,7 +13,8 @@ $pageTitle   = 'Accueil';
 $pageScript  = 'posts.js';
 
 // ===================== RÉCUPÉRER LES PUBLICATIONS =====================
-// Publications publiques + publications des amis
+// On récupère les posts publics + ceux de nos amis (visibilité)
+// La sous-requête avec CASE WHEN permet de trouver les amis peu importe qui a envoyé la demande
 $stmtPosts = $pdo->prepare("
     SELECT p.id, p.utilisateur_id, p.type, p.contenu, p.fichier, p.fichier_mime,
            p.lieu, p.humeur, p.visibilite, p.publication_originale_id, p.date_publication,
@@ -46,6 +48,7 @@ $stmtPosts->execute([
 $publications = $stmtPosts->fetchAll();
 
 // ===================== ÉVÉNEMENT DE LA SEMAINE =====================
+// Carrousel d'événements à venir (demandé dans le sujet - événement de la semaine)
 $stmtEvt = $pdo->prepare("
     SELECT e.*, u.nom, u.prenom
     FROM evenements e
@@ -58,6 +61,7 @@ $stmtEvt->execute();
 $evenements = $stmtEvt->fetchAll();
 
 // ===================== SUGGESTIONS DE CONNEXIONS =====================
+// On propose des utilisateurs qu'on connait pas encore, ORDER BY RAND() pour du hasard
 $stmtSugg = $pdo->prepare("
     SELECT u.id, u.nom, u.prenom, u.pseudo, u.photo, u.titre
     FROM utilisateurs u
@@ -275,6 +279,7 @@ include __DIR__ . '/includes/navbar.php';
 </div>
 
 <!-- ===== MODAL : Publier ===== -->
+<!-- Modal Bootstrap pour créer un post avec upload de fichier, lieu et humeur -->
 <div class="modal fade" id="modalPublier" tabindex="-1">
     <div class="modal-dialog modal-lg modal-fullscreen-md-down">
         <div class="modal-content">

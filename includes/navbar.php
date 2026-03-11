@@ -1,6 +1,7 @@
 <?php
 /**
  * ECE In - Barre de navigation principale
+ * Barre de navigation responsive : desktop et mobile (Bootstrap 5)
  */
 // Détermine la page active
 $pageActive = basename($_SERVER['PHP_SELF'], '.php');
@@ -31,6 +32,7 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
     </div>
 </header>
 
+<!-- Menu principal avec badges pour les notifications et messages non lus -->
 <!-- ===================== NAVBAR DESKTOP ===================== -->
 <nav class="navbar navbar-expand-lg navbar-ecein sticky-top">
     <div class="container-xl">
@@ -42,7 +44,7 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
             <span class="d-none d-md-inline logo-subtitle">Réseau ECE Paris</span>
         </a>
 
-        <!-- Barre de recherche (desktop) -->
+        <!-- Recherche globale accessible depuis n'importe quelle page -->
         <div class="search-bar d-none d-lg-flex mx-3 flex-grow-1">
             <form class="d-flex w-100" action="recherche.php" method="GET">
                 <div class="input-group">
@@ -172,6 +174,7 @@ $pageActive = basename($_SERVER['PHP_SELF'], '.php');
 </nav>
 <!-- ===================== FIN NAVBAR ===================== -->
 
+<!-- Version mobile avec menu hamburger (responsive) -->
 <!-- ===================== BOTTOM TAB BAR (MOBILE) ===================== -->
 <nav class="bottom-tab-bar d-none" aria-label="Navigation mobile">
     <a href="index.php" class="tab-item <?= $pageActive === 'index' ? 'active' : '' ?>">
